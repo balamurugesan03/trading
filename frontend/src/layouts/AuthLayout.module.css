@@ -1,0 +1,149 @@
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.side {
+  flex: 0 0 44%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  background: linear-gradient(160deg, #1a1b2e 0%, #12131f 55%, #2b1f4a 100%);
+}
+
+.side::before {
+  content: '';
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  top: -110px;
+  right: -110px;
+  background: radial-gradient(circle, rgba(77, 171, 247, 0.28), transparent 70%);
+}
+
+.side::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  bottom: -90px;
+  left: -90px;
+  background: radial-gradient(circle, rgba(112, 72, 232, 0.28), transparent 70%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brandIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4dabf7, #7048e8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(112, 72, 232, 0.35);
+}
+
+.brandText {
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.brandSub {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+}
+
+.headline {
+  color: #fff;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 44px;
+  max-width: 380px;
+}
+
+.subcopy {
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 380px;
+}
+
+.features {
+  margin-top: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.featureIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.featureText {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.4;
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.32);
+  font-size: 12px;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 40px 24px;
+}
+
+.formBox {
+  width: 100%;
+  max-width: 440px;
+}
+
+@media (max-width: 900px) {
+  .side {
+    display: none;
+  }
+  .main {
+    background: var(--mantine-color-gray-0);
+  }
+}

@@ -1,0 +1,87 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 10px 25px -8px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 16px 32px -8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 55%);
+  pointer-events: none;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: -70%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  background: radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.3), transparent 60%);
+  transform: rotate(12deg);
+  pointer-events: none;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+.value {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.icon {
+  color: rgba(255, 255, 255, 0.75);
+  z-index: 1;
+}
+
+.blue {
+  background: linear-gradient(135deg, #4dabf7 0%, #1864ab 100%);
+}
+.green {
+  background: linear-gradient(135deg, #69db7c 0%, #2b8a3e 100%);
+}
+.teal {
+  background: linear-gradient(135deg, #63e6be 0%, #087f5b 100%);
+}
+.grape {
+  background: linear-gradient(135deg, #e599f7 0%, #862e9c 100%);
+}
+.indigo {
+  background: linear-gradient(135deg, #91a7ff 0%, #364fc7 100%);
+}
+.orange {
+  background: linear-gradient(135deg, #ffc078 0%, #d9480f 100%);
+}
+.yellow {
+  background: linear-gradient(135deg, #ffe066 0%, #e8590c 100%);
+}
+.red {
+  background: linear-gradient(135deg, #ff8787 0%, #c92a2a 100%);
+}
+.dark {
+  background: linear-gradient(135deg, #495057 0%, #212529 100%);
+}
+.gray {
+  background: linear-gradient(135deg, #adb5bd 0%, #495057 100%);
+}

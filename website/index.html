@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeVault — Invest Smarter, Grow Faster</title>
+<meta name="description" content="TradeVault is a secure investment platform offering curated packages, daily ROI tracking, multi-level referral income, and instant wallet management — all in one transparent dashboard.">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%236366f1'/%3E%3Cpath d='M6 15l3.5-4 3 3L18 8' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="loader" id="loader"><div class="loader-mark"></div></div>
+
+<div class="bg-fx" aria-hidden="true">
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <div class="grid-overlay"></div>
+</div>
+
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><rect width="24" height="24" rx="6" fill="currentColor"/><path d="M6 15l3.5-4 3 3L18 8" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      TradeVault
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#packages">Packages</a>
+      <a href="#referral">Referral Program</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a href="#" class="btn btn-ghost" data-login-link>Log In</a>
+      <a href="#" class="btn btn-primary btn-sm" data-register-link>
+        Get Started
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="badge reveal-hero">
+          <span class="dot"></span> Secure, KYC-verified investing
+        </div>
+
+        <h1 class="hero-title">
+          <span class="line"><span class="w">Grow</span> <span class="w">your</span> <span class="w">wealth</span></span>
+          <span class="line"><span class="w">with</span> <span class="w grad">transparent,</span></span>
+          <span class="line"><span class="w grad">data-driven</span> <span class="w">investing.</span></span>
+        </h1>
+
+        <p class="hero-sub reveal-hero">
+          TradeVault gives you one dashboard to invest in curated packages, track daily ROI in real time,
+          grow passive income through multi-level referrals, and move funds in and out securely — backed
+          by KYC verification and full transaction transparency.
+        </p>
+
+        <div class="hero-cta reveal-hero">
+          <a href="#" class="btn btn-primary btn-lg" data-register-link>
+            Create Free Account
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#how" class="btn btn-outline btn-lg">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor"/></svg>
+            See How It Works
+          </a>
+        </div>
+
+        <div class="hero-trust reveal-hero">
+          <span>Trusted by investors across</span>
+          <strong>40+ countries</strong>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal-hero">
+        <div class="panel panel-main">
+          <div class="panel-head">
+            <span>Portfolio Overview</span>
+            <span class="pill pill-live"><i></i>Live</span>
+          </div>
+          <div class="panel-balance">
+            <span class="label">Total Balance</span>
+            <span class="value">$<span data-counter="24680">0</span>.00</span>
+            <span class="change up">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 12 12)"/></svg>
+              +2.4% today
+            </span>
+          </div>
+          <svg class="chart" viewBox="0 0 320 110" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.45"/>
+                <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="chart-fill" d="M0,90 L20,80 L45,85 L70,60 L95,68 L120,45 L145,55 L170,30 L195,40 L220,20 L245,32 L270,15 L295,25 L320,8 L320,110 L0,110 Z" fill="url(#chartFill)"/>
+            <path class="chart-line" d="M0,90 L20,80 L45,85 L70,60 L95,68 L120,45 L145,55 L170,30 L195,40 L220,20 L245,32 L270,15 L295,25 L320,8" fill="none" stroke="#818cf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="panel-bars">
+            <span style="--h:40%"></span><span style="--h:65%"></span><span style="--h:50%"></span>
+            <span style="--h:80%"></span><span style="--h:60%"></span><span style="--h:95%"></span>
+            <span style="--h:70%"></span>
+          </div>
+        </div>
+
+        <div class="float-card float-card-1">
+          <span class="fc-icon fc-icon-green">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" transform="rotate(-45 12 12)"/></svg>
+          </span>
+          <div>
+            <span class="fc-label">Today's ROI</span>
+            <span class="fc-value">+1.8%</span>
+          </div>
+        </div>
+
+        <div class="float-card float-card-2">
+          <span class="fc-icon fc-icon-indigo">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 19c.8-3.2 3.2-5 5.5-5s4.7 1.8 5.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 19c.4-2.3 1.7-3.7 3-4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div>
+            <span class="fc-label">Team Income</span>
+            <span class="fc-value">$340.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="container stats-grid">
+      <div class="stat reveal">
+        <span class="stat-value" data-counter="18400000" data-prefix="$" data-suffix="+">$0</span>
+        <span class="stat-label">Assets Under Management</span>
+      </div>
+      <div class="stat reveal">
+        <span class="stat-value" data-counter="12000" data-suffix="+">0</span>
+        <span class="stat-label">Active Investors</span>
+      </div>
+      <div class="stat reveal">
+        <span class="stat-value" data-counter="40" data-suffix="+">0</span>
+        <span class="stat-label">Countries Served</span>
+      </div>
+      <div class="stat reveal">
+        <span class="stat-value" data-counter="24" data-suffix="/7">0</span>
+        <span class="stat-label">Support &amp; Monitoring</span>
+      </div>
+    </div>
+    <p class="stats-note">Illustrative figures for demonstration — replace with your platform's verified metrics.</p>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Process</span>
+        <h2>From sign-up to payout in four simple steps</h2>
+        <p>No confusing jargon, no hidden steps — just a clear path from account creation to consistent, trackable returns.</p>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal">
+          <span class="step-num">01</span>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><circle cx="9" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8"/><path d="M3 20c.9-3.8 3.6-6 6-6s5.1 2.2 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 4.5c1.4.4 2.5 1.7 2.5 3.3s-1.1 2.9-2.5 3.3M18.5 14c1.7.7 3 2.5 3.5 4.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Create &amp; Verify Your Account</h3>
+          <p>Register in minutes, then complete a quick KYC identity check to unlock deposits and withdrawals securely.</p>
+        </div>
+
+        <div class="step reveal">
+          <span class="step-num">02</span>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M3 9.5h18" stroke="currentColor" stroke-width="1.8"/><path d="M7 14h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Choose an Investment Package</h3>
+          <p>Pick a package that fits your budget and goals, then fund it instantly through your secure wallet.</p>
+        </div>
+
+        <div class="step reveal">
+          <span class="step-num">03</span>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M3 17l5-5 4 3 6-7 3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Track Daily ROI in Real Time</h3>
+          <p>Watch your returns accrue on a live dashboard, with full history of every rate and payout.</p>
+        </div>
+
+        <div class="step reveal">
+          <span class="step-num">04</span>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M12 3v13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 12l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 19h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Withdraw or Reinvest</h3>
+          <p>Request a withdrawal whenever you like, or compound your gains straight into a new package.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section section-alt" id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Platform</span>
+        <h2>Everything you need, nothing you don't</h2>
+        <p>Built for investors who want clarity and control — every feature maps to a real part of your investing journey.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M3 17l5-5 4 3 6-7 3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Daily ROI Tracking</h3>
+          <p>Transparent, admin-set daily rates applied automatically with a complete, auditable history.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M16 12.5h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M7 6V4.8A1.8 1.8 0 018.8 3h6.4A1.8 1.8 0 0117 4.8V6" stroke="currentColor" stroke-width="1.8"/></svg>
+          </div>
+          <h3>Secure Multi-Wallet</h3>
+          <p>A single wallet for deposits, ROI, referral income, and incentives — with instant internal transfers.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><circle cx="8" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M2.5 19c.8-3.2 3.2-5 5.5-5s4.7 1.8 5.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 19c.4-2.3 1.7-3.7 3-4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Referral &amp; Level Income</h3>
+          <p>Earn across multiple levels of your team as they invest, with clear breakdowns of every payout.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 10-4-2.5-7-5.5-7-10V6l7-3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>KYC-Verified Security</h3>
+          <p>Identity verification and document review protect every account before funds ever move.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M4 4v16h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 15l3-4 3 2 4-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Real-Time Dashboard</h3>
+          <p>Balances, ROI history, team structure, and requests — all live, all in one clean view.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M12 2l2.4 5.4L20 8.3l-4 4.1L17 18l-5-2.8L7 18l1-5.6-4-4.1 5.6-.9L12 2z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Monthly Incentives</h3>
+          <p>Top-performing investors and team builders unlock extra monthly rewards on top of standard income.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M20 12a8 8 0 10-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Fast Deposits &amp; Withdrawals</h3>
+          <p>Submit a request and track its status end-to-end, with admin review built for speed and accountability.</p>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M12 20c4-2 7-5.5 7-10V6l-7-3-7 3v4c0 4.5 3 8 7 10z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.3" stroke="currentColor" stroke-width="1.6"/></svg>
+          </div>
+          <h3>Dedicated Support</h3>
+          <p>Real people behind the platform, ready to help with account, KYC, or transaction questions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section class="section" id="packages">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Investment Packages</span>
+        <h2>Pick a package that matches your goals</h2>
+        <p id="packagesDesc">Every package includes full dashboard access, daily ROI tracking, and referral eligibility. Sample tiers below — your live packages are configured in the dashboard.</p>
+      </div>
+
+      <div class="packages-grid" id="packagesGrid">
+        <div class="package-card">
+          <span class="package-name">Starter</span>
+          <div class="package-range">$100 <span>–</span> $999</div>
+          <p class="package-desc">A low-risk entry point to learn the platform and start earning daily ROI.</p>
+          <ul class="package-features">
+            <li>Daily ROI accrual</li>
+            <li>Dashboard &amp; wallet access</li>
+            <li>Referral income eligible</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-block" data-register-link>Get Started</a>
+        </div>
+
+        <div class="package-card package-featured">
+          <span class="package-badge">Most Popular</span>
+          <span class="package-name">Growth</span>
+          <div class="package-range">$1,000 <span>–</span> $4,999</div>
+          <p class="package-desc">Balanced allocation for investors building steady, compounding income.</p>
+          <ul class="package-features">
+            <li>Priority daily ROI processing</li>
+            <li>Full referral &amp; level income</li>
+            <li>Monthly incentive eligible</li>
+          </ul>
+          <a href="#" class="btn btn-primary btn-block" data-register-link>Get Started</a>
+        </div>
+
+        <div class="package-card">
+          <span class="package-name">Professional</span>
+          <div class="package-range">$5,000 <span>–</span> $19,999</div>
+          <p class="package-desc">Built for serious investors who want higher exposure and team-building tools.</p>
+          <ul class="package-features">
+            <li>Enhanced ROI tier</li>
+            <li>Dedicated withdrawal queue</li>
+            <li>Advanced reporting access</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-block" data-register-link>Get Started</a>
+        </div>
+
+        <div class="package-card">
+          <span class="package-name">Elite</span>
+          <div class="package-range">$20,000 <span>+</span></div>
+          <p class="package-desc">Our top tier for high-net-worth investors and large team leaders.</p>
+          <ul class="package-features">
+            <li>Top-tier ROI &amp; incentives</li>
+            <li>Dedicated account manager</li>
+            <li>Custom reporting</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-block" data-register-link>Get Started</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REFERRAL -->
+  <section class="section section-alt" id="referral">
+    <div class="container referral-grid">
+      <div class="referral-copy reveal">
+        <span class="eyebrow">Referral Program</span>
+        <h2>Build a team, earn on every level</h2>
+        <p>
+          Share your referral code and earn income as your network invests — not just from direct
+          referrals, but across multiple levels of your growing team. Every payout is logged and
+          visible in your dashboard, with monthly incentives for top team builders.
+        </p>
+        <ul class="referral-points">
+          <li><span>✓</span> Multi-level referral income structure</li>
+          <li><span>✓</span> Real-time team &amp; earnings visibility</li>
+          <li><span>✓</span> Monthly incentive bonuses for top performers</li>
+        </ul>
+        <a href="#" class="btn btn-primary" data-register-link>Start Referring Today</a>
+      </div>
+
+      <div class="referral-visual reveal">
+        <div class="level-card level-1">
+          <span class="level-tag">Level 1</span>
+          <span class="level-pct">8%</span>
+          <span class="level-label">Direct Referrals</span>
+        </div>
+        <div class="level-card level-2">
+          <span class="level-tag">Level 2</span>
+          <span class="level-pct">4%</span>
+          <span class="level-label">Second Tier</span>
+        </div>
+        <div class="level-card level-3">
+          <span class="level-tag">Level 3</span>
+          <span class="level-pct">2%</span>
+          <span class="level-label">Third Tier</span>
+        </div>
+        <svg class="level-lines" viewBox="0 0 400 300" aria-hidden="true">
+          <path d="M200 40 C 120 90, 100 120, 90 160" stroke="#6366f1" stroke-width="1.5" fill="none" stroke-dasharray="4 5" opacity="0.5"/>
+          <path d="M200 40 C 280 90, 300 120, 310 160" stroke="#6366f1" stroke-width="1.5" fill="none" stroke-dasharray="4 5" opacity="0.5"/>
+          <path d="M90 160 C 90 210, 150 230, 200 250" stroke="#6366f1" stroke-width="1.5" fill="none" stroke-dasharray="4 5" opacity="0.5"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Investor Voices</span>
+        <h2>What our early investors are saying</h2>
+        <p>Illustrative feedback for demonstration — swap in verified reviews from your own investors before launch.</p>
+      </div>
+
+      <div class="testimonial-wrap reveal">
+        <div class="testimonial-track" id="testiTrack">
+          <div class="testimonial-card">
+            <p>"The daily ROI tracking is what sold me — I can see exactly how my package is performing every single day, with no guesswork."</p>
+            <div class="testimonial-author">
+              <span class="avatar">AR</span>
+              <div><strong>Amara R.</strong><span>Growth Package Investor</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>"Building a referral team here actually feels transparent. I can see every level, every payout, in real time."</p>
+            <div class="testimonial-author">
+              <span class="avatar">JL</span>
+              <div><strong>Jonas L.</strong><span>Team Leader, Elite Package</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card">
+            <p>"Withdrawals were faster than I expected, and the KYC process took less than ten minutes. Solid platform."</p>
+            <div class="testimonial-author">
+              <span class="avatar">SP</span>
+              <div><strong>Sana P.</strong><span>Professional Package Investor</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-dots" id="testiDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-alt" id="faq">
+    <div class="container faq-wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions, answered</h2>
+      </div>
+
+      <div class="faq-list reveal">
+        <div class="faq-item">
+          <button class="faq-q">
+            Is my investment safe with TradeVault?
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-a"><p>All accounts require KYC verification, funds are tracked through an auditable wallet ledger, and every deposit, withdrawal, and ROI event is logged. As with any investment, funds are subject to market and platform risk — please invest only what you can afford.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            How is daily ROI calculated?
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-a"><p>A daily rate is set and published by the platform admin team. It is applied automatically to your active investment balance, and the full rate history is always visible in your dashboard.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            How long does KYC verification take?
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-a"><p>Most verifications are reviewed within one business day. You'll get a notification the moment your documents are approved or if we need anything else.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            How do referral and level income work?
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-a"><p>You earn a percentage when someone you referred invests, plus smaller percentages across additional levels of your team as it grows. All rates and payouts are visible in your Team page.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            Can I withdraw at any time?
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="faq-a"><p>Yes — submit a withdrawal request from your wallet at any time. Requests are reviewed by our team and processed as quickly as possible.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="cta-banner">
+    <div class="container cta-inner reveal">
+      <h2>Ready to start growing your portfolio?</h2>
+      <p>Create your free account in minutes and get access to your personal investment dashboard.</p>
+      <a href="#" class="btn btn-primary btn-lg" data-register-link>
+        Create Free Account
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a href="#top" class="brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><rect width="24" height="24" rx="6" fill="currentColor"/><path d="M6 15l3.5-4 3 3L18 8" stroke="#0b0f1a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        TradeVault
+      </a>
+      <p>A secure, transparent platform for daily-ROI investing, team-based referral income, and full wallet control.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">Features</a>
+      <a href="#packages">Packages</a>
+      <a href="#referral">Referral Program</a>
+      <a href="#faq">FAQ</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Account</h4>
+      <a href="#" data-login-link>Log In</a>
+      <a href="#" data-register-link>Create Account</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Privacy Policy</a>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© <span id="year"></span> TradeVault. All rights reserved.</p>
+    <p class="disclaimer">Investing involves risk, including possible loss of principal. Past performance does not guarantee future results. This site is a product demonstration; verify all figures before use in production.</p>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
