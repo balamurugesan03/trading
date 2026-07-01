@@ -296,7 +296,7 @@ section[id] { scroll-margin-top: 84px; }
 .level-label { font-size: 0.78rem; color: var(--text-dim); }
 
 /* ---------- Testimonials ---------- */
-.testimonial-wrap { max-width: 720px; margin: 0 auto; }
+.testimonial-wrap { max-width: 720px; margin: 0 auto; overflow: hidden; border-radius: var(--radius); }
 .testimonial-track { display: flex; transition: transform 0.5s cubic-bezier(0.65, 0, 0.35, 1); }
 .testimonial-card {
   min-width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
@@ -361,18 +361,27 @@ section[id] { scroll-margin-top: 84px; }
 }
 
 @media (max-width: 860px) {
+  .nav-inner { flex-wrap: wrap; }
+  .brand { order: 1; }
+  .nav-toggle { order: 2; }
+  .nav-links { order: 3; flex-basis: 100%; }
+  .nav-actions { order: 4; flex-basis: 100%; }
   .nav-links, .nav-actions { display: none; }
   .nav-toggle { display: flex; }
-  .nav.open .nav-links {
-    display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
+  .nav.open {
     background: rgba(11,15,26,0.98); backdrop-filter: blur(14px);
-    padding: 20px 24px; gap: 4px; border-bottom: 1px solid var(--border);
+    border-bottom-color: var(--border);
+  }
+  .nav.open .nav-links, .nav.open .nav-actions { display: flex; }
+  .nav.open .nav-links {
+    flex-direction: column;
+    padding: 18px 0 4px; gap: 4px;
+    border-top: 1px solid var(--border); margin-top: 14px;
   }
   .nav.open .nav-links a { padding: 10px 0; }
-  .nav.open .nav-actions {
-    display: flex; position: absolute; top: calc(100% + 190px); left: 0; right: 0;
-    padding: 0 24px 20px; background: rgba(11,15,26,0.98);
-  }
+  .nav.open .nav-actions { flex-direction: column; gap: 10px; padding: 4px 0 18px; }
+  .nav.open .nav-actions .btn { width: 100%; }
+  .nav.open .nav-actions .btn-ghost { border: 1px solid var(--border-strong); }
   .hero { padding: 130px 0 70px; }
   .hero-inner { grid-template-columns: 1fr; }
   .hero-visual { margin-top: 40px; max-width: 440px; }
@@ -385,4 +394,12 @@ section[id] { scroll-margin-top: 84px; }
   .footer-bottom { flex-direction: column; }
   .footer-bottom .disclaimer { text-align: left; }
   .section { padding: 76px 0; }
+  .container { padding: 0 18px; }
+  .hero-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta .btn { width: 100%; }
+  .panel-balance .value { font-size: clamp(1.5rem, 8vw, 2.1rem); }
+  .cta-inner { padding: 44px 22px; border-radius: 20px; }
+  .testimonial-card { padding: 28px 20px; }
+  .testimonial-card p { font-size: 1.05rem; }
+  .package-card { padding: 26px 20px; }
 }
