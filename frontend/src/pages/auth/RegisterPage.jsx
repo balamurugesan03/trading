@@ -98,7 +98,7 @@ export default function RegisterPage() {
           </Button>
           <Text size="sm" ta="center" c="dimmed">
             Already have an account?{' '}
-            <Text component={Link} to="/login" fw={600} c="indigo" span>
+            <Text component={Link} to="/login" fw={600} c="velocity" span>
               Login
             </Text>
           </Text>

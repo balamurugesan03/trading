@@ -16,7 +16,6 @@ import {
   IconBell,
   IconChevronDown,
   IconLogout,
-  IconShieldLock,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from './Sidebar';
@@ -85,7 +84,13 @@ export default function AdminLayout() {
       navbar={{ width: 260, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
     >
-      <AppShell.Header style={{ borderBottom: '1px solid var(--mantine-color-gray-2)' }}>
+      <AppShell.Header
+        style={{
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          background: 'rgba(10, 10, 10, 0.72)',
+          backdropFilter: 'blur(14px)',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <Group gap="sm" ml="auto">
@@ -101,13 +106,14 @@ export default function AdminLayout() {
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        background: 'linear-gradient(135deg, #4dabf7, #7048e8)',
+                        background: 'linear-gradient(135deg, #2f7dfb, #62a6ff)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         color: '#fff',
                         fontWeight: 700,
                         fontSize: 13,
+                        boxShadow: '0 4px 12px rgba(47, 125, 251, 0.35)',
                       }}
                     >
                       {getInitials(user?.name)}
@@ -127,18 +133,21 @@ export default function AdminLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: '#050505' }}>
         <Sidebar
-          brandTitle="Trading Fund"
           brandSubtitle="Admin Panel"
-          brandIcon={IconShieldLock}
           groups={groups}
           user={{ initials: getInitials(user?.name), name: user?.name, role: user?.role }}
           onLogout={handleLogout}
         />
       </AppShell.Navbar>
 
-      <AppShell.Main style={{ background: 'var(--mantine-color-gray-0)' }}>
+      <AppShell.Main
+        style={{
+          background:
+            'radial-gradient(circle at 85% 0%, rgba(47, 125, 251, 0.08), transparent 45%), var(--mantine-color-dark-8)',
+        }}
+      >
         <Outlet />
       </AppShell.Main>
     </AppShell>

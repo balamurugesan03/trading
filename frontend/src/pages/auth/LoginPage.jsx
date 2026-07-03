@@ -66,7 +66,7 @@ export default function LoginPage() {
           </Button>
           <Text size="sm" ta="center" c="dimmed">
             Don&apos;t have an account?{' '}
-            <Text component={Link} to="/register" fw={600} c="indigo" span>
+            <Text component={Link} to="/register" fw={600} c="velocity" span>
               Register
             </Text>
           </Text>

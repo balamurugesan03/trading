@@ -1,4 +1,5 @@
-import { IconCoinFilled, IconTrendingUp, IconUsers, IconShieldCheck, IconClockHour4 } from '@tabler/icons-react';
+import { IconTrendingUp, IconUsers, IconShieldCheck, IconClockHour4 } from '@tabler/icons-react';
+import logoMark from '../assets/logo-mark.png';
 import classes from './AuthLayout.module.css';
 
 const FEATURES = [
@@ -14,13 +15,8 @@ export default function AuthLayout({ title, subtitle, children }) {
       <div className={classes.side}>
         <div className={classes.content}>
           <div className={classes.brand}>
-            <div className={classes.brandIcon}>
-              <IconCoinFilled size={22} color="#fff" />
-            </div>
-            <div>
-              <div className={classes.brandText}>Trading Fund</div>
-              <div className={classes.brandSub}>Investment Platform</div>
-            </div>
+            <img src={logoMark} alt="Velocity" className={classes.brandMark} />
+            <div className={classes.brandWord}>Velocity</div>
           </div>
 
           <div className={classes.headline}>{title}</div>
@@ -38,11 +34,14 @@ export default function AuthLayout({ title, subtitle, children }) {
           </div>
         </div>
 
-        <div className={classes.footer}>© {new Date().getFullYear()} Trading Fund Platform</div>
+        <div className={classes.footer}>© {new Date().getFullYear()} Velocity. All rights reserved.</div>
       </div>
 
       <div className={classes.main}>
-        <div className={classes.formBox}>{children}</div>
+        <div className={classes.formBox}>
+          <div className={classes.formGlow} aria-hidden="true" />
+          {children}
+        </div>
       </div>
     </div>
   );

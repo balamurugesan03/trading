@@ -1,3 +1,4 @@
+
 // One-time bootstrap: creates the root super admin, who also acts as the
 // top-of-chain sponsor since registration always requires an active sponsor code.
 // Run with: node src/scripts/seedAdmin.js

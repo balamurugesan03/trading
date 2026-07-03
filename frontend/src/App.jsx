@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import CardTilt from './components/CardTilt';
 import CustomerLayout from './layouts/CustomerLayout';
 import AdminLayout from './layouts/AdminLayout';
 
@@ -31,6 +32,7 @@ import NotificationsAdminPage from './pages/admin/NotificationsAdminPage';
 function App() {
   return (
     <BrowserRouter>
+      <CardTilt />
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />

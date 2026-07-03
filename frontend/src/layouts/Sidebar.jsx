@@ -1,20 +1,19 @@
 import { ScrollArea, ActionIcon, Tooltip } from '@mantine/core';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IconLogout } from '@tabler/icons-react';
+import logoMark from '../assets/logo-mark.png';
 import classes from './Sidebar.module.css';
 
-export default function Sidebar({ brandTitle, brandSubtitle, brandIcon: BrandIcon, groups, user, onLogout }) {
+export default function Sidebar({ brandSubtitle, groups, user, onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
 
   return (
     <div className={classes.navbar}>
       <div className={classes.brand}>
-        <div className={classes.brandIcon}>
-          <BrandIcon size={19} stroke={1.75} />
-        </div>
+        <img src={logoMark} alt="Velocity" className={classes.brandMark} />
         <div>
-          <div className={classes.brandText}>{brandTitle}</div>
+          <div className={classes.brandText}>Velocity</div>
           <div className={classes.brandSub}>{brandSubtitle}</div>
         </div>
       </div>
