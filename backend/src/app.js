@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const authRoutes = require('./routes/authRoutes');
 const depositRoutes = require('./routes/depositRoutes');
@@ -46,7 +47,27 @@ app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/incentives', incentiveRoutes);
 
-app.use((req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
+app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 app.use(errorHandler);
+
+// Serve the marketing site (website/) at "/" and the built React app (frontend/dist)
+// for every other route, so `node server.js` alone can serve everything in production
+// without a separate nginx/static-hosting setup.
+const websiteDir = path.join(__dirname, '../../website');
+const frontendDistDir = path.join(__dirname, '../../frontend/dist');
+
+app.use(express.static(websiteDir, { index: false }));
+app.get('/', (req, res) => res.sendFile(path.join(websiteDir, 'index.html')));
+
+app.use(express.static(frontendDistDir, { index: false }));
+app.get('*', (req, res) => {
+  const indexPath = path.join(frontendDistDir, 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    return res
+      .status(503)
+      .send('Frontend build not found. Run "npm run build" in the frontend folder first.');
+  }
+  res.sendFile(indexPath);
+});
 
 module.exports = app;

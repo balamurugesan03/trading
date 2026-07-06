@@ -38,6 +38,7 @@ document.querySelectorAll('.coin3d-edge').forEach((edge) => {
   }
 });
 
+
 // ---------- Loader ----------
 window.addEventListener('load', () => {
   gsap.to('#loader', {
