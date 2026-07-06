@@ -15,6 +15,12 @@ function isSameDay(a, b) {
 // that has passed its 24h start delay and hasn't already been credited today,
 // then caps/closes the investment once totalReturned reaches capAmount.
 async function runDailyRoi() {
+  const settings = await incomeService.getSettings();
+  if (!settings.roiDistributionEnabled) {
+    console.warn('ROI distribution is disabled in settings - skipping ROI run');
+    return { credited: 0, skipped: true };
+  }
+
   const now = new Date();
   const rate = await RoiRate.findOne({ date: todayKey(now) });
   if (!rate) {

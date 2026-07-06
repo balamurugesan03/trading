@@ -55,6 +55,8 @@ async function getDirectBusiness(userId) {
 // once the level-1 sponsor of that branch has generated the qualification business.
 async function distributeLevelIncome(investment, roiAmount) {
   const settings = await getSettings();
+  if (!settings.levelDistributionEnabled) return;
+
   const user = await User.findById(investment.user);
   const uplineIds = user.uplineChain.slice(0, 5);
 

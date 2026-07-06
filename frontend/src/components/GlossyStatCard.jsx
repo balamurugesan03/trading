@@ -1,8 +1,8 @@
 import { useRef } from 'react';
-import { Card, Group, Text, Title } from '@mantine/core';
+import { Card, Group, Text, Title, Button } from '@mantine/core';
 import classes from './GlossyStatCard.module.css';
 
-export default function GlossyStatCard({ label, value, color = 'blue', icon: Icon }) {
+export default function GlossyStatCard({ label, value, color = 'blue', icon: Icon, onView }) {
   const colorClass = classes[color] || classes.blue;
   const ref = useRef(null);
 
@@ -39,6 +39,18 @@ export default function GlossyStatCard({ label, value, color = 'blue', icon: Ico
           <Title order={3} className={classes.value} mt={4}>
             {value}
           </Title>
+          {onView && (
+            <Button
+              size="compact-xs"
+              variant="white"
+              color={color}
+              mt={8}
+              onClick={onView}
+              style={{ position: 'relative', zIndex: 2 }}
+            >
+              View
+            </Button>
+          )}
         </div>
         {Icon && (
           <div className={classes.iconBox}>

@@ -16,6 +16,9 @@ const settingSchema = new Schema(
     monthlyIncentiveMinBusiness: { type: Number, default: 1000 },
     monthlyIncentivePercentage: { type: Number, default: 2 },
     companyWalletAddress: { type: String, default: '' },
+    roiDistributionEnabled: { type: Boolean, default: true },
+    levelDistributionEnabled: { type: Boolean, default: true },
+    incentiveDistributionEnabled: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

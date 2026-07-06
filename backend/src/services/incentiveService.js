@@ -21,6 +21,11 @@ function monthRange(key) {
 // entire incentive wallet into the withdrawal wallet and resets it.
 async function runMonthlyIncentiveCycle(key = monthKey(new Date(Date.now() - 24 * 60 * 60 * 1000))) {
   const settings = await getSettings();
+  if (!settings.incentiveDistributionEnabled) {
+    console.warn('Monthly incentive distribution is disabled in settings - skipping cycle');
+    return { creditedCount: 0, transferredWallets: 0, skipped: true };
+  }
+
   const { start, end } = monthRange(key);
   const users = await User.find({ status: 'active' });
 

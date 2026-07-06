@@ -18,6 +18,9 @@ const userSchema = new Schema(
       enum: ['pending_activation', 'active', 'suspended'],
       default: 'pending_activation',
     },
+    // Status the account had before being blocked, so unblocking restores it instead of
+    // always forcing 'active' (which would wrongly skip pending_activation).
+    previousStatus: { type: String, enum: ['pending_activation', 'active'], default: null },
     activatedAt: { type: Date, default: null },
 
     kycStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },

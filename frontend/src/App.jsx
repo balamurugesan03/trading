@@ -15,6 +15,7 @@ import WithdrawPage from './pages/customer/WithdrawPage';
 import WalletPage from './pages/customer/WalletPage';
 import TeamPage from './pages/customer/TeamPage';
 import KycPage from './pages/customer/KycPage';
+import ProfilePage from './pages/customer/ProfilePage';
 
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import UsersPage from './pages/admin/UsersPage';
@@ -46,6 +47,7 @@ function App() {
               <Route path="/wallet" element={<WalletPage />} />
               <Route path="/team" element={<TeamPage />} />
               <Route path="/kyc" element={<KycPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
 

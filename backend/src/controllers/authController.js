@@ -71,6 +71,7 @@ const login = catchAsync(async (req, res) => {
 });
 
 const me = catchAsync(async (req, res) => {
+  await req.user.populate('sponsor', 'name email referralCode');
   res.json({ success: true, user: sanitize(req.user) });
 });
 

@@ -10,6 +10,7 @@ import {
   IconFileCheck,
   IconChevronDown,
   IconLogout,
+  IconUserCircle,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
 import Sidebar from './Sidebar';
@@ -23,6 +24,7 @@ const groups = [
       { to: '/wallet', label: 'Wallet', icon: IconWallet },
       { to: '/team', label: 'My Team', icon: IconUsers },
       { to: '/kyc', label: 'KYC', icon: IconFileCheck },
+      { to: '/profile', label: 'Profile', icon: IconUserCircle },
     ],
   },
 ];

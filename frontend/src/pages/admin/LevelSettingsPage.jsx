@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Title, NumberInput, Button, Stack, SimpleGrid, Text } from '@mantine/core';
+import { Card, Title, NumberInput, Button, Stack, SimpleGrid, Text, Switch, Group } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { getSettings, updateSettings } from '../../services/settingService';
 
@@ -27,6 +27,9 @@ export default function LevelSettingsPage() {
         investmentCapMultiplier: settings.investmentCapMultiplier,
         roiStartDelayHours: settings.roiStartDelayHours,
         companyWalletAddress: settings.companyWalletAddress,
+        roiDistributionEnabled: settings.roiDistributionEnabled,
+        levelDistributionEnabled: settings.levelDistributionEnabled,
+        incentiveDistributionEnabled: settings.incentiveDistributionEnabled,
       });
       notifications.show({ title: 'Saved', message: 'Settings updated', color: 'green' });
     } catch (err) {
@@ -42,14 +45,30 @@ export default function LevelSettingsPage() {
         <Title order={4} mb="sm">
           Referral Bonus
         </Title>
-        <NumberInput
-          label="Instant Referral Bonus %"
-          value={settings.referralBonusPercentage}
-          onChange={(v) => setSettings({ ...settings, referralBonusPercentage: v })}
-          min={0}
-          max={100}
-          w={250}
-        />
+        <Text size="sm" c="dimmed" mb="xs">
+          Instant bonus paid to the direct sponsor when a deposit is approved. Default is 5%.
+        </Text>
+        <Group align="flex-end">
+          <NumberInput
+            label="Instant Referral Bonus %"
+            value={settings.referralBonusPercentage}
+            onChange={(v) => setSettings({ ...settings, referralBonusPercentage: v })}
+            min={0}
+            max={100}
+            w={200}
+          />
+          <Button.Group>
+            {[5, 10, 15].map((pct) => (
+              <Button
+                key={pct}
+                variant={settings.referralBonusPercentage === pct ? 'filled' : 'default'}
+                onClick={() => setSettings({ ...settings, referralBonusPercentage: pct })}
+              >
+                {pct}%
+              </Button>
+            ))}
+          </Button.Group>
+        </Group>
       </Card>
 
       <Card withBorder radius="md" p="md">
@@ -104,6 +123,32 @@ export default function LevelSettingsPage() {
             min={0}
           />
         </SimpleGrid>
+      </Card>
+
+      <Card withBorder radius="md" p="md">
+        <Title order={4} mb="sm">
+          Distribution Controls
+        </Title>
+        <Text size="sm" c="dimmed" mb="sm">
+          Temporarily pause a payout category without stopping the rest of the platform.
+        </Text>
+        <Group>
+          <Switch
+            label="ROI Distribution"
+            checked={settings.roiDistributionEnabled}
+            onChange={(e) => setSettings({ ...settings, roiDistributionEnabled: e.currentTarget.checked })}
+          />
+          <Switch
+            label="Level Income Distribution"
+            checked={settings.levelDistributionEnabled}
+            onChange={(e) => setSettings({ ...settings, levelDistributionEnabled: e.currentTarget.checked })}
+          />
+          <Switch
+            label="Monthly Incentive Distribution"
+            checked={settings.incentiveDistributionEnabled}
+            onChange={(e) => setSettings({ ...settings, incentiveDistributionEnabled: e.currentTarget.checked })}
+          />
+        </Group>
       </Card>
 
       <Button onClick={handleSave} w={200}>

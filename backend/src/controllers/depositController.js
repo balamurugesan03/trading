@@ -5,18 +5,23 @@ const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const incomeService = require('../services/incomeService');
+const walletService = require('../services/walletService');
+const { DEPOSIT_PACKAGE_AMOUNTS } = require('../constants/depositAmounts');
 
 const createDeposit = catchAsync(async (req, res) => {
-  const { packageId, amount, txReference } = req.body;
-  if (!packageId || !amount || !txReference || !req.file) {
-    throw new ApiError(400, 'Package, amount, transaction reference and screenshot are required');
+  const { txReference } = req.body;
+  const amount = Number(req.body.amount);
+  if (!amount || !txReference || !req.file) {
+    throw new ApiError(400, 'Package amount, transaction reference and screenshot are required');
+  }
+  if (!DEPOSIT_PACKAGE_AMOUNTS.includes(amount)) {
+    throw new ApiError(400, `Amount must be one of the fixed package amounts: ${DEPOSIT_PACKAGE_AMOUNTS.join(', ')}`);
   }
 
-  const pkg = await Package.findById(packageId);
-  if (!pkg || !pkg.active) throw new ApiError(400, 'Invalid package');
-  if (amount < pkg.minAmount || amount > pkg.maxAmount) {
-    throw new ApiError(400, `Amount must be between ${pkg.minAmount} and ${pkg.maxAmount}`);
-  }
+  // Package is derived from the amount server-side (never trust a client-supplied packageId)
+  // so the request the admin sees always matches the exact package the customer selected.
+  const pkg = await Package.findOne({ active: true, minAmount: { $lte: amount }, maxAmount: { $gte: amount } });
+  if (!pkg) throw new ApiError(400, 'No active package is configured for this amount. Please contact admin.');
 
   const settings = await incomeService.getSettings();
 
@@ -57,6 +62,16 @@ const approveDeposit = catchAsync(async (req, res) => {
   deposit.reviewedBy = req.user._id;
   deposit.reviewedAt = now;
   await deposit.save();
+
+  // Admin only verifies and approves — the exact package amount is credited automatically.
+  await walletService.credit(
+    deposit.user,
+    'deposit',
+    deposit.amount,
+    'deposit_approved',
+    deposit._id,
+    `Deposit of $${deposit.amount} approved`
+  );
 
   const investment = await Investment.create({
     user: deposit.user,
