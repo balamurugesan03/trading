@@ -1,7 +1,7 @@
 // Point these at your deployed app/API before going live.
-const APP_LOGIN_URL = 'http://localhost:5173/login';
-const APP_REGISTER_URL = 'http://localhost:5173/register';
-const API_BASE_URL = 'http://localhost:5000/api';
+const APP_LOGIN_URL = 'https://velocityx.info/login';
+const APP_REGISTER_URL = 'https://velocityx.info/register';
+const API_BASE_URL = 'https://velocityx.info/api';
 
 document.querySelectorAll('[data-login-link]').forEach((el) => (el.href = APP_LOGIN_URL));
 document.querySelectorAll('[data-register-link]').forEach((el) => (el.href = APP_REGISTER_URL));
