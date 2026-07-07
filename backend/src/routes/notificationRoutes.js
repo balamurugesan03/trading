@@ -4,6 +4,7 @@ const {
   markRead,
   createNotification,
   listNotifications,
+  toggleActive,
 } = require('../controllers/notificationController');
 const { protect, restrictTo } = require('../middleware/auth');
 
@@ -13,5 +14,6 @@ router.get('/my', protect, myNotifications);
 router.patch('/:id/read', protect, markRead);
 router.get('/', protect, restrictTo('super_admin'), listNotifications);
 router.post('/', protect, restrictTo('super_admin'), createNotification);
+router.patch('/:id/toggle', protect, restrictTo('super_admin'), toggleActive);
 
 module.exports = router;

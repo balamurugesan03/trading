@@ -32,6 +32,10 @@ const summary = catchAsync(async (req, res) => {
   const activeInvestments = investments.filter((i) => i.status === 'active');
   const totalInvested = investments.reduce((sum, i) => sum + i.amount, 0);
   const totalRoiEarned = investments.reduce((sum, i) => sum + i.totalReturned, 0);
+  // Energy bar: how much of the total ROI cap (each investment's admin-configured
+  // capAmount, not necessarily a fixed 2x) has been earned so far across all investments.
+  const totalCapAmount = investments.reduce((sum, i) => sum + i.capAmount, 0);
+  const energyProgress = totalCapAmount > 0 ? Math.min(100, (totalRoiEarned / totalCapAmount) * 100) : 0;
 
   res.json({
     success: true,
@@ -45,6 +49,7 @@ const summary = catchAsync(async (req, res) => {
       totalInvested,
       activePackages: activeInvestments.length,
       totalRoiEarned,
+      energyProgress,
       referralIncome: referralTotal,
       levelIncome: levelTotal,
       monthlyIncentiveIncome: incentiveTotal,

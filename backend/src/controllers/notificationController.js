@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 
 const myNotifications = catchAsync(async (req, res) => {
   const notifications = await Notification.find({
+    active: true,
     $or: [{ user: req.user._id }, { user: null }],
   }).sort('-createdAt');
   res.json({ success: true, notifications });
@@ -27,4 +28,12 @@ const listNotifications = catchAsync(async (req, res) => {
   res.json({ success: true, notifications });
 });
 
-module.exports = { myNotifications, markRead, createNotification, listNotifications };
+const toggleActive = catchAsync(async (req, res) => {
+  const notification = await Notification.findById(req.params.id);
+  if (!notification) throw new ApiError(404, 'Notification not found');
+  notification.active = !notification.active;
+  await notification.save();
+  res.json({ success: true, notification });
+});
+
+module.exports = { myNotifications, markRead, createNotification, listNotifications, toggleActive };

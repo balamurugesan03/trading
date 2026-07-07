@@ -31,6 +31,7 @@ import { myDeposits } from '../../services/depositService';
 import { myTransactions } from '../../services/walletService';
 import GlossyStatCard from '../../components/GlossyStatCard';
 import UserProfileCard from '../../components/UserProfileCard';
+import NotificationTicker from '../../components/NotificationTicker';
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState(null);
@@ -173,11 +174,13 @@ export default function DashboardPage() {
         </Badge>
       </Group>
 
+      <NotificationTicker />
+
       <UserProfileCard
         userId={summary.referralCode}
         name={summary.name}
         invitedBy={summary.invitedBy}
-        progress={95.4}
+        progress={summary.energyProgress}
       />
 
       <Card withBorder radius="md" p="md">
