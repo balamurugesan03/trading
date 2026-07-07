@@ -13,6 +13,7 @@ export default function WalletManagementPage() {
     <Stack>
       <Title order={2}>Wallet Management</Title>
       <Card withBorder radius="md" p="md">
+        <Table.ScrollContainer minWidth={900}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -56,6 +57,7 @@ export default function WalletManagementPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
     </Stack>
   );

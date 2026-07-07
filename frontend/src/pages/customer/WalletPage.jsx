@@ -119,6 +119,7 @@ export default function WalletPage() {
             w={200}
           />
         </Group>
+        <Table.ScrollContainer minWidth={700}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -152,6 +153,7 @@ export default function WalletPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
     </Stack>
   );

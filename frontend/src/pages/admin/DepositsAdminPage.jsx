@@ -45,6 +45,7 @@ export default function DepositsAdminPage() {
         <Group mb="sm">
           <Select value={status} onChange={setStatus} data={['pending', 'approved', 'rejected']} clearable w={200} />
         </Group>
+        <Table.ScrollContainer minWidth={700}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -106,6 +107,7 @@ export default function DepositsAdminPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal

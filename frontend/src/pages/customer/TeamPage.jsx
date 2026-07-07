@@ -92,6 +92,7 @@ export default function TeamPage() {
                 w={160}
               />
             </Group>
+            <Table.ScrollContainer minWidth={800}>
             <Table striped highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
@@ -125,11 +126,13 @@ export default function TeamPage() {
                 {filteredMembers.length === 0 && <EmptyRow colSpan={7} text="No team members yet" />}
               </Table.Tbody>
             </Table>
+            </Table.ScrollContainer>
           </Card>
         </Tabs.Panel>
 
         <Tabs.Panel value="level" pt="md">
           <Card withBorder radius="md" p="md">
+            <Table.ScrollContainer minWidth={700}>
             <Table striped highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
@@ -159,11 +162,13 @@ export default function TeamPage() {
                 {levelIncomeRecords.length === 0 && <EmptyRow colSpan={6} text="No level income yet" />}
               </Table.Tbody>
             </Table>
+            </Table.ScrollContainer>
           </Card>
         </Tabs.Panel>
 
         <Tabs.Panel value="referral" pt="md">
           <Card withBorder radius="md" p="md">
+            <Table.ScrollContainer minWidth={700}>
             <Table striped highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
@@ -187,11 +192,13 @@ export default function TeamPage() {
                 {referralRecords.length === 0 && <EmptyRow colSpan={5} text="No referral income yet" />}
               </Table.Tbody>
             </Table>
+            </Table.ScrollContainer>
           </Card>
         </Tabs.Panel>
 
         <Tabs.Panel value="incentive" pt="md">
           <Card withBorder radius="md" p="md">
+            <Table.ScrollContainer minWidth={600}>
             <Table striped highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
@@ -217,6 +224,7 @@ export default function TeamPage() {
                 {incentiveRecords.length === 0 && <EmptyRow colSpan={5} text="No monthly incentives yet" />}
               </Table.Tbody>
             </Table>
+            </Table.ScrollContainer>
           </Card>
         </Tabs.Panel>
       </Tabs>

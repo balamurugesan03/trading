@@ -26,6 +26,7 @@ export default function IncentivesAdminPage() {
             w={200}
           />
         </Group>
+        <Table.ScrollContainer minWidth={700}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -65,6 +66,7 @@ export default function IncentivesAdminPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
     </Stack>
   );

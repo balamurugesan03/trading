@@ -51,6 +51,7 @@ export default function KycAdminPage() {
             w={200}
           />
         </Group>
+        <Table.ScrollContainer minWidth={700}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -115,6 +116,7 @@ export default function KycAdminPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal

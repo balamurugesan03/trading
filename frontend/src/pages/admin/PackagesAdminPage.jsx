@@ -46,6 +46,7 @@ export default function PackagesAdminPage() {
         <Button onClick={() => setModalOpen(true)}>New Package</Button>
       </Group>
       <Card withBorder radius="md" p="md">
+        <Table.ScrollContainer minWidth={600}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -77,6 +78,7 @@ export default function PackagesAdminPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal opened={modalOpen} onClose={() => setModalOpen(false)} title="New Package">

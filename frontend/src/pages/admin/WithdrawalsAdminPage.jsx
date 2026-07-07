@@ -61,6 +61,7 @@ export default function WithdrawalsAdminPage() {
             w={220}
           />
         </Group>
+        <Table.ScrollContainer minWidth={700}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -133,6 +134,7 @@ export default function WithdrawalsAdminPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal
