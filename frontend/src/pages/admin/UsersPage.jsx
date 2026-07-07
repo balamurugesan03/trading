@@ -1,5 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Card, Title, Table, Badge, Button, Group, TextInput, PasswordInput, Stack, Text, Modal } from '@mantine/core';
+import { useSearchParams } from 'react-router-dom';
+import {
+  Card,
+  Title,
+  Table,
+  Badge,
+  Button,
+  Group,
+  TextInput,
+  PasswordInput,
+  Select,
+  Stack,
+  Text,
+  Modal,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import {
@@ -11,8 +25,10 @@ import {
 } from '../../services/userService';
 
 export default function UsersPage() {
+  const [searchParams] = useSearchParams();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState(searchParams.get('status') || '');
   const [editModal, setEditModal] = useState({ open: false, user: null });
   const [passwordModal, setPasswordModal] = useState({ open: false, user: null });
 
@@ -25,12 +41,13 @@ export default function UsersPage() {
     },
   });
 
-  const load = () => listUsers(search ? { search } : {}).then((res) => setUsers(res.users));
+  const load = () =>
+    listUsers({ ...(search ? { search } : {}), ...(status ? { status } : {}) }).then((res) => setUsers(res.users));
 
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [status]);
 
   const handleAction = async (action, id) => {
     try {
@@ -87,7 +104,16 @@ export default function UsersPage() {
             w={350}
           />
           <Button onClick={load}>Search</Button>
+          <Select
+            value={status}
+            onChange={(v) => setStatus(v || '')}
+            data={['active', 'pending_activation', 'suspended']}
+            placeholder="All statuses"
+            clearable
+            w={200}
+          />
         </Group>
+        <Table.ScrollContainer minWidth={900}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -151,6 +177,7 @@ export default function UsersPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal

@@ -6,19 +6,28 @@ const ReferralIncome = require('../models/ReferralIncome');
 const LevelIncome = require('../models/LevelIncome');
 const MonthlyIncentive = require('../models/MonthlyIncentive');
 const Transaction = require('../models/Transaction');
+const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
+
+const TODAY_PAYOUT_SOURCES = ['roi_payout', 'level_income', 'monthly_incentive'];
 
 async function sumField(Model, match, field = '$amount') {
   const result = await Model.aggregate([{ $match: match }, { $group: { _id: null, total: { $sum: field } } }]);
   return result[0]?.total || 0;
 }
 
-// Sum of today's (UTC calendar day) wallet credits for a given payout source -
-// this is what the company needs to know they must fund/transfer out today.
-async function sumCreditedToday(source) {
+// UTC calendar day boundaries - used both to sum today's payouts and to list them.
+function todayRange() {
   const now = new Date();
   const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
   const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+  return { start, end };
+}
+
+// Sum of today's (UTC calendar day) wallet credits for a given payout source -
+// this is what the company needs to know they must fund/transfer out today.
+async function sumCreditedToday(source) {
+  const { start, end } = todayRange();
   return sumField(Transaction, { source, type: 'credit', createdAt: { $gte: start, $lt: end } });
 }
 
@@ -82,4 +91,51 @@ const overview = catchAsync(async (req, res) => {
   });
 });
 
-module.exports = { overview };
+// Admin-wide investments list (drill-down for Total Invested / Active / Closed / Total ROI Paid cards).
+const listInvestments = catchAsync(async (req, res) => {
+  const filter = {};
+  if (req.query.status) filter.status = req.query.status;
+  const investments = await Investment.find(filter)
+    .populate('user', 'name email')
+    .populate('package', 'name')
+    .sort('-createdAt')
+    .limit(500);
+  res.json({ success: true, investments });
+});
+
+// Admin-wide referral income list (drill-down for Total Referral Paid).
+const listReferralIncome = catchAsync(async (req, res) => {
+  const records = await ReferralIncome.find()
+    .populate('user', 'name email')
+    .populate('fromUser', 'name email')
+    .sort('-createdAt')
+    .limit(500);
+  res.json({ success: true, records });
+});
+
+// Admin-wide level income list (drill-down for Total Level Paid).
+const listLevelIncome = catchAsync(async (req, res) => {
+  const records = await LevelIncome.find()
+    .populate('user', 'name email')
+    .populate('fromUser', 'name email')
+    .sort('-createdAt')
+    .limit(500);
+  res.json({ success: true, records });
+});
+
+// Today's credited payout transactions (drill-down for the 4 "Today" cards).
+// ?source=roi_payout|level_income|monthly_incentive narrows to one card; omitted = all three combined.
+const listTodayTransactions = catchAsync(async (req, res) => {
+  const { start, end } = todayRange();
+  const filter = { type: 'credit', createdAt: { $gte: start, $lt: end } };
+  if (req.query.source) {
+    if (!TODAY_PAYOUT_SOURCES.includes(req.query.source)) throw new ApiError(400, 'Invalid source');
+    filter.source = req.query.source;
+  } else {
+    filter.source = { $in: TODAY_PAYOUT_SOURCES };
+  }
+  const transactions = await Transaction.find(filter).populate('user', 'name email').sort('-createdAt').limit(500);
+  res.json({ success: true, transactions });
+});
+
+module.exports = { overview, listInvestments, listReferralIncome, listLevelIncome, listTodayTransactions };
