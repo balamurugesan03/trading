@@ -26,6 +26,7 @@ const summary = catchAsync(async (req, res) => {
       User.countDocuments({ sponsor: userId }),
       Deposit.countDocuments({ user: userId }),
       Withdrawal.countDocuments({ user: userId }),
+      req.user.populate('sponsor', 'name'),
     ]);
 
   const activeInvestments = investments.filter((i) => i.status === 'active');
@@ -35,8 +36,10 @@ const summary = catchAsync(async (req, res) => {
   res.json({
     success: true,
     summary: {
+      name: req.user.name,
       referralCode: req.user.referralCode,
       referralLink: `${process.env.CLIENT_URL}/register?ref=${req.user.referralCode}`,
+      invitedBy: req.user.sponsor?.name || null,
       kycStatus: req.user.kycStatus,
       accountStatus: req.user.status,
       totalInvested,

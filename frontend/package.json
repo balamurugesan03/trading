@@ -19,6 +19,7 @@
     "@tabler/icons-react": "^3.44.0",
     "axios": "^1.18.1",
     "dayjs": "^1.11.21",
+    "framer-motion": "^12.42.2",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

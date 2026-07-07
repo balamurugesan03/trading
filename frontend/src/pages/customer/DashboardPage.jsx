@@ -30,6 +30,7 @@ import { getSummary, getReferralHistory, getLevelIncomeHistory, getIncentiveHist
 import { myDeposits } from '../../services/depositService';
 import { myTransactions } from '../../services/walletService';
 import GlossyStatCard from '../../components/GlossyStatCard';
+import UserProfileCard from '../../components/UserProfileCard';
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState(null);
@@ -171,6 +172,13 @@ export default function DashboardPage() {
           {summary.accountStatus}
         </Badge>
       </Group>
+
+      <UserProfileCard
+        userId={summary.referralCode}
+        name={summary.name}
+        invitedBy={summary.invitedBy}
+        progress={95.4}
+      />
 
       <Card withBorder radius="md" p="md">
         <Text size="sm" c="dimmed" mb={4}>

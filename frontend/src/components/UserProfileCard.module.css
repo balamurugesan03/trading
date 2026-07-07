@@ -1,0 +1,268 @@
+.card {
+  --radius: 24px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 320px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 30px 24px 26px;
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, #231a38 0%, #2b2145 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  text-align: center;
+  cursor: default;
+}
+
+/* slow-moving glass reflection */
+.sheen {
+  position: absolute;
+  top: -140%;
+  left: -60%;
+  width: 45%;
+  height: 380%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.09), transparent);
+  transform: rotate(18deg);
+  animation: sheenMove 7s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes sheenMove {
+  0%,
+  100% {
+    left: -60%;
+  }
+  50% {
+    left: 130%;
+  }
+}
+
+.avatarWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  width: 110px;
+  height: 110px;
+  z-index: 2;
+}
+
+.avatarGlow {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.55), transparent 70%);
+  filter: blur(12px);
+  z-index: 0;
+}
+
+.avatar {
+  position: relative;
+  z-index: 1;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #8b5cf6, #22d3ee);
+  color: #fff;
+  font-size: 34px;
+  font-weight: 700;
+  box-shadow:
+    0 0 22px rgba(139, 92, 246, 0.55),
+    0 0 40px rgba(34, 211, 238, 0.25);
+}
+
+.idLabel {
+  position: relative;
+  z-index: 2;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 8px;
+}
+
+.greeting {
+  position: relative;
+  z-index: 2;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+.invitedBy {
+  position: relative;
+  z-index: 2;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9c7dff;
+  margin-bottom: 22px;
+}
+
+.divider {
+  position: relative;
+  z-index: 2;
+  height: 1px;
+  margin: 0 0 20px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+}
+
+.statsRow {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-bottom: 24px;
+}
+
+.statCol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.statDivider {
+  width: 1px;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+}
+
+.statLabel,
+.statLabelWhite {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statLabel {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.statLabelWhite {
+  color: #ffffff;
+}
+
+.rankValue {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #65a9ff, #00d5ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rankGlow 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes rankGlow {
+  0% {
+    filter: drop-shadow(0 0 4px rgba(101, 169, 255, 0.3));
+  }
+  100% {
+    filter: drop-shadow(0 0 16px rgba(0, 213, 255, 0.8));
+  }
+}
+
+.energyValue {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  background: linear-gradient(90deg, #ffb347, #ff8a00);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.progressTrack {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.progressFill {
+  position: relative;
+  height: 100%;
+  min-width: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(90deg, #7a3cff, #5669ff, #27c8f6);
+  background-size: 220% 100%;
+  animation: gradientShift 3.2s linear infinite;
+  box-shadow:
+    0 0 10px rgba(122, 60, 255, 0.65),
+    0 0 18px rgba(39, 200, 246, 0.5);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.progressShine {
+  position: absolute;
+  top: 0;
+  left: -40%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  animation: progressShineMove 2.4s ease-in-out infinite;
+}
+
+@keyframes progressShineMove {
+  0% {
+    left: -40%;
+  }
+  100% {
+    left: 140%;
+  }
+}
+
+.progressLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  z-index: 3;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen,
+  .rankValue,
+  .progressFill,
+  .progressShine {
+    animation: none;
+  }
+}
