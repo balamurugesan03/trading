@@ -16,6 +16,7 @@ import WalletPage from './pages/customer/WalletPage';
 import TeamPage from './pages/customer/TeamPage';
 import KycPage from './pages/customer/KycPage';
 import ProfilePage from './pages/customer/ProfilePage';
+import SupportPage from './pages/customer/SupportPage';
 
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import UsersPage from './pages/admin/UsersPage';
@@ -29,6 +30,7 @@ import IncentivesAdminPage from './pages/admin/IncentivesAdminPage';
 import WalletManagementPage from './pages/admin/WalletManagementPage';
 import ReportsPage from './pages/admin/ReportsPage';
 import NotificationsAdminPage from './pages/admin/NotificationsAdminPage';
+import SupportAdminPage from './pages/admin/SupportAdminPage';
 
 function App() {
   return (
@@ -48,6 +50,7 @@ function App() {
               <Route path="/team" element={<TeamPage />} />
               <Route path="/kyc" element={<KycPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/support" element={<SupportPage />} />
             </Route>
           </Route>
 
@@ -65,6 +68,7 @@ function App() {
               <Route path="/admin/wallets" element={<WalletManagementPage />} />
               <Route path="/admin/reports" element={<ReportsPage />} />
               <Route path="/admin/notifications" element={<NotificationsAdminPage />} />
+              <Route path="/admin/support" element={<SupportAdminPage />} />
             </Route>
           </Route>
 

@@ -1,4 +1,4 @@
-import { ScrollArea, ActionIcon, Tooltip } from '@mantine/core';
+import { ScrollArea, ActionIcon, Tooltip, Badge } from '@mantine/core';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { IconLogout } from '@tabler/icons-react';
 import logoMark from '../assets/logo-mark.png';
@@ -36,7 +36,12 @@ export default function Sidebar({ brandSubtitle, groups, user, onLogout, onNavig
                   onClick={() => handleNavigate(link.to)}
                 >
                   <link.icon size={17} stroke={1.75} />
-                  <span>{link.label}</span>
+                  <span style={{ flex: 1 }}>{link.label}</span>
+                  {!!link.badge && (
+                    <Badge size="sm" color="red" circle>
+                      {link.badge}
+                    </Badge>
+                  )}
                 </div>
               );
             })}

@@ -15,6 +15,7 @@ const packageRoutes = require('./routes/packageRoutes');
 const userRoutes = require('./routes/userRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const incentiveRoutes = require('./routes/incentiveRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -46,6 +47,7 @@ app.use('/api/packages', packageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/incentives', incentiveRoutes);
+app.use('/api/support', supportRoutes);
 
 app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
 app.use(errorHandler);

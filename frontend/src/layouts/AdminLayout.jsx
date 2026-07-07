@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { AppShell, Burger, Group, Menu, UnstyledButton, ActionIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -14,49 +15,58 @@ import {
   IconWallet,
   IconReportAnalytics,
   IconBell,
+  IconHeadset,
   IconChevronDown,
   IconLogout,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
+import { unreadCount, SUPPORT_READ_EVENT } from '../services/supportService';
 import Sidebar from './Sidebar';
 
-const groups = [
-  {
-    label: 'Overview',
-    links: [
-      { to: '/admin', label: 'Dashboard', icon: IconDashboard },
-      { to: '/admin/reports', label: 'Reports', icon: IconReportAnalytics },
-    ],
-  },
-  {
-    label: 'People',
-    links: [
-      { to: '/admin/users', label: 'Users', icon: IconUsers },
-      { to: '/admin/kyc', label: 'KYC', icon: IconFileCheck },
-    ],
-  },
-  {
-    label: 'Finance',
-    links: [
-      { to: '/admin/deposits', label: 'Deposits', icon: IconCash },
-      { to: '/admin/withdrawals', label: 'Withdrawals', icon: IconArrowDownCircle },
-      { to: '/admin/wallets', label: 'Wallet Management', icon: IconWallet },
-      { to: '/admin/incentives', label: 'Monthly Incentives', icon: IconAward },
-    ],
-  },
-  {
-    label: 'Configuration',
-    links: [
-      { to: '/admin/packages', label: 'Packages', icon: IconBox },
-      { to: '/admin/roi-settings', label: 'ROI Settings', icon: IconPercentage },
-      { to: '/admin/level-settings', label: 'Referral & Level Settings', icon: IconGitBranch },
-    ],
-  },
-  {
-    label: 'Communication',
-    links: [{ to: '/admin/notifications', label: 'Notifications', icon: IconBell }],
-  },
-];
+const UNREAD_POLL_INTERVAL = 15000;
+
+function buildGroups(supportUnread) {
+  return [
+    {
+      label: 'Overview',
+      links: [
+        { to: '/admin', label: 'Dashboard', icon: IconDashboard },
+        { to: '/admin/reports', label: 'Reports', icon: IconReportAnalytics },
+      ],
+    },
+    {
+      label: 'People',
+      links: [
+        { to: '/admin/users', label: 'Users', icon: IconUsers },
+        { to: '/admin/kyc', label: 'KYC', icon: IconFileCheck },
+      ],
+    },
+    {
+      label: 'Finance',
+      links: [
+        { to: '/admin/deposits', label: 'Deposits', icon: IconCash },
+        { to: '/admin/withdrawals', label: 'Withdrawals', icon: IconArrowDownCircle },
+        { to: '/admin/wallets', label: 'Wallet Management', icon: IconWallet },
+        { to: '/admin/incentives', label: 'Monthly Incentives', icon: IconAward },
+      ],
+    },
+    {
+      label: 'Configuration',
+      links: [
+        { to: '/admin/packages', label: 'Packages', icon: IconBox },
+        { to: '/admin/roi-settings', label: 'ROI Settings', icon: IconPercentage },
+        { to: '/admin/level-settings', label: 'Referral & Level Settings', icon: IconGitBranch },
+      ],
+    },
+    {
+      label: 'Communication',
+      links: [
+        { to: '/admin/notifications', label: 'Notifications', icon: IconBell },
+        { to: '/admin/support', label: 'Customer Support', icon: IconHeadset, badge: supportUnread },
+      ],
+    },
+  ];
+}
 
 function getInitials(name) {
   if (!name) return '?';
@@ -72,6 +82,18 @@ export default function AdminLayout() {
   const [opened, { toggle, close }] = useDisclosure();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [supportUnread, setSupportUnread] = useState(0);
+
+  useEffect(() => {
+    const load = () => unreadCount().then((res) => setSupportUnread(res.count)).catch(() => {});
+    load();
+    const interval = setInterval(load, UNREAD_POLL_INTERVAL);
+    window.addEventListener(SUPPORT_READ_EVENT, load);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener(SUPPORT_READ_EVENT, load);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -136,7 +158,7 @@ export default function AdminLayout() {
       <AppShell.Navbar p={0} style={{ border: 'none', background: '#050505' }}>
         <Sidebar
           brandSubtitle="Admin Panel"
-          groups={groups}
+          groups={buildGroups(supportUnread)}
           user={{ initials: getInitials(user?.name), name: user?.name, role: user?.role }}
           onLogout={handleLogout}
           onNavigate={close}

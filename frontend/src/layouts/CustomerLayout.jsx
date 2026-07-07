@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { AppShell, Burger, Group, Badge, Menu, UnstyledButton } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -11,23 +12,30 @@ import {
   IconChevronDown,
   IconLogout,
   IconUserCircle,
+  IconHeadset,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
+import { myUnreadCount, SUPPORT_READ_EVENT } from '../services/supportService';
 import Sidebar from './Sidebar';
 
-const groups = [
-  {
-    links: [
-      { to: '/', label: 'Dashboard', icon: IconDashboard },
-      { to: '/deposit', label: 'Deposit', icon: IconCash },
-      { to: '/withdraw', label: 'Withdraw', icon: IconArrowDownCircle },
-      { to: '/wallet', label: 'Wallet', icon: IconWallet },
-      { to: '/team', label: 'My Team', icon: IconUsers },
-      { to: '/kyc', label: 'KYC', icon: IconFileCheck },
-      { to: '/profile', label: 'Profile', icon: IconUserCircle },
-    ],
-  },
-];
+const UNREAD_POLL_INTERVAL = 15000;
+
+function buildGroups(supportUnread) {
+  return [
+    {
+      links: [
+        { to: '/', label: 'Dashboard', icon: IconDashboard },
+        { to: '/deposit', label: 'Deposit', icon: IconCash },
+        { to: '/withdraw', label: 'Withdraw', icon: IconArrowDownCircle },
+        { to: '/wallet', label: 'Wallet', icon: IconWallet },
+        { to: '/team', label: 'My Team', icon: IconUsers },
+        { to: '/kyc', label: 'KYC', icon: IconFileCheck },
+        { to: '/profile', label: 'Profile', icon: IconUserCircle },
+        { to: '/support', label: 'Support', icon: IconHeadset, badge: supportUnread },
+      ],
+    },
+  ];
+}
 
 function getInitials(name) {
   if (!name) return '?';
@@ -43,6 +51,18 @@ export default function CustomerLayout() {
   const [opened, { toggle, close }] = useDisclosure();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [supportUnread, setSupportUnread] = useState(0);
+
+  useEffect(() => {
+    const load = () => myUnreadCount().then((res) => setSupportUnread(res.count)).catch(() => {});
+    load();
+    const interval = setInterval(load, UNREAD_POLL_INTERVAL);
+    window.addEventListener(SUPPORT_READ_EVENT, load);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener(SUPPORT_READ_EVENT, load);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -58,8 +78,9 @@ export default function CustomerLayout() {
       <AppShell.Header
         style={{
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'rgba(10, 10, 10, 0.72)',
+          background: 'linear-gradient(180deg, rgba(14, 15, 22, 0.82), rgba(10, 10, 12, 0.72))',
           backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
         }}
       >
         <Group h="100%" px="md" justify="space-between">
@@ -107,7 +128,7 @@ export default function CustomerLayout() {
       <AppShell.Navbar p={0} style={{ border: 'none', background: '#050505' }}>
         <Sidebar
           brandSubtitle="Investment Platform"
-          groups={groups}
+          groups={buildGroups(supportUnread)}
           user={{ initials: getInitials(user?.name), name: user?.name, role: user?.role }}
           onLogout={handleLogout}
           onNavigate={close}
@@ -116,8 +137,16 @@ export default function CustomerLayout() {
 
       <AppShell.Main
         style={{
-          background:
-            'radial-gradient(circle at 85% 0%, rgba(47, 125, 251, 0.08), transparent 45%), var(--mantine-color-dark-8)',
+          background: `
+            linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 100% 56px,
+            linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 56px 100%,
+            radial-gradient(1200px 680px at 100% -8%, rgba(47, 125, 251, 0.20), transparent 55%),
+            radial-gradient(950px 560px at -10% 10%, rgba(139, 92, 246, 0.15), transparent 52%),
+            radial-gradient(700px 480px at 8% 100%, rgba(255, 176, 71, 0.05), transparent 55%),
+            radial-gradient(900px 560px at 55% 120%, rgba(47, 125, 251, 0.08), transparent 60%),
+            linear-gradient(160deg, #0d0e15 0%, #08090c 45%, #050506 100%)
+          `,
+          backgroundAttachment: 'fixed',
         }}
       >
         <Outlet />
