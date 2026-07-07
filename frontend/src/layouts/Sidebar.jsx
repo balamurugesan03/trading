@@ -4,9 +4,14 @@ import { IconLogout } from '@tabler/icons-react';
 import logoMark from '../assets/logo-mark.png';
 import classes from './Sidebar.module.css';
 
-export default function Sidebar({ brandSubtitle, groups, user, onLogout }) {
+export default function Sidebar({ brandSubtitle, groups, user, onLogout, onNavigate }) {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleNavigate = (to) => {
+    navigate(to);
+    onNavigate?.();
+  };
 
   return (
     <div className={classes.navbar}>
@@ -28,7 +33,7 @@ export default function Sidebar({ brandSubtitle, groups, user, onLogout }) {
                 <div
                   key={link.to}
                   className={`${classes.navItem} ${active ? classes.navItemActive : ''}`}
-                  onClick={() => navigate(link.to)}
+                  onClick={() => handleNavigate(link.to)}
                 >
                   <link.icon size={17} stroke={1.75} />
                   <span>{link.label}</span>

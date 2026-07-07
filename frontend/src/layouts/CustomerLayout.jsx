@@ -40,7 +40,7 @@ function getInitials(name) {
 }
 
 export default function CustomerLayout() {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle, close }] = useDisclosure();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -110,6 +110,7 @@ export default function CustomerLayout() {
           groups={groups}
           user={{ initials: getInitials(user?.name), name: user?.name, role: user?.role }}
           onLogout={handleLogout}
+          onNavigate={close}
         />
       </AppShell.Navbar>
 
