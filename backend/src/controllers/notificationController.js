@@ -3,17 +3,36 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 
 const myNotifications = catchAsync(async (req, res) => {
-  const notifications = await Notification.find({
+  const filter = {
     active: true,
     $or: [{ user: req.user._id }, { user: null }],
-  }).sort('-createdAt');
+  };
+  if (req.query.category) filter.category = req.query.category;
+  const notifications = await Notification.find(filter).sort('-createdAt');
   res.json({ success: true, notifications });
+});
+
+const myUnreadCount = catchAsync(async (req, res) => {
+  const count = await Notification.countDocuments({
+    active: true,
+    read: false,
+    category: 'transactional',
+    user: req.user._id,
+  });
+  res.json({ success: true, count });
 });
 
 const markRead = catchAsync(async (req, res) => {
   const notification = await Notification.findByIdAndUpdate(req.params.id, { read: true }, { new: true });
   if (!notification) throw new ApiError(404, 'Notification not found');
   res.json({ success: true, notification });
+});
+
+const markAllRead = catchAsync(async (req, res) => {
+  const filter = { user: req.user._id, read: false };
+  if (req.query.category) filter.category = req.query.category;
+  await Notification.updateMany(filter, { read: true });
+  res.json({ success: true });
 });
 
 const createNotification = catchAsync(async (req, res) => {
@@ -36,4 +55,12 @@ const toggleActive = catchAsync(async (req, res) => {
   res.json({ success: true, notification });
 });
 
-module.exports = { myNotifications, markRead, createNotification, listNotifications, toggleActive };
+module.exports = {
+  myNotifications,
+  myUnreadCount,
+  markRead,
+  markAllRead,
+  createNotification,
+  listNotifications,
+  toggleActive,
+};

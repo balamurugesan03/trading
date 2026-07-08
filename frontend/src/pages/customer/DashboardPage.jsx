@@ -32,6 +32,7 @@ import { myTransactions } from '../../services/walletService';
 import GlossyStatCard from '../../components/GlossyStatCard';
 import UserProfileCard from '../../components/UserProfileCard';
 import NotificationTicker from '../../components/NotificationTicker';
+import PayoutCutoffBanner from '../../components/PayoutCutoffBanner';
 
 export default function DashboardPage() {
   const [summary, setSummary] = useState(null);
@@ -175,6 +176,8 @@ export default function DashboardPage() {
       </Group>
 
       <NotificationTicker />
+
+      <PayoutCutoffBanner />
 
       <UserProfileCard
         userId={summary.referralCode}

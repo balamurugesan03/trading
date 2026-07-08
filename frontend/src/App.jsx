@@ -17,6 +17,7 @@ import TeamPage from './pages/customer/TeamPage';
 import KycPage from './pages/customer/KycPage';
 import ProfilePage from './pages/customer/ProfilePage';
 import SupportPage from './pages/customer/SupportPage';
+import NotificationsPage from './pages/customer/NotificationsPage';
 
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import UsersPage from './pages/admin/UsersPage';
@@ -51,6 +52,7 @@ function App() {
               <Route path="/kyc" element={<KycPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/support" element={<SupportPage />} />
+              <Route path="/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 

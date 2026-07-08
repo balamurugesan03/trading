@@ -30,6 +30,7 @@ import {
 import { requestWithdrawal, verifyOtp, myWithdrawals } from '../../services/withdrawalService';
 import { myWallet } from '../../services/walletService';
 import glossy from '../../components/GlossyStatCard.module.css';
+import PayoutCutoffBanner from '../../components/PayoutCutoffBanner';
 
 const STEPS = [
   { icon: IconArrowDownCircle, text: 'Request a withdrawal with your amount and USDT wallet address' },
@@ -102,6 +103,8 @@ export default function WithdrawPage() {
         <Title order={2}>Withdraw</Title>
       </Group>
 
+      <PayoutCutoffBanner />
+
       <Card p="lg" className={`${glossy.card} ${glossy.teal}`}>
         <Group justify="space-between" align="center">
           <div>
@@ -172,12 +175,14 @@ export default function WithdrawPage() {
         <Title order={4} mb="sm">
           Withdrawal History
         </Title>
+        <Table.ScrollContainer minWidth={750}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Amount</Table.Th>
               <Table.Th>Wallet Address</Table.Th>
               <Table.Th>Status</Table.Th>
+              <Table.Th>Payout Cycle</Table.Th>
               <Table.Th>Date</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -193,20 +198,31 @@ export default function WithdrawPage() {
                         ? 'green'
                         : w.status === 'rejected'
                           ? 'red'
-                          : w.status === 'approved'
-                            ? 'teal'
-                            : 'yellow'
+                          : w.status === 'processing'
+                            ? 'blue'
+                            : w.status === 'approved'
+                              ? 'teal'
+                              : 'yellow'
                     }
                   >
                     {w.status}
                   </Badge>
+                </Table.Td>
+                <Table.Td>
+                  {w.payoutCycleDate ? (
+                    <Badge variant="light" color={w.cutoffBucket === 'after_cutoff' ? 'orange' : 'gray'}>
+                      {w.payoutCycleDate}
+                    </Badge>
+                  ) : (
+                    '-'
+                  )}
                 </Table.Td>
                 <Table.Td>{new Date(w.createdAt).toLocaleString()}</Table.Td>
               </Table.Tr>
             ))}
             {withdrawals.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={4}>
+                <Table.Td colSpan={5}>
                   <Center py="lg">
                     <Stack align="center" gap={4}>
                       <IconInbox size={28} color="var(--mantine-color-gray-5)" />
@@ -220,6 +236,7 @@ export default function WithdrawPage() {
             )}
           </Table.Tbody>
         </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal
@@ -243,7 +260,10 @@ export default function WithdrawPage() {
             placeholder="••••••"
             maxLength={6}
             value={otpModal.code}
-            onChange={(e) => setOtpModal((prev) => ({ ...prev, code: e.currentTarget.value }))}
+            onChange={(e) => {
+              const { value } = e.currentTarget;
+              setOtpModal((prev) => ({ ...prev, code: value }));
+            }}
           />
           <Button fullWidth onClick={handleVerifyOtp}>
             Verify

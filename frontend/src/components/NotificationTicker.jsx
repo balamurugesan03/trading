@@ -11,7 +11,7 @@ export default function NotificationTicker() {
 
   useEffect(() => {
     const load = () =>
-      myNotifications()
+      myNotifications('broadcast')
         .then((res) => setItems(res.notifications))
         .catch(() => {});
     load();

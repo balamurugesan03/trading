@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AppShell, Burger, Group, Badge, Menu, UnstyledButton } from '@mantine/core';
+import { AppShell, Burger, Group, Badge, Menu, UnstyledButton, ActionIcon, Indicator } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -13,9 +13,11 @@ import {
   IconLogout,
   IconUserCircle,
   IconHeadset,
+  IconBell,
 } from '@tabler/icons-react';
 import { useAuth } from '../context/AuthContext';
-import { myUnreadCount, SUPPORT_READ_EVENT } from '../services/supportService';
+import { myUnreadCount as mySupportUnreadCount, SUPPORT_READ_EVENT } from '../services/supportService';
+import { myUnreadCount as myNotificationUnreadCount, NOTIFICATIONS_READ_EVENT } from '../services/notificationService';
 import Sidebar from './Sidebar';
 
 const UNREAD_POLL_INTERVAL = 15000;
@@ -52,15 +54,27 @@ export default function CustomerLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [supportUnread, setSupportUnread] = useState(0);
+  const [notifUnread, setNotifUnread] = useState(0);
 
   useEffect(() => {
-    const load = () => myUnreadCount().then((res) => setSupportUnread(res.count)).catch(() => {});
+    const load = () => mySupportUnreadCount().then((res) => setSupportUnread(res.count)).catch(() => {});
     load();
     const interval = setInterval(load, UNREAD_POLL_INTERVAL);
     window.addEventListener(SUPPORT_READ_EVENT, load);
     return () => {
       clearInterval(interval);
       window.removeEventListener(SUPPORT_READ_EVENT, load);
+    };
+  }, []);
+
+  useEffect(() => {
+    const load = () => myNotificationUnreadCount().then((res) => setNotifUnread(res.count)).catch(() => {});
+    load();
+    const interval = setInterval(load, UNREAD_POLL_INTERVAL);
+    window.addEventListener(NOTIFICATIONS_READ_EVENT, load);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener(NOTIFICATIONS_READ_EVENT, load);
     };
   }, []);
 
@@ -86,6 +100,11 @@ export default function CustomerLayout() {
         <Group h="100%" px="md" justify="space-between">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <Group gap="sm" ml="auto">
+            <Indicator color="red" size={16} label={notifUnread > 9 ? '9+' : notifUnread} disabled={notifUnread === 0}>
+              <ActionIcon variant="subtle" color="gray" size="lg" onClick={() => navigate('/notifications')}>
+                <IconBell size={18} />
+              </ActionIcon>
+            </Indicator>
             <Badge size="lg" color={user?.status === 'active' ? 'green' : 'yellow'}>
               {user?.status}
             </Badge>

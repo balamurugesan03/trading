@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Title, NumberInput, Button, Stack, SimpleGrid, Text, Switch, Group } from '@mantine/core';
+import { Card, Title, NumberInput, TextInput, Button, Stack, SimpleGrid, Text, Switch, Group } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { getSettings, updateSettings } from '../../services/settingService';
 
@@ -27,6 +27,7 @@ export default function LevelSettingsPage() {
         investmentCapMultiplier: settings.investmentCapMultiplier,
         roiStartDelayHours: settings.roiStartDelayHours,
         companyWalletAddress: settings.companyWalletAddress,
+        payoutCutoffTime: settings.payoutCutoffTime,
         roiDistributionEnabled: settings.roiDistributionEnabled,
         levelDistributionEnabled: settings.levelDistributionEnabled,
         incentiveDistributionEnabled: settings.incentiveDistributionEnabled,
@@ -102,6 +103,40 @@ export default function LevelSettingsPage() {
           onChange={(v) => setSettings({ ...settings, levelQualificationBusiness: v })}
           min={0}
           w={250}
+        />
+      </Card>
+
+      <Card withBorder radius="md" p="md">
+        <Title order={4} mb="sm">
+          Company Deposit Wallet
+        </Title>
+        <Text size="sm" c="dimmed" mb="xs">
+          USDT (BEP20 - BNB Smart Chain) address shown to customers on the Deposit page. Deposit
+          requests cannot be submitted until this is set.
+        </Text>
+        <TextInput
+          label="Company Wallet Address"
+          placeholder="0x..."
+          value={settings.companyWalletAddress}
+          onChange={(e) => setSettings({ ...settings, companyWalletAddress: e.currentTarget.value })}
+        />
+      </Card>
+
+      <Card withBorder radius="md" p="md">
+        <Title order={4} mb="sm">
+          Daily Payout Cut-Off Time
+        </Title>
+        <Text size="sm" c="dimmed" mb="xs">
+          Withdrawal requests submitted before this time (server time) are eligible for today&apos;s
+          payout cycle. Requests submitted after it are automatically queued for the next day&apos;s
+          cycle.
+        </Text>
+        <TextInput
+          label="Cut-Off Time"
+          type="time"
+          value={settings.payoutCutoffTime}
+          onChange={(e) => setSettings({ ...settings, payoutCutoffTime: e.currentTarget.value })}
+          w={200}
         />
       </Card>
 

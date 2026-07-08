@@ -1,20 +1,44 @@
 import { useEffect, useState } from 'react';
 import { Card, Title, Table, Badge, Button, Group, Select, Stack, Text, Modal, TextInput, Textarea } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { listWithdrawals, approveWithdrawal, markPaid, rejectWithdrawal } from '../../services/withdrawalService';
+import {
+  listWithdrawals,
+  approveWithdrawal,
+  startProcessing,
+  markPaid,
+  rejectWithdrawal,
+} from '../../services/withdrawalService';
+
+const STATUS_OPTIONS = [
+  { value: 'pending_otp', label: 'Pending OTP' },
+  { value: 'pending_approval', label: 'Pending Approval' },
+  { value: 'approved', label: 'Approved' },
+  { value: 'processing', label: 'Processing' },
+  { value: 'rejected', label: 'Rejected' },
+  { value: 'paid', label: 'Completed' },
+];
+
+const CUTOFF_OPTIONS = [
+  { value: 'before_cutoff', label: 'Before Cut-Off' },
+  { value: 'after_cutoff', label: 'After Cut-Off' },
+];
 
 export default function WithdrawalsAdminPage() {
   const [withdrawals, setWithdrawals] = useState([]);
   const [status, setStatus] = useState('pending_approval');
+  const [cutoffBucket, setCutoffBucket] = useState('');
   const [rejectModal, setRejectModal] = useState({ open: false, id: null, reason: '' });
   const [payModal, setPayModal] = useState({ open: false, id: null, txHash: '' });
 
-  const load = () => listWithdrawals(status ? { status } : {}).then((res) => setWithdrawals(res.withdrawals));
+  const load = () =>
+    listWithdrawals({ ...(status ? { status } : {}), ...(cutoffBucket ? { cutoffBucket } : {}) }).then((res) =>
+      setWithdrawals(res.withdrawals)
+    );
 
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status]);
+  }, [status, cutoffBucket]);
 
   const handleApprove = async (id) => {
     try {
@@ -26,10 +50,20 @@ export default function WithdrawalsAdminPage() {
     }
   };
 
+  const handleStartProcessing = async (id) => {
+    try {
+      await startProcessing(id);
+      notifications.show({ title: 'Processing', message: 'Withdrawal moved to processing', color: 'blue' });
+      load();
+    } catch (err) {
+      notifications.show({ title: 'Error', message: err.response?.data?.message, color: 'red' });
+    }
+  };
+
   const handlePay = async () => {
     try {
       await markPaid(payModal.id, payModal.txHash);
-      notifications.show({ title: 'Paid', message: 'Withdrawal marked as paid', color: 'green' });
+      notifications.show({ title: 'Completed', message: 'Withdrawal marked as paid', color: 'green' });
       setPayModal({ open: false, id: null, txHash: '' });
       load();
     } catch (err) {
@@ -55,13 +89,22 @@ export default function WithdrawalsAdminPage() {
         <Group mb="sm">
           <Select
             value={status}
-            onChange={setStatus}
-            data={['pending_otp', 'pending_approval', 'approved', 'rejected', 'paid']}
+            onChange={(v) => setStatus(v || '')}
+            data={STATUS_OPTIONS}
+            placeholder="All statuses"
+            clearable
+            w={220}
+          />
+          <Select
+            value={cutoffBucket}
+            onChange={(v) => setCutoffBucket(v || '')}
+            data={CUTOFF_OPTIONS}
+            placeholder="All payout cycles"
             clearable
             w={220}
           />
         </Group>
-        <Table.ScrollContainer minWidth={700}>
+        <Table.ScrollContainer minWidth={850}>
         <Table striped highlightOnHover>
           <Table.Thead>
             <Table.Tr>
@@ -69,6 +112,7 @@ export default function WithdrawalsAdminPage() {
               <Table.Th>Amount</Table.Th>
               <Table.Th>Wallet Address</Table.Th>
               <Table.Th>Status</Table.Th>
+              <Table.Th>Payout Cycle</Table.Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -91,13 +135,25 @@ export default function WithdrawalsAdminPage() {
                         ? 'green'
                         : w.status === 'rejected'
                           ? 'red'
-                          : w.status === 'approved'
-                            ? 'teal'
-                            : 'yellow'
+                          : w.status === 'processing'
+                            ? 'blue'
+                            : w.status === 'approved'
+                              ? 'teal'
+                              : 'yellow'
                     }
                   >
-                    {w.status}
+                    {STATUS_OPTIONS.find((o) => o.value === w.status)?.label || w.status}
                   </Badge>
+                </Table.Td>
+                <Table.Td>
+                  {w.payoutCycleDate ? (
+                    <Badge variant="light" color={w.cutoffBucket === 'after_cutoff' ? 'orange' : 'gray'}>
+                      {w.cutoffBucket === 'after_cutoff' ? 'After Cut-Off · ' : 'Before Cut-Off · '}
+                      {w.payoutCycleDate}
+                    </Badge>
+                  ) : (
+                    '-'
+                  )}
                 </Table.Td>
                 <Table.Td>
                   <Group gap="xs">
@@ -117,6 +173,11 @@ export default function WithdrawalsAdminPage() {
                       </>
                     )}
                     {w.status === 'approved' && (
+                      <Button size="xs" color="blue" onClick={() => handleStartProcessing(w._id)}>
+                        Start Processing
+                      </Button>
+                    )}
+                    {w.status === 'processing' && (
                       <Button size="xs" onClick={() => setPayModal({ open: true, id: w._id, txHash: '' })}>
                         Mark Paid
                       </Button>
@@ -127,7 +188,7 @@ export default function WithdrawalsAdminPage() {
             ))}
             {withdrawals.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={5}>
+                <Table.Td colSpan={6}>
                   <Text c="dimmed">No records found</Text>
                 </Table.Td>
               </Table.Tr>
@@ -146,7 +207,10 @@ export default function WithdrawalsAdminPage() {
           <Textarea
             label="Reason"
             value={rejectModal.reason}
-            onChange={(e) => setRejectModal((prev) => ({ ...prev, reason: e.currentTarget.value }))}
+            onChange={(e) => {
+              const { value } = e.currentTarget;
+              setRejectModal((prev) => ({ ...prev, reason: value }));
+            }}
           />
           <Button color="red" onClick={handleReject}>
             Confirm Reject
@@ -159,7 +223,10 @@ export default function WithdrawalsAdminPage() {
           <TextInput
             label="Transaction Hash"
             value={payModal.txHash}
-            onChange={(e) => setPayModal((prev) => ({ ...prev, txHash: e.currentTarget.value }))}
+            onChange={(e) => {
+              const { value } = e.currentTarget;
+              setPayModal((prev) => ({ ...prev, txHash: value }));
+            }}
           />
           <Button onClick={handlePay}>Confirm Payment</Button>
         </Stack>
