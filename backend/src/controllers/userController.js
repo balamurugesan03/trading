@@ -1,7 +1,10 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
+
+const IMPERSONATION_TTL = '1h';
 
 const listUsers = catchAsync(async (req, res) => {
   const filter = {};
@@ -82,4 +85,37 @@ const resetPassword = catchAsync(async (req, res) => {
   res.json({ success: true, user });
 });
 
-module.exports = { listUsers, getUser, suspendUser, activateUser, updateUser, resetPassword };
+// Lets a super admin open a customer's dashboard without their password, for support/
+// verification. Issues a short-lived, clearly-marked token instead of the customer's own
+// 7-day session token, and records who issued it so protect() can allow viewing even a
+// suspended account (that's often exactly the account an admin needs to inspect) while
+// every other suspended-account restriction still applies to the customer's own logins.
+const impersonateUser = catchAsync(async (req, res) => {
+  const target = await User.findById(req.params.id);
+  if (!target) throw new ApiError(404, 'User not found');
+  if (target.role === 'super_admin') {
+    throw new ApiError(400, 'Cannot log in as another admin account');
+  }
+
+  const token = jwt.sign(
+    { id: target._id, role: target.role, impersonatedBy: req.user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: IMPERSONATION_TTL }
+  );
+
+  console.log(`[impersonation] admin ${req.user.email} (${req.user._id}) logged in as ${target.email} (${target._id})`);
+
+  const sanitized = target.toObject();
+  delete sanitized.password;
+  res.json({ success: true, token, user: sanitized });
+});
+
+module.exports = {
+  listUsers,
+  getUser,
+  suspendUser,
+  activateUser,
+  updateUser,
+  resetPassword,
+  impersonateUser,
+};

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AppShell, Burger, Group, Badge, Menu, UnstyledButton, ActionIcon, Indicator } from '@mantine/core';
+import { AppShell, Burger, Group, Badge, Menu, UnstyledButton, ActionIcon, Indicator, Text, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, useNavigate } from 'react-router-dom';
 import {
@@ -51,7 +51,7 @@ function getInitials(name) {
 
 export default function CustomerLayout() {
   const [opened, { toggle, close }] = useDisclosure();
-  const { user, logout } = useAuth();
+  const { user, logout, isImpersonating, returnToAdmin } = useAuth();
   const navigate = useNavigate();
   const [supportUnread, setSupportUnread] = useState(0);
   const [notifUnread, setNotifUnread] = useState(0);
@@ -83,9 +83,14 @@ export default function CustomerLayout() {
     navigate('/login');
   };
 
+  const handleReturnToAdmin = () => {
+    returnToAdmin();
+    navigate('/admin/users');
+  };
+
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: isImpersonating ? 96 : 60 }}
       navbar={{ width: 250, breakpoint: 'sm', collapsed: { mobile: !opened } }}
       padding="md"
     >
@@ -97,7 +102,25 @@ export default function CustomerLayout() {
           WebkitBackdropFilter: 'blur(14px)',
         }}
       >
-        <Group h="100%" px="md" justify="space-between">
+        {isImpersonating && (
+          <Group
+            justify="space-between"
+            px="md"
+            py={6}
+            style={{
+              background: 'rgba(255, 161, 22, 0.16)',
+              borderBottom: '1px solid rgba(255, 161, 22, 0.4)',
+            }}
+          >
+            <Text size="xs" fw={600} c="orange">
+              Admin session: viewing as {user?.name}
+            </Text>
+            <Button size="compact-xs" color="orange" onClick={handleReturnToAdmin}>
+              Return to Admin
+            </Button>
+          </Group>
+        )}
+        <Group h={60} px="md" justify="space-between">
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <Group gap="sm" ml="auto">
             <Indicator color="red" size={16} label={notifUnread > 9 ? '9+' : notifUnread} disabled={notifUnread === 0}>

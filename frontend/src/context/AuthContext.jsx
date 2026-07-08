@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
     return stored ? JSON.parse(stored) : null;
   });
   const [loading, setLoading] = useState(true);
+  const [isImpersonating, setIsImpersonating] = useState(() => !!localStorage.getItem('adminToken'));
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -49,10 +50,41 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    setIsImpersonating(false);
     setUser(null);
   };
 
-  const value = useMemo(() => ({ user, loading, login, register, logout, setUser }), [user, loading]);
+  // Admin "Login as Customer": stashes the admin's own session so it can be restored,
+  // then swaps in the impersonation token/user without a full page reload.
+  const impersonate = (token, targetUser) => {
+    const currentToken = localStorage.getItem('token');
+    const currentUser = localStorage.getItem('user');
+    if (currentToken) localStorage.setItem('adminToken', currentToken);
+    if (currentUser) localStorage.setItem('adminUser', currentUser);
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(targetUser));
+    setIsImpersonating(true);
+    setUser(targetUser);
+  };
+
+  const returnToAdmin = () => {
+    const adminToken = localStorage.getItem('adminToken');
+    const adminUser = localStorage.getItem('adminUser');
+    if (!adminToken || !adminUser) return;
+    localStorage.setItem('token', adminToken);
+    localStorage.setItem('user', adminUser);
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminUser');
+    setIsImpersonating(false);
+    setUser(JSON.parse(adminUser));
+  };
+
+  const value = useMemo(
+    () => ({ user, loading, login, register, logout, setUser, isImpersonating, impersonate, returnToAdmin }),
+    [user, loading, isImpersonating]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Card,
   Title,
@@ -16,16 +16,21 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+import { IconLogin2 } from '@tabler/icons-react';
 import {
   listUsers,
   suspendUser,
   activateUser,
   updateUser,
   resetPassword,
+  impersonateUser,
 } from '../../services/userService';
+import { useAuth } from '../../context/AuthContext';
 
 export default function UsersPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { impersonate } = useAuth();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState(searchParams.get('status') || '');
@@ -55,6 +60,21 @@ export default function UsersPage() {
       else await activateUser(id);
       notifications.show({ title: 'Success', message: 'User updated', color: 'green' });
       load();
+    } catch (err) {
+      notifications.show({ title: 'Error', message: err.response?.data?.message, color: 'red' });
+    }
+  };
+
+  const handleImpersonate = async (user) => {
+    try {
+      const { token, user: targetUser } = await impersonateUser(user._id);
+      impersonate(token, targetUser);
+      notifications.show({
+        title: 'Viewing as customer',
+        message: `You're now viewing ${targetUser.name}'s dashboard. Use "Return to Admin" to come back.`,
+        color: 'blue',
+      });
+      navigate('/');
     } catch (err) {
       notifications.show({ title: 'Error', message: err.response?.data?.message, color: 'red' });
     }
@@ -152,6 +172,17 @@ export default function UsersPage() {
                     <Button size="xs" variant="light" onClick={() => openEdit(u)}>
                       Edit
                     </Button>
+                    {u.role !== 'super_admin' && (
+                      <Button
+                        size="xs"
+                        variant="light"
+                        color="indigo"
+                        leftSection={<IconLogin2 size={14} />}
+                        onClick={() => handleImpersonate(u)}
+                      >
+                        Login as Customer
+                      </Button>
+                    )}
                     <Button size="xs" variant="light" color="grape" onClick={() => openPasswordReset(u)}>
                       Reset Password
                     </Button>

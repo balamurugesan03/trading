@@ -6,6 +6,7 @@ const {
   activateUser,
   updateUser,
   resetPassword,
+  impersonateUser,
 } = require('../controllers/userController');
 const { protect, restrictTo } = require('../middleware/auth');
 
@@ -17,5 +18,6 @@ router.patch('/:id', protect, restrictTo('super_admin'), updateUser);
 router.patch('/:id/reset-password', protect, restrictTo('super_admin'), resetPassword);
 router.patch('/:id/suspend', protect, restrictTo('super_admin'), suspendUser);
 router.patch('/:id/activate', protect, restrictTo('super_admin'), activateUser);
+router.post('/:id/impersonate', protect, restrictTo('super_admin'), impersonateUser);
 
 module.exports = router;

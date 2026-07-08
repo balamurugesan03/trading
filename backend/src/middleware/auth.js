@@ -17,8 +17,13 @@ const protect = catchAsync(async (req, res, next) => {
   }
   const user = await User.findById(decoded.id);
   if (!user) throw new ApiError(401, 'User no longer exists');
-  if (user.status === 'suspended') throw new ApiError(403, 'Account suspended');
+  // An admin impersonating this account is often specifically checking a suspended
+  // account, so only block suspended status on the customer's own real login.
+  if (user.status === 'suspended' && !decoded.impersonatedBy) {
+    throw new ApiError(403, 'Account suspended');
+  }
   req.user = user;
+  req.impersonatedBy = decoded.impersonatedBy || null;
   next();
 });
 
