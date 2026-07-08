@@ -24,6 +24,9 @@ const createDeposit = catchAsync(async (req, res) => {
   if (!pkg) throw new ApiError(400, 'No active package is configured for this amount. Please contact admin.');
 
   const settings = await incomeService.getSettings();
+  if (!settings.companyWalletAddress) {
+    throw new ApiError(400, 'Company deposit wallet is not configured yet. Please contact admin.');
+  }
 
   const deposit = await Deposit.create({
     user: req.user._id,

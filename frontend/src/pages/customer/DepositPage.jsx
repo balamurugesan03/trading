@@ -20,7 +20,6 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { QRCodeSVG } from 'qrcode.react';
 import {
   IconUpload,
   IconCopy,
@@ -37,6 +36,7 @@ import { listPackages } from '../../services/packageService';
 import { createDeposit, myDeposits } from '../../services/depositService';
 import { getSettings } from '../../services/settingService';
 import glossy from '../../components/GlossyStatCard.module.css';
+import companyWalletQr from '../../assets/company-wallet-qr.jpeg';
 
 const STEPS = [
   { icon: IconWallet, text: 'Scan the QR code or copy the company wallet address' },
@@ -113,7 +113,7 @@ export default function DepositPage() {
         <Group justify="space-between" align="center" wrap="wrap">
           <div>
             <Text size="sm" className={glossy.label} mb={6}>
-              Company Deposit Wallet Address (USDT · TRC20)
+              Company Deposit Wallet Address (USDT · BEP20 - BNB Smart Chain)
             </Text>
             <Text ff="monospace" fw={600} size="lg" className={glossy.value} mb="sm">
               {companyWallet || 'Not configured yet'}
@@ -135,7 +135,11 @@ export default function DepositPage() {
           </div>
           {companyWallet && (
             <Center p="sm" bg="white" style={{ borderRadius: 'var(--mantine-radius-md)' }}>
-              <QRCodeSVG value={companyWallet} size={140} />
+              <img
+                src={companyWalletQr}
+                alt="Company deposit wallet QR code"
+                style={{ width: 140, height: 140, display: 'block' }}
+              />
             </Center>
           )}
         </Group>
