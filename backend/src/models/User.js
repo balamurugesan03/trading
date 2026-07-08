@@ -5,7 +5,9 @@ const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
     mobile: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    // Not unique - the same email (or mobile) can register up to MAX_ACCOUNTS_PER_EMAIL
+    // accounts (see constants/accountLimits.js). Login disambiguates by password match.
+    email: { type: String, required: true, lowercase: true, trim: true },
     password: { type: String, required: true },
     role: { type: String, enum: ['super_admin', 'customer', 'team_leader'], default: 'customer' },
 

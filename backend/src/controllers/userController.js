@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
+const { MAX_ACCOUNTS_PER_EMAIL } = require('../constants/accountLimits');
 
 const IMPERSONATION_TTL = '1h';
 
@@ -62,8 +63,10 @@ const updateUser = catchAsync(async (req, res) => {
 
   if (email !== undefined) {
     const normalizedEmail = email.toLowerCase().trim();
-    const existing = await User.findOne({ email: normalizedEmail, _id: { $ne: req.params.id } });
-    if (existing) throw new ApiError(400, 'Email is already in use by another account');
+    const existingCount = await User.countDocuments({ email: normalizedEmail, _id: { $ne: req.params.id } });
+    if (existingCount >= MAX_ACCOUNTS_PER_EMAIL) {
+      throw new ApiError(400, `Maximum ${MAX_ACCOUNTS_PER_EMAIL} accounts are allowed per email address`);
+    }
     update.email = normalizedEmail;
   }
 

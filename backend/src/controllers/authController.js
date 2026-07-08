@@ -5,6 +5,7 @@ const Wallet = require('../models/Wallet');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const generateReferralCode = require('../utils/generateReferralCode');
+const { MAX_ACCOUNTS_PER_EMAIL } = require('../constants/accountLimits');
 
 function signToken(user) {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
@@ -25,8 +26,11 @@ const register = catchAsync(async (req, res) => {
     throw new ApiError(400, 'Name, mobile, email, password and sponsor code are required');
   }
 
-  const existing = await User.findOne({ email: email.toLowerCase() });
-  if (existing) throw new ApiError(400, 'Email already registered');
+  const normalizedEmail = email.toLowerCase();
+  const existingCount = await User.countDocuments({ email: normalizedEmail });
+  if (existingCount >= MAX_ACCOUNTS_PER_EMAIL) {
+    throw new ApiError(400, `Maximum ${MAX_ACCOUNTS_PER_EMAIL} accounts are allowed per email address`);
+  }
 
   const sponsor = await User.findOne({ referralCode: sponsorCode });
   if (!sponsor) throw new ApiError(400, 'Invalid sponsor/referral code');
@@ -42,7 +46,7 @@ const register = catchAsync(async (req, res) => {
   const user = await User.create({
     name,
     mobile,
-    email: email.toLowerCase(),
+    email: normalizedEmail,
     password: hashed,
     referralCode,
     sponsor: sponsor._id,
@@ -56,18 +60,26 @@ const register = catchAsync(async (req, res) => {
   res.status(201).json({ success: true, token, user: sanitize(user) });
 });
 
+// Multiple accounts can share an email (see constants/accountLimits.js), so login
+// disambiguates by checking the password against each candidate until one matches.
 const login = catchAsync(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) throw new ApiError(400, 'Email and password are required');
 
-  const user = await User.findOne({ email: email.toLowerCase() });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new ApiError(401, 'Invalid email or password');
+  const candidates = await User.find({ email: email.toLowerCase() });
+  let matched = null;
+  for (const candidate of candidates) {
+    // eslint-disable-next-line no-await-in-loop
+    if (await bcrypt.compare(password, candidate.password)) {
+      matched = candidate;
+      break;
+    }
   }
-  if (user.status === 'suspended') throw new ApiError(403, 'Account suspended');
+  if (!matched) throw new ApiError(401, 'Invalid email or password');
+  if (matched.status === 'suspended') throw new ApiError(403, 'Account suspended');
 
-  const token = signToken(user);
-  res.json({ success: true, token, user: sanitize(user) });
+  const token = signToken(matched);
+  res.json({ success: true, token, user: sanitize(matched) });
 });
 
 const me = catchAsync(async (req, res) => {
@@ -75,4 +87,14 @@ const me = catchAsync(async (req, res) => {
   res.json({ success: true, user: sanitize(req.user) });
 });
 
-module.exports = { register, login, me };
+// Public lookup so the registration form can show "Sponsor: <name>" as the customer types
+// their sponsor's referral code, letting them confirm they're joining under the right person
+// before submitting. Only the name (and whether the account can currently sponsor) is
+// exposed - never email/mobile/etc - since this is callable without being logged in.
+const getSponsorByCode = catchAsync(async (req, res) => {
+  const sponsor = await User.findOne({ referralCode: req.params.code });
+  if (!sponsor) throw new ApiError(404, 'No account found with that sponsor/referral code');
+  res.json({ success: true, sponsor: { name: sponsor.name, active: sponsor.status === 'active' } });
+});
+
+module.exports = { register, login, me, getSponsorByCode };
