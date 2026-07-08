@@ -166,6 +166,11 @@ export default function DashboardPage() {
 
   const activeConfig = historyModal.kind ? HISTORY_CONFIG[historyModal.kind] : null;
 
+  // Built client-side (not from the backend) so it always matches wherever the app is
+  // actually being viewed from - avoids the link silently pointing at the wrong host/base
+  // path if the server-side CLIENT_URL env var and this deployment's real origin diverge.
+  const referralLink = `${window.location.origin}${import.meta.env.BASE_URL}register?ref=${summary.referralCode}`;
+
   return (
     <Stack>
       <Group justify="space-between">
@@ -191,8 +196,8 @@ export default function DashboardPage() {
           Your Referral Link
         </Text>
         <Group>
-          <Text ff="monospace">{summary.referralLink}</Text>
-          <CopyButton value={summary.referralLink}>
+          <Text ff="monospace">{referralLink}</Text>
+          <CopyButton value={referralLink}>
             {({ copied, copy }) => (
               <Button
                 size="xs"

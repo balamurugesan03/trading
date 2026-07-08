@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { TextInput, PasswordInput, Button, Stack, Text, Alert, Title, SimpleGrid } from '@mantine/core';
+import { TextInput, PasswordInput, Button, Stack, Text, Alert, Title, SimpleGrid, Group, Loader } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconUser, IconPhone, IconMail, IconLock, IconTicket, IconUserPlus } from '@tabler/icons-react';
+import { useDebouncedValue } from '@mantine/hooks';
+import { IconUser, IconPhone, IconMail, IconLock, IconTicket, IconUserPlus, IconUserCheck, IconAlertCircle } from '@tabler/icons-react';
 import { useAuth } from '../../context/AuthContext';
+import { getSponsorByCode } from '../../services/authService';
 import AuthLayout from '../../layouts/AuthLayout';
 
 export default function RegisterPage() {
@@ -12,6 +14,9 @@ export default function RegisterPage() {
   const [searchParams] = useSearchParams();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sponsor, setSponsor] = useState(null);
+  const [sponsorError, setSponsorError] = useState('');
+  const [sponsorChecking, setSponsorChecking] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -29,6 +34,37 @@ export default function RegisterPage() {
       sponsorCode: (v) => (v.trim().length > 0 ? null : 'Sponsor/referral code is required'),
     },
   });
+
+  const [debouncedSponsorCode] = useDebouncedValue(form.values.sponsorCode, 400);
+
+  useEffect(() => {
+    const code = debouncedSponsorCode.trim();
+    if (!code) {
+      setSponsor(null);
+      setSponsorError('');
+      return;
+    }
+    let cancelled = false;
+    setSponsorChecking(true);
+    getSponsorByCode(code)
+      .then((res) => {
+        if (cancelled) return;
+        setSponsor(res.sponsor);
+        setSponsorError('');
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setSponsor(null);
+        setSponsorError('No account found with that sponsor/referral code');
+      })
+      .finally(() => {
+        if (!cancelled) setSponsorChecking(false);
+      });
+    // eslint-disable-next-line consistent-return
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedSponsorCode]);
 
   const handleSubmit = async (values) => {
     setError('');
@@ -79,13 +115,33 @@ export default function RegisterPage() {
             required
             {...form.getInputProps('password')}
           />
-          <TextInput
-            label="Sponsor / Referral Code"
-            leftSection={<IconTicket size={16} />}
-            required
-            description="Provided by the person who invited you"
-            {...form.getInputProps('sponsorCode')}
-          />
+          <div>
+            <TextInput
+              label="Sponsor / Referral Code"
+              leftSection={<IconTicket size={16} />}
+              rightSection={sponsorChecking ? <Loader size={14} /> : null}
+              required
+              description="Provided by the person who invited you"
+              {...form.getInputProps('sponsorCode')}
+            />
+            {!sponsorChecking && sponsor && (
+              <Group gap={6} mt={6}>
+                <IconUserCheck size={15} color="var(--mantine-color-green-5)" />
+                <Text size="xs" c={sponsor.active ? 'green' : 'yellow'}>
+                  Sponsor: <strong>{sponsor.name}</strong>
+                  {!sponsor.active && ' — this account is not active yet and cannot refer new users'}
+                </Text>
+              </Group>
+            )}
+            {!sponsorChecking && !sponsor && sponsorError && (
+              <Group gap={6} mt={6}>
+                <IconAlertCircle size={15} color="var(--mantine-color-red-5)" />
+                <Text size="xs" c="red">
+                  {sponsorError}
+                </Text>
+              </Group>
+            )}
+          </div>
           <Button
             type="submit"
             loading={loading}

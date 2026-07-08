@@ -35,7 +35,7 @@ import SupportAdminPage from './pages/admin/SupportAdminPage';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <CardTilt />
       <AuthProvider>
         <Routes>
