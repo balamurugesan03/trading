@@ -114,7 +114,7 @@ export default function SupportPage() {
                         padding: '8px 12px',
                         borderRadius: 14,
                         background: mine
-                          ? 'linear-gradient(135deg, #2f7dfb, #62a6ff)'
+                          ? 'linear-gradient(135deg, #00d9ff, #8b5cf6)'
                           : 'rgba(255, 255, 255, 0.06)',
                         color: mine ? '#fff' : 'inherit',
                         borderBottomRightRadius: mine ? 4 : 14,

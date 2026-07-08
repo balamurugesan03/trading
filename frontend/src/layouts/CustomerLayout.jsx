@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AppShell, Burger, Group, Badge, Menu, UnstyledButton, ActionIcon, Indicator, Text, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 import {
   IconDashboard,
   IconCash,
@@ -53,8 +54,21 @@ export default function CustomerLayout() {
   const [opened, { toggle, close }] = useDisclosure();
   const { user, logout, isImpersonating, returnToAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [supportUnread, setSupportUnread] = useState(0);
   const [notifUnread, setNotifUnread] = useState(0);
+  const mainRef = useRef(null);
+
+  // Every page fades + rises in on navigation - a consistent, lightweight "premium"
+  // transition across the whole panel without needing per-page animation code.
+  useEffect(() => {
+    if (!mainRef.current) return;
+    gsap.fromTo(
+      mainRef.current,
+      { opacity: 0, y: 14 },
+      { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
+    );
+  }, [location.pathname]);
 
   useEffect(() => {
     const load = () => mySupportUnreadCount().then((res) => setSupportUnread(res.count)).catch(() => {});
@@ -140,14 +154,14 @@ export default function CustomerLayout() {
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        background: 'linear-gradient(135deg, #2f7dfb, #62a6ff)',
+                        background: 'linear-gradient(135deg, #00d9ff, #8b5cf6)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         color: '#fff',
                         fontWeight: 700,
                         fontSize: 13,
-                        boxShadow: '0 4px 12px rgba(47, 125, 251, 0.35)',
+                        boxShadow: '0 4px 12px rgba(0, 217, 255, 0.35)',
                       }}
                     >
                       {getInitials(user?.name)}
@@ -182,16 +196,18 @@ export default function CustomerLayout() {
           background: `
             linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 100% 56px,
             linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 56px 100%,
-            radial-gradient(1200px 680px at 100% -8%, rgba(47, 125, 251, 0.20), transparent 55%),
-            radial-gradient(950px 560px at -10% 10%, rgba(139, 92, 246, 0.15), transparent 52%),
-            radial-gradient(700px 480px at 8% 100%, rgba(255, 176, 71, 0.05), transparent 55%),
-            radial-gradient(900px 560px at 55% 120%, rgba(47, 125, 251, 0.08), transparent 60%),
+            radial-gradient(1200px 680px at 100% -8%, rgba(0, 217, 255, 0.20), transparent 55%),
+            radial-gradient(950px 560px at -10% 10%, rgba(139, 92, 246, 0.16), transparent 52%),
+            radial-gradient(700px 480px at 8% 100%, rgba(139, 92, 246, 0.06), transparent 55%),
+            radial-gradient(900px 560px at 55% 120%, rgba(0, 217, 255, 0.08), transparent 60%),
             linear-gradient(160deg, #0d0e15 0%, #08090c 45%, #050506 100%)
           `,
           backgroundAttachment: 'fixed',
         }}
       >
-        <Outlet />
+        <div ref={mainRef}>
+          <Outlet />
+        </div>
       </AppShell.Main>
     </AppShell>
   );

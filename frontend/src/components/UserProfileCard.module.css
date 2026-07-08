@@ -74,13 +74,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #8b5cf6, #22d3ee);
+  background: linear-gradient(135deg, #8b5cf6, #00d9ff);
   color: #fff;
   font-size: 34px;
   font-weight: 700;
   box-shadow:
     0 0 22px rgba(139, 92, 246, 0.55),
-    0 0 40px rgba(34, 211, 238, 0.25);
+    0 0 40px rgba(0, 217, 255, 0.28);
 }
 
 .idLabel {
@@ -164,7 +164,7 @@
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 0.02em;
-  background: linear-gradient(90deg, #65a9ff, #00d5ff);
+  background: linear-gradient(90deg, #5ce8ff, #00d9ff);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -173,10 +173,10 @@
 
 @keyframes rankGlow {
   0% {
-    filter: drop-shadow(0 0 4px rgba(101, 169, 255, 0.3));
+    filter: drop-shadow(0 0 4px rgba(92, 232, 255, 0.3));
   }
   100% {
-    filter: drop-shadow(0 0 16px rgba(0, 213, 255, 0.8));
+    filter: drop-shadow(0 0 16px rgba(0, 217, 255, 0.8));
   }
 }
 

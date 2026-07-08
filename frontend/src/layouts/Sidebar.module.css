@@ -21,7 +21,7 @@
   width: auto;
   display: block;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 10px rgba(47, 125, 251, 0.5));
+  filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.5));
 }
 
 .brandText {
@@ -31,7 +31,7 @@
   letter-spacing: 0.3px;
   line-height: 1.2;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #ffffff, #62a6ff 60%, #cfcfcf);
+  background: linear-gradient(135deg, #ffffff, #5ce8ff 55%, #b18cfa);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -80,9 +80,9 @@
 
 .navItemActive,
 .navItemActive:hover {
-  background: linear-gradient(135deg, rgba(47, 125, 251, 0.95), rgba(98, 166, 247, 0.85));
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.95), rgba(139, 92, 246, 0.85));
   color: #fff;
-  box-shadow: 0 6px 16px rgba(47, 125, 251, 0.3);
+  box-shadow: 0 6px 16px rgba(0, 217, 255, 0.28);
 }
 
 .footer {
@@ -104,7 +104,7 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #2f7dfb, #62a6ff);
+  background: linear-gradient(135deg, #00d9ff, #8b5cf6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +112,7 @@
   font-weight: 700;
   font-size: 13px;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(47, 125, 251, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 217, 255, 0.35);
 }
 
 .userName {

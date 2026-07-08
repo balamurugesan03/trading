@@ -68,6 +68,16 @@ document.querySelectorAll('.nav-links a').forEach((a) =>
   a.addEventListener('click', () => nav.classList.remove('open'))
 );
 
+// ---------- Scroll progress bar ----------
+const scrollProgress = document.getElementById('scrollProgress');
+if (scrollProgress) {
+  gsap.to(scrollProgress, {
+    scaleX: 1,
+    ease: 'none',
+    scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 },
+  });
+}
+
 // ---------- Hero entrance (fade + scale 0.8→1 + y 80→0 + blur 20px→0, Power4/Expo, 1.2s) ----------
 gsap.set('.hero-title .w', { yPercent: 120, opacity: 0 });
 gsap.set('.reveal-hero', { y: 80, scale: 0.8, opacity: 0, filter: 'blur(20px)' });
@@ -81,7 +91,8 @@ heroTl
   .to('.panel-bars span', { scaleY: 1, duration: 0.7, stagger: 0.06, ease: 'back.out(1.7)' }, '-=1')
   .to('.float-card-1', { opacity: 1, duration: 0.6 }, '-=0.5')
   .to('.float-card-2', { opacity: 1, duration: 0.6 }, '-=0.4')
-  .to(['.coin', '.cube', '.orbit-ring'], { opacity: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' }, '-=0.6');
+  .to(['.coin', '.cube', '.orbit-ring'], { opacity: 1, duration: 0.8, stagger: 0.08, ease: 'power3.out' }, '-=0.6')
+  .fromTo('.aura-ring', { opacity: 0 }, { opacity: 0.55, duration: 1.4 }, '-=0.8');
 
 // Floating idle motion for stat cards
 gsap.to('.float-card-1', { y: '+=10', duration: 2.6, repeat: -1, yoyo: true, ease: 'sine.inOut' });
@@ -371,16 +382,23 @@ if (footer) {
   let width, height;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Dual-tone palette — particles alternate between the brand cyan and violet accent.
+  const PARTICLE_COLORS = [
+    { dot: 'rgba(92, 232, 255, 0.6)', line: 'rgba(0, 217, 255,' },
+    { dot: 'rgba(177, 140, 250, 0.6)', line: 'rgba(139, 92, 246,' },
+  ];
+
   function resize() {
     width = canvas.width = window.innerWidth;
     height = canvas.height = window.innerHeight;
     const count = Math.min(70, Math.floor((width * height) / 22000));
-    particles = Array.from({ length: count }, () => ({
+    particles = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * width,
       y: Math.random() * height,
       r: Math.random() * 1.6 + 0.6,
       vx: (Math.random() - 0.5) * 0.25,
       vy: (Math.random() - 0.5) * 0.25,
+      c: PARTICLE_COLORS[i % 2],
     }));
   }
 
@@ -395,7 +413,7 @@ if (footer) {
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 77, 109, 0.55)';
+      ctx.fillStyle = p.c.dot;
       ctx.fill();
 
       for (let j = i + 1; j < particles.length; j++) {
@@ -406,7 +424,7 @@ if (footer) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(q.x, q.y);
-          ctx.strokeStyle = `rgba(255, 45, 85, ${0.12 * (1 - dist / 120)})`;
+          ctx.strokeStyle = `${p.c.line} ${0.12 * (1 - dist / 120)})`;
           ctx.lineWidth = 1;
           ctx.stroke();
         }

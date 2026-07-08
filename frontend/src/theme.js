@@ -3,8 +3,10 @@ import { createTheme, Card, Paper, Button, Badge, Table } from '@mantine/core';
 export const theme = createTheme({
   primaryColor: 'velocity',
   colors: {
-    velocity: ['#EAF2FF', '#D0E2FF', '#A3C6FF', '#75A9FF', '#4DABF7', '#2F7DFB', '#256AE0', '#1C4FC4', '#173F9D', '#123078'],
-    dark: ['#C8CDD8', '#A9B0BD', '#8B93A3', '#5F6675', '#3A3F4D', '#262B36', '#171A21', '#0D0F14', '#0A0A0A', '#050505'],
+    // Dual-tone brand — electric cyan (primary) + violet accent, matching the marketing site.
+    velocity: ['#E0FBFF', '#B3F5FF', '#80EEFF', '#4DE6FF', '#26DFFF', '#00D9FF', '#00B8DB', '#0091B3', '#006D87', '#004A5C'],
+    accent2: ['#F1E9FF', '#DDD0FE', '#C2ADFC', '#A78BFA', '#9670F8', '#8B5CF6', '#7A46E8', '#6633CC', '#5B21B6', '#43168A'],
+    dark: ['#C8CDD8', '#A9B0BD', '#8B93A3', '#5F6675', '#3A3F4D', '#20222E', '#171A24', '#0D0E16', '#08090F', '#06070D'],
   },
   defaultRadius: 'lg',
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',

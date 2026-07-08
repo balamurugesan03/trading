@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   SimpleGrid,
   Card,
@@ -14,6 +14,7 @@ import {
   Stack,
   Modal,
 } from '@mantine/core';
+import gsap from 'gsap';
 import {
   IconCopy,
   IconCheck,
@@ -39,10 +40,21 @@ export default function DashboardPage() {
   const [historyModal, setHistoryModal] = useState({ open: false, kind: null });
   const [historyRows, setHistoryRows] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const statsGridRef = useRef(null);
 
   useEffect(() => {
     getSummary().then((res) => setSummary(res.summary));
   }, []);
+
+  useEffect(() => {
+    if (summary && statsGridRef.current) {
+      gsap.fromTo(
+        statsGridRef.current.children,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.6, stagger: 0.06, ease: 'power3.out' }
+      );
+    }
+  }, [summary]);
 
   if (!summary) {
     return (
@@ -213,7 +225,7 @@ export default function DashboardPage() {
         </Group>
       </Card>
 
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }}>
+      <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} ref={statsGridRef}>
         <GlossyStatCard
           label="Total Invested"
           value={`$${summary.totalInvested.toFixed(2)}`}

@@ -5,8 +5,8 @@
   gap: 12px;
   padding: 8px 16px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(47, 125, 251, 0.16), rgba(98, 166, 247, 0.08));
-  border: 1px solid rgba(47, 125, 251, 0.3);
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.16), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(0, 217, 255, 0.3);
   overflow: hidden;
 }
 

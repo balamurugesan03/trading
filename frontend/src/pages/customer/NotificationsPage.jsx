@@ -47,8 +47,8 @@ export default function NotificationsPage() {
               radius="md"
               p="md"
               style={{
-                borderLeft: n.read ? undefined : '3px solid var(--mantine-color-blue-5)',
-                background: n.read ? undefined : 'rgba(47, 125, 251, 0.06)',
+                borderLeft: n.read ? undefined : '3px solid var(--mantine-color-velocity-5)',
+                background: n.read ? undefined : 'rgba(0, 217, 255, 0.06)',
               }}
             >
               <Group justify="space-between" align="flex-start" wrap="nowrap">
