@@ -128,7 +128,10 @@ export default function KycAdminPage() {
           <Textarea
             label="Reason"
             value={rejectModal.remarks}
-            onChange={(e) => setRejectModal((prev) => ({ ...prev, remarks: e.currentTarget.value }))}
+            onChange={(e) => {
+              const { value } = e.currentTarget;
+              setRejectModal((prev) => ({ ...prev, remarks: value }));
+            }}
           />
           <Button color="red" onClick={handleReject}>
             Confirm Reject

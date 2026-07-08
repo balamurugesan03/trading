@@ -119,7 +119,10 @@ export default function DepositsAdminPage() {
           <Textarea
             label="Reason"
             value={rejectModal.reason}
-            onChange={(e) => setRejectModal((prev) => ({ ...prev, reason: e.currentTarget.value }))}
+            onChange={(e) => {
+              const { value } = e.currentTarget;
+              setRejectModal((prev) => ({ ...prev, reason: value }));
+            }}
           />
           <Button color="red" onClick={handleReject}>
             Confirm Reject
