@@ -111,7 +111,7 @@ export default function CustomerLayout() {
       <AppShell.Header
         style={{
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'linear-gradient(180deg, rgba(28, 20, 56, 0.85), rgba(18, 12, 36, 0.75))',
+          background: 'linear-gradient(180deg, rgba(10, 22, 46, 0.85), rgba(5, 8, 16, 0.75))',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
         }}
@@ -154,7 +154,7 @@ export default function CustomerLayout() {
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        background: 'linear-gradient(135deg, #00d9ff, #8b5cf6)',
+                        background: 'linear-gradient(135deg, #00d9ff, #2f7dfb)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -181,7 +181,7 @@ export default function CustomerLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none', background: '#160f2e' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: '#050b16' }}>
         <Sidebar
           brandSubtitle="Investment Platform"
           groups={buildGroups(supportUnread)}
@@ -198,10 +198,10 @@ export default function CustomerLayout() {
             linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 100% 56px,
             linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 56px 100%,
             radial-gradient(1200px 680px at 100% -8%, rgba(0, 217, 255, 0.20), transparent 55%),
-            radial-gradient(950px 560px at -10% 10%, rgba(139, 92, 246, 0.16), transparent 52%),
-            radial-gradient(700px 480px at 8% 100%, rgba(139, 92, 246, 0.06), transparent 55%),
+            radial-gradient(950px 560px at -10% 10%, rgba(47, 125, 251, 0.18), transparent 52%),
+            radial-gradient(700px 480px at 8% 100%, rgba(47, 125, 251, 0.07), transparent 55%),
             radial-gradient(900px 560px at 55% 120%, rgba(0, 217, 255, 0.08), transparent 60%),
-            linear-gradient(160deg, #1c1438 0%, #150f2c 45%, #100b22 100%)
+            linear-gradient(160deg, #0b1530 0%, #081026 45%, #05070d 100%)
           `,
           backgroundAttachment: 'fixed',
         }}

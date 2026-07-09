@@ -32,7 +32,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.14), rgba(0, 217, 255, 0.22) 45%, rgba(139, 92, 246, 0.22) 80%, rgba(255, 255, 255, 0.02));
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.14), rgba(0, 217, 255, 0.22) 45%, rgba(47, 125, 251, 0.22) 80%, rgba(255, 255, 255, 0.02));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -84,7 +84,7 @@ body {
 
 .mantine-Button-root[data-variant='filled']:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0, 217, 255, 0.28), 0 4px 16px rgba(139, 92, 246, 0.18);
+  box-shadow: 0 12px 28px rgba(0, 217, 255, 0.28), 0 4px 16px rgba(47, 125, 251, 0.18);
 }
 
 .mantine-Button-root[data-variant='filled']:active {

@@ -7,9 +7,9 @@
   border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Customer panel gets an indigo/violet-tinted sidebar instead of the admin's near-black one. */
+/* Customer panel gets a deep-blue-tinted sidebar instead of the admin's near-black one. */
 .navbarCustomer {
-  background: linear-gradient(180deg, #1c1438 0%, #120c24 100%);
+  background: linear-gradient(180deg, #0b1530 0%, #05070d 100%);
 }
 
 .brand {
@@ -36,7 +36,7 @@
   letter-spacing: 0.3px;
   line-height: 1.2;
   text-transform: uppercase;
-  background: linear-gradient(135deg, #ffffff, #5ce8ff 55%, #b18cfa);
+  background: linear-gradient(135deg, #ffffff, #5ce8ff 55%, #7db8ff);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -85,7 +85,7 @@
 
 .navItemActive,
 .navItemActive:hover {
-  background: linear-gradient(135deg, rgba(0, 217, 255, 0.95), rgba(139, 92, 246, 0.85));
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.95), rgba(47, 125, 251, 0.9));
   color: #fff;
   box-shadow: 0 6px 16px rgba(0, 217, 255, 0.28);
 }
@@ -109,7 +109,7 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #00d9ff, #8b5cf6);
+  background: linear-gradient(135deg, #00d9ff, #2f7dfb);
   display: flex;
   align-items: center;
   justify-content: center;
