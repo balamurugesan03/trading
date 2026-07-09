@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 const User = require('../models/User');
 const Wallet = require('../models/Wallet');
 const ApiError = require('../utils/ApiError');
@@ -87,6 +88,23 @@ const me = catchAsync(async (req, res) => {
   res.json({ success: true, user: sanitize(req.user) });
 });
 
+const AVATAR_ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+
+// Uploads/replaces the logged-in customer's own profile picture. Reuses the shared upload
+// middleware (which also allows .pdf for KYC/deposit proofs), so this rejects anything that
+// isn't actually an image rather than trusting the shared filter alone.
+const updateAvatar = catchAsync(async (req, res) => {
+  if (!req.file) throw new ApiError(400, 'Image file is required');
+  if (!AVATAR_ALLOWED_EXTENSIONS.includes(path.extname(req.file.filename).toLowerCase())) {
+    throw new ApiError(400, 'Avatar must be a png or jpg image');
+  }
+
+  req.user.avatarUrl = `/uploads/${req.file.filename}`;
+  await req.user.save();
+
+  res.json({ success: true, user: sanitize(req.user) });
+});
+
 // Public lookup so the registration form can show "Sponsor: <name>" as the customer types
 // their sponsor's referral code, letting them confirm they're joining under the right person
 // before submitting. Only the name (and whether the account can currently sponsor) is
@@ -97,4 +115,4 @@ const getSponsorByCode = catchAsync(async (req, res) => {
   res.json({ success: true, sponsor: { name: sponsor.name, active: sponsor.status === 'active' } });
 });
 
-module.exports = { register, login, me, getSponsorByCode };
+module.exports = { register, login, me, updateAvatar, getSponsorByCode };

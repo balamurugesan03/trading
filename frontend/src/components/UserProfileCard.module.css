@@ -83,6 +83,41 @@
     0 0 40px rgba(0, 217, 255, 0.28);
 }
 
+.avatarInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.avatarUploadBtn {
+  position: absolute;
+  z-index: 3;
+  right: -2px;
+  bottom: -2px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid rgba(20, 14, 34, 0.9);
+  background: linear-gradient(135deg, #8b5cf6, #00d9ff);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.avatarUploadBtn:hover:not(:disabled) {
+  transform: scale(1.08);
+  filter: brightness(1.1);
+}
+
+.avatarUploadBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .idLabel {
   position: relative;
   z-index: 2;

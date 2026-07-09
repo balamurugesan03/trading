@@ -26,6 +26,7 @@ const userSchema = new Schema(
     activatedAt: { type: Date, default: null },
 
     kycStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+    avatarUrl: { type: String, default: null },
   },
   { timestamps: true }
 );

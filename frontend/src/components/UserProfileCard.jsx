@@ -1,4 +1,6 @@
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { IconCamera } from '@tabler/icons-react';
 import classes from './UserProfileCard.module.css';
 
 function initials(name) {
@@ -19,8 +21,17 @@ export default function UserProfileCard({
   rank = 'USER',
   energyMultiplier = '2x',
   progress = 0,
+  onAvatarChange,
+  avatarUploading = false,
 }) {
   const clampedProgress = Math.min(100, Math.max(0, progress));
+  const fileInputRef = useRef(null);
+
+  const handleFileSelected = (e) => {
+    const file = e.target.files?.[0];
+    if (file) onAvatarChange?.(file);
+    e.target.value = '';
+  };
 
   return (
     <motion.div
@@ -42,6 +53,28 @@ export default function UserProfileCard({
           <img src={avatarUrl} alt={name} className={classes.avatar} />
         ) : (
           <div className={classes.avatar}>{initials(name)}</div>
+        )}
+
+        {onAvatarChange && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/png,image/jpeg"
+              className={classes.avatarInput}
+              onChange={handleFileSelected}
+              disabled={avatarUploading}
+            />
+            <button
+              type="button"
+              className={classes.avatarUploadBtn}
+              onClick={() => fileInputRef.current?.click()}
+              disabled={avatarUploading}
+              aria-label="Change profile photo"
+            >
+              <IconCamera size={16} />
+            </button>
+          </>
         )}
       </motion.div>
 

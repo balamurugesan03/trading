@@ -41,6 +41,7 @@ const summary = catchAsync(async (req, res) => {
     success: true,
     summary: {
       name: req.user.name,
+      avatarUrl: req.user.avatarUrl,
       referralCode: req.user.referralCode,
       referralLink: `${process.env.CLIENT_URL}/register?ref=${req.user.referralCode}`,
       invitedBy: req.user.sponsor?.name || null,
