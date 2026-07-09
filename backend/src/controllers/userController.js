@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Wallet = require('../models/Wallet');
 const Investment = require('../models/Investment');
+const Deposit = require('../models/Deposit');
+const Withdrawal = require('../models/Withdrawal');
+const ReferralIncome = require('../models/ReferralIncome');
+const LevelIncome = require('../models/LevelIncome');
+const MonthlyIncentive = require('../models/MonthlyIncentive');
+const Transaction = require('../models/Transaction');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { MAX_ACCOUNTS_PER_EMAIL } = require('../constants/accountLimits');
@@ -113,12 +119,22 @@ const deleteUser = catchAsync(async (req, res) => {
     );
   }
 
-  await Investment.updateMany(
-    { user: user._id, status: 'active' },
-    { $set: { status: 'closed', closedAt: new Date() } }
-  );
+  // Purge every financial trace so admin dashboard totals (invested, ROI/referral/level/
+  // incentive paid, pending deposits/withdrawals) drop back to reflect the deletion. Safe to
+  // remove this user's own ReferralIncome/LevelIncome rows (they're the earner there) - the
+  // downline-count guard above means no one else's already-credited income was earned FROM
+  // this user's activity, since those rows key off the recipient, not this user's actions.
+  await Promise.all([
+    Investment.deleteMany({ user: user._id }),
+    Deposit.deleteMany({ user: user._id }),
+    Withdrawal.deleteMany({ user: user._id }),
+    ReferralIncome.deleteMany({ user: user._id }),
+    LevelIncome.deleteMany({ user: user._id }),
+    MonthlyIncentive.deleteMany({ user: user._id }),
+    Transaction.deleteMany({ user: user._id }),
+    Wallet.deleteOne({ user: user._id }),
+  ]);
 
-  await Wallet.deleteOne({ user: user._id });
   await user.deleteOne();
 
   res.json({ success: true });
