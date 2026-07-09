@@ -5,6 +5,7 @@ const User = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const incomeService = require('../services/incomeService');
+const roiService = require('../services/roiService');
 const walletService = require('../services/walletService');
 const { DEPOSIT_PACKAGE_AMOUNTS } = require('../constants/depositAmounts');
 
@@ -94,6 +95,9 @@ const approveDeposit = catchAsync(async (req, res) => {
   }
 
   await incomeService.payReferralBonus(investment);
+  // Instant first ROI credit - a no-op if ROI distribution is off or today's rate isn't
+  // set yet, in which case this investment just waits for the next daily cron run instead.
+  await roiService.creditInstantRoiOnApproval(investment);
 
   res.json({ success: true, deposit, investment });
 });
