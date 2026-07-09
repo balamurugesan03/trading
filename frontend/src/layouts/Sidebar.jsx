@@ -4,7 +4,7 @@ import { IconLogout } from '@tabler/icons-react';
 import logoMark from '../assets/logo-mark.png';
 import classes from './Sidebar.module.css';
 
-export default function Sidebar({ brandSubtitle, groups, user, onLogout, onNavigate }) {
+export default function Sidebar({ brandSubtitle, groups, user, onLogout, onNavigate, variant }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,7 +14,7 @@ export default function Sidebar({ brandSubtitle, groups, user, onLogout, onNavig
   };
 
   return (
-    <div className={classes.navbar}>
+    <div className={`${classes.navbar} ${variant === 'customer' ? classes.navbarCustomer : ''}`}>
       <div className={classes.brand}>
         <img src={logoMark} alt="Velocity" className={classes.brandMark} />
         <div>

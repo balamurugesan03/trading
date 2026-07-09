@@ -76,7 +76,7 @@ export default function LevelSettingsPage() {
         <Title order={4} mb="sm">
           Level Income Percentages (of downline ROI)
         </Title>
-        <SimpleGrid cols={5}>
+        <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }}>
           {settings.levelPercentages.map((pct, i) => (
             <NumberInput
               key={i}

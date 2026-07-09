@@ -111,7 +111,7 @@ export default function CustomerLayout() {
       <AppShell.Header
         style={{
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'linear-gradient(180deg, rgba(14, 15, 22, 0.82), rgba(10, 10, 12, 0.72))',
+          background: 'linear-gradient(180deg, rgba(28, 20, 56, 0.85), rgba(18, 12, 36, 0.75))',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
         }}
@@ -181,13 +181,14 @@ export default function CustomerLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none', background: '#050505' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: '#160f2e' }}>
         <Sidebar
           brandSubtitle="Investment Platform"
           groups={buildGroups(supportUnread)}
           user={{ initials: getInitials(user?.name), name: user?.name, role: user?.role }}
           onLogout={handleLogout}
           onNavigate={close}
+          variant="customer"
         />
       </AppShell.Navbar>
 
@@ -200,7 +201,7 @@ export default function CustomerLayout() {
             radial-gradient(950px 560px at -10% 10%, rgba(139, 92, 246, 0.16), transparent 52%),
             radial-gradient(700px 480px at 8% 100%, rgba(139, 92, 246, 0.06), transparent 55%),
             radial-gradient(900px 560px at 55% 120%, rgba(0, 217, 255, 0.08), transparent 60%),
-            linear-gradient(160deg, #0d0e15 0%, #08090c 45%, #050506 100%)
+            linear-gradient(160deg, #1c1438 0%, #150f2c 45%, #100b22 100%)
           `,
           backgroundAttachment: 'fixed',
         }}

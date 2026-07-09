@@ -15,6 +15,7 @@ import {
   Modal,
 } from '@mantine/core';
 import gsap from 'gsap';
+import { notifications } from '@mantine/notifications';
 import {
   IconCopy,
   IconCheck,
@@ -28,6 +29,7 @@ import {
   IconBox,
 } from '@tabler/icons-react';
 import { getSummary, getReferralHistory, getLevelIncomeHistory, getIncentiveHistory } from '../../services/dashboardService';
+import { uploadAvatar } from '../../services/authService';
 import { myDeposits } from '../../services/depositService';
 import { myTransactions } from '../../services/walletService';
 import GlossyStatCard from '../../components/GlossyStatCard';
@@ -35,16 +37,35 @@ import UserProfileCard from '../../components/UserProfileCard';
 import NotificationTicker from '../../components/NotificationTicker';
 import PayoutCutoffBanner from '../../components/PayoutCutoffBanner';
 
+const API_ORIGIN = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+
 export default function DashboardPage() {
   const [summary, setSummary] = useState(null);
   const [historyModal, setHistoryModal] = useState({ open: false, kind: null });
   const [historyRows, setHistoryRows] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const statsGridRef = useRef(null);
 
   useEffect(() => {
     getSummary().then((res) => setSummary(res.summary));
   }, []);
+
+  const handleAvatarChange = async (file) => {
+    setAvatarUploading(true);
+    try {
+      const res = await uploadAvatar(file);
+      setSummary((prev) => ({ ...prev, avatarUrl: res.user.avatarUrl }));
+    } catch (err) {
+      notifications.show({
+        title: 'Upload failed',
+        message: err.response?.data?.message || 'Could not update profile photo',
+        color: 'red',
+      });
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
 
   useEffect(() => {
     if (summary && statsGridRef.current) {
@@ -185,12 +206,7 @@ export default function DashboardPage() {
 
   return (
     <Stack>
-      <Group justify="space-between">
-        <Title order={2}>Dashboard</Title>
-        <Badge size="lg" color={summary.accountStatus === 'active' ? 'green' : 'yellow'}>
-          {summary.accountStatus}
-        </Badge>
-      </Group>
+      <Title order={2}>Dashboard</Title>
 
       <NotificationTicker />
 
@@ -201,6 +217,9 @@ export default function DashboardPage() {
         name={summary.name}
         invitedBy={summary.invitedBy}
         progress={summary.energyProgress}
+        avatarUrl={summary.avatarUrl ? `${API_ORIGIN}${summary.avatarUrl}` : null}
+        onAvatarChange={handleAvatarChange}
+        avatarUploading={avatarUploading}
       />
 
       <Card withBorder radius="md" p="md">
@@ -288,39 +307,41 @@ export default function DashboardPage() {
         <Title order={4} mb="sm">
           Active Packages
         </Title>
-        <Table striped highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Package</Table.Th>
-              <Table.Th>Amount</Table.Th>
-              <Table.Th>Returned</Table.Th>
-              <Table.Th>Cap</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th>Activated</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {summary.investments.map((inv) => (
-              <Table.Tr key={inv._id}>
-                <Table.Td>{inv.package?.name}</Table.Td>
-                <Table.Td>${inv.amount.toFixed(2)}</Table.Td>
-                <Table.Td>${inv.totalReturned.toFixed(2)}</Table.Td>
-                <Table.Td>${inv.capAmount.toFixed(2)}</Table.Td>
-                <Table.Td>
-                  <Badge color={inv.status === 'active' ? 'green' : 'gray'}>{inv.status}</Badge>
-                </Table.Td>
-                <Table.Td>{new Date(inv.activatedAt).toLocaleDateString()}</Table.Td>
-              </Table.Tr>
-            ))}
-            {summary.investments.length === 0 && (
+        <Table.ScrollContainer minWidth={600}>
+          <Table striped highlightOnHover>
+            <Table.Thead>
               <Table.Tr>
-                <Table.Td colSpan={6}>
-                  <Text c="dimmed">No investments yet</Text>
-                </Table.Td>
+                <Table.Th>Package</Table.Th>
+                <Table.Th>Amount</Table.Th>
+                <Table.Th>Returned</Table.Th>
+                <Table.Th>Cap</Table.Th>
+                <Table.Th>Status</Table.Th>
+                <Table.Th>Activated</Table.Th>
               </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
+            </Table.Thead>
+            <Table.Tbody>
+              {summary.investments.map((inv) => (
+                <Table.Tr key={inv._id}>
+                  <Table.Td>{inv.package?.name}</Table.Td>
+                  <Table.Td>${inv.amount.toFixed(2)}</Table.Td>
+                  <Table.Td>${inv.totalReturned.toFixed(2)}</Table.Td>
+                  <Table.Td>${inv.capAmount.toFixed(2)}</Table.Td>
+                  <Table.Td>
+                    <Badge color={inv.status === 'active' ? 'green' : 'gray'}>{inv.status}</Badge>
+                  </Table.Td>
+                  <Table.Td>{new Date(inv.activatedAt).toLocaleDateString()}</Table.Td>
+                </Table.Tr>
+              ))}
+              {summary.investments.length === 0 && (
+                <Table.Tr>
+                  <Table.Td colSpan={6}>
+                    <Text c="dimmed">No investments yet</Text>
+                  </Table.Td>
+                </Table.Tr>
+              )}
+            </Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
       </Card>
 
       <Modal
@@ -334,29 +355,31 @@ export default function DashboardPage() {
             <Loader />
           </Center>
         ) : (
-          <Table striped highlightOnHover>
-            <Table.Thead>
-              <Table.Tr>
-                {activeConfig?.columns.map((c) => (
-                  <Table.Th key={c.header}>{c.header}</Table.Th>
-                ))}
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {historyRows.map((row, i) => (
-                <Table.Tr key={row._id || i}>
-                  {activeConfig?.columns.map((c) => <Table.Td key={c.header}>{c.cell(row)}</Table.Td>)}
-                </Table.Tr>
-              ))}
-              {historyRows.length === 0 && (
+          <Table.ScrollContainer minWidth={500}>
+            <Table striped highlightOnHover>
+              <Table.Thead>
                 <Table.Tr>
-                  <Table.Td colSpan={activeConfig?.columns.length || 1}>
-                    <Text c="dimmed">No records yet</Text>
-                  </Table.Td>
+                  {activeConfig?.columns.map((c) => (
+                    <Table.Th key={c.header}>{c.header}</Table.Th>
+                  ))}
                 </Table.Tr>
-              )}
-            </Table.Tbody>
-          </Table>
+              </Table.Thead>
+              <Table.Tbody>
+                {historyRows.map((row, i) => (
+                  <Table.Tr key={row._id || i}>
+                    {activeConfig?.columns.map((c) => <Table.Td key={c.header}>{c.cell(row)}</Table.Td>)}
+                  </Table.Tr>
+                ))}
+                {historyRows.length === 0 && (
+                  <Table.Tr>
+                    <Table.Td colSpan={activeConfig?.columns.length || 1}>
+                      <Text c="dimmed">No records yet</Text>
+                    </Table.Td>
+                  </Table.Tr>
+                )}
+              </Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
         )}
       </Modal>
     </Stack>

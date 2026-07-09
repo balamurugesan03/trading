@@ -7,6 +7,11 @@
   border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Customer panel gets an indigo/violet-tinted sidebar instead of the admin's near-black one. */
+.navbarCustomer {
+  background: linear-gradient(180deg, #1c1438 0%, #120c24 100%);
+}
+
 .brand {
   display: flex;
   align-items: center;
