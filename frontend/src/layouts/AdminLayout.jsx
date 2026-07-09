@@ -109,8 +109,9 @@ export default function AdminLayout() {
       <AppShell.Header
         style={{
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'rgba(10, 10, 10, 0.72)',
+          background: 'linear-gradient(180deg, rgba(10, 22, 46, 0.85), rgba(5, 8, 16, 0.75))',
           backdropFilter: 'blur(14px)',
+          WebkitBackdropFilter: 'blur(14px)',
         }}
       >
         <Group h="100%" px="md" justify="space-between">
@@ -128,14 +129,14 @@ export default function AdminLayout() {
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        background: 'linear-gradient(135deg, #2f7dfb, #62a6ff)',
+                        background: 'linear-gradient(135deg, #00d9ff, #2f7dfb)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         color: '#fff',
                         fontWeight: 700,
                         fontSize: 13,
-                        boxShadow: '0 4px 12px rgba(47, 125, 251, 0.35)',
+                        boxShadow: '0 4px 12px rgba(0, 217, 255, 0.35)',
                       }}
                     >
                       {getInitials(user?.name)}
@@ -155,20 +156,29 @@ export default function AdminLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none', background: '#050505' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: '#050b16' }}>
         <Sidebar
           brandSubtitle="Admin Panel"
           groups={buildGroups(supportUnread)}
           user={{ initials: getInitials(user?.name), name: user?.name, role: user?.role }}
           onLogout={handleLogout}
           onNavigate={close}
+          variant="customer"
         />
       </AppShell.Navbar>
 
       <AppShell.Main
         style={{
-          background:
-            'radial-gradient(circle at 85% 0%, rgba(47, 125, 251, 0.08), transparent 45%), var(--mantine-color-dark-8)',
+          background: `
+            linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 100% 56px,
+            linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 56px 100%,
+            radial-gradient(1200px 680px at 100% -8%, rgba(0, 217, 255, 0.20), transparent 55%),
+            radial-gradient(950px 560px at -10% 10%, rgba(47, 125, 251, 0.18), transparent 52%),
+            radial-gradient(700px 480px at 8% 100%, rgba(47, 125, 251, 0.07), transparent 55%),
+            radial-gradient(900px 560px at 55% 120%, rgba(0, 217, 255, 0.08), transparent 60%),
+            linear-gradient(160deg, #0b1530 0%, #081026 45%, #05070d 100%)
+          `,
+          backgroundAttachment: 'fixed',
         }}
       >
         <Outlet />
