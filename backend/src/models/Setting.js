@@ -16,9 +16,10 @@ const settingSchema = new Schema(
     monthlyIncentiveMinBusiness: { type: Number, default: 1000 },
     monthlyIncentivePercentage: { type: Number, default: 2 },
     companyWalletAddress: { type: String, default: '' },
-    // 24h "HH:mm" in server local time. Withdrawals requested after this time each day
-    // are queued for the next day's payout cycle instead of today's.
-    payoutCutoffTime: { type: String, default: '15:00' },
+    // 24h "HH:mm" in IST (see utils/payoutCutoff.js). Withdrawals requested after this time
+    // each day are queued for the next day's payout cycle instead of today's, and it's also
+    // when the daily ROI cron fires (see jobs/roiCron.js).
+    payoutCutoffTime: { type: String, default: '03:00' },
     roiDistributionEnabled: { type: Boolean, default: true },
     levelDistributionEnabled: { type: Boolean, default: true },
     incentiveDistributionEnabled: { type: Boolean, default: true },
