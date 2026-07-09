@@ -2,9 +2,13 @@ const Investment = require('../models/Investment');
 const RoiRate = require('../models/RoiRate');
 const walletService = require('./walletService');
 const incomeService = require('./incomeService');
+const { dateKey } = require('../utils/payoutCutoff');
 
+// Anchored to IST (see utils/payoutCutoff.js) rather than host-local/UTC, so "today" for
+// ROI rate lookup and same-day crediting matches what the admin means by "today" regardless
+// of the server's OS timezone - this was the same class of bug fixed for the payout cutoff.
 function todayKey(date = new Date()) {
-  return date.toISOString().slice(0, 10); // YYYY-MM-DD
+  return dateKey(date);
 }
 
 function isSameDay(a, b) {
