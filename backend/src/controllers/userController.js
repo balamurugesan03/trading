@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Wallet = require('../models/Wallet');
+const Investment = require('../models/Investment');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { MAX_ACCOUNTS_PER_EMAIL } = require('../constants/accountLimits');
@@ -88,6 +90,40 @@ const resetPassword = catchAsync(async (req, res) => {
   res.json({ success: true, user });
 });
 
+// Permanently removes a user. Deposit/investment/withdrawal history is allowed to be deleted
+// along with the account (admin's call) - their Deposit/Investment/Withdrawal/Transaction/
+// ReferralIncome/LevelIncome records are left in place (orphaned, for whatever audit trail is
+// still needed) rather than cascade-deleted. The one thing this still won't skip: any of the
+// user's investments still 'active' get force-closed first. Leaving one active would mean the
+// ROI cron's next tick calls User.findById(this now-deleted id) inside distributeLevelIncome
+// and crashes on a null user - which halts ROI crediting for every other customer's investment
+// in that same run, not just this one (see roiService.js/incomeService.js), every minute,
+// indefinitely. Downline members are still a hard block - deleting a sponsor out from under
+// active downline would leave their sponsor/uplineChain pointing at a ghost ID.
+const deleteUser = catchAsync(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if (!user) throw new ApiError(404, 'User not found');
+  if (user.role === 'super_admin') throw new ApiError(400, 'Cannot delete an admin account');
+
+  const downlineCount = await User.countDocuments({ sponsor: user._id });
+  if (downlineCount > 0) {
+    throw new ApiError(
+      400,
+      `Cannot delete: ${downlineCount} account(s) were referred by this user. Suspend the account instead.`
+    );
+  }
+
+  await Investment.updateMany(
+    { user: user._id, status: 'active' },
+    { $set: { status: 'closed', closedAt: new Date() } }
+  );
+
+  await Wallet.deleteOne({ user: user._id });
+  await user.deleteOne();
+
+  res.json({ success: true });
+});
+
 // Lets a super admin open a customer's dashboard without their password, for support/
 // verification. Issues a short-lived, clearly-marked token instead of the customer's own
 // 7-day session token, and records who issued it so protect() can allow viewing even a
@@ -120,5 +156,6 @@ module.exports = {
   activateUser,
   updateUser,
   resetPassword,
+  deleteUser,
   impersonateUser,
 };

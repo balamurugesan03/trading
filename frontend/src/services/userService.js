@@ -7,4 +7,5 @@ export const resetPassword = (id, password) =>
   api.patch(`/users/${id}/reset-password`, { password }).then((r) => r.data);
 export const suspendUser = (id) => api.patch(`/users/${id}/suspend`).then((r) => r.data);
 export const activateUser = (id) => api.patch(`/users/${id}/activate`).then((r) => r.data);
+export const deleteUser = (id) => api.delete(`/users/${id}`).then((r) => r.data);
 export const impersonateUser = (id) => api.post(`/users/${id}/impersonate`).then((r) => r.data);

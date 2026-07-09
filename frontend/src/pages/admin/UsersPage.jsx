@@ -23,6 +23,7 @@ import {
   activateUser,
   updateUser,
   resetPassword,
+  deleteUser,
   impersonateUser,
 } from '../../services/userService';
 import { useAuth } from '../../context/AuthContext';
@@ -36,6 +37,8 @@ export default function UsersPage() {
   const [status, setStatus] = useState(searchParams.get('status') || '');
   const [editModal, setEditModal] = useState({ open: false, user: null });
   const [passwordModal, setPasswordModal] = useState({ open: false, user: null });
+  const [deleteModal, setDeleteModal] = useState({ open: false, user: null });
+  const [deleting, setDeleting] = useState(false);
 
   const editForm = useForm({ initialValues: { name: '', email: '', mobile: '' } });
   const passwordForm = useForm({
@@ -93,6 +96,20 @@ export default function UsersPage() {
       load();
     } catch (err) {
       notifications.show({ title: 'Error', message: err.response?.data?.message, color: 'red' });
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    setDeleting(true);
+    try {
+      await deleteUser(deleteModal.user._id);
+      notifications.show({ title: 'Deleted', message: 'User account deleted', color: 'green' });
+      setDeleteModal({ open: false, user: null });
+      load();
+    } catch (err) {
+      notifications.show({ title: 'Cannot delete', message: err.response?.data?.message, color: 'red' });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -195,6 +212,16 @@ export default function UsersPage() {
                         Unblock
                       </Button>
                     )}
+                    {u.role !== 'super_admin' && (
+                      <Button
+                        size="xs"
+                        color="red"
+                        variant="filled"
+                        onClick={() => setDeleteModal({ open: true, user: u })}
+                      >
+                        Delete
+                      </Button>
+                    )}
                   </Group>
                 </Table.Td>
               </Table.Tr>
@@ -240,6 +267,30 @@ export default function UsersPage() {
             </Button>
           </Stack>
         </form>
+      </Modal>
+      <Modal
+        opened={deleteModal.open}
+        onClose={() => setDeleteModal({ open: false, user: null })}
+        title="Delete User"
+      >
+        <Stack>
+          <Text>
+            Permanently delete <strong>{deleteModal.user?.name}</strong> ({deleteModal.user?.email})? This cannot be
+            undone.
+          </Text>
+          <Text size="sm" c="dimmed">
+            Deposit/investment/withdrawal history will be left in place, but the account itself is gone for good.
+            Not allowed if this account has referred other users - use Block instead for those.
+          </Text>
+          <Group justify="flex-end">
+            <Button variant="default" onClick={() => setDeleteModal({ open: false, user: null })}>
+              Cancel
+            </Button>
+            <Button color="red" loading={deleting} onClick={handleDeleteConfirm}>
+              Delete Permanently
+            </Button>
+          </Group>
+        </Stack>
       </Modal>
     </Stack>
   );
