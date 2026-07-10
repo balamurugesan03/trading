@@ -16,10 +16,9 @@ function isSameDay(a, b) {
 }
 
 // Credits one day's ROI to a single investment at the given rate: wallet credit, cap/close
-// handling, and the resulting level income - shared by the daily cron and the instant
-// on-approval credit so both paths behave identically. Returns the credited amount, or null
-// if there was nothing left to credit (already at cap). Callers are responsible for the
-// same-day dedupe check (isSameDay against lastRoiCreditedAt) before calling this.
+// handling, and the resulting level income. Returns the credited amount, or null if there
+// was nothing left to credit (already at cap). Callers are responsible for the same-day
+// dedupe check (isSameDay against lastRoiCreditedAt) before calling this.
 async function creditRoi(investment, rate, now = new Date()) {
   let roiAmount = (investment.amount * rate.percentage) / 100;
   const remainingToCap = investment.capAmount - investment.totalReturned;
@@ -85,21 +84,4 @@ async function runDailyRoi() {
   return { credited };
 }
 
-// Credits the first ROI payout immediately when a deposit is approved, instead of waiting
-// for the next daily cron tick. Only fires if ROI distribution is on and an admin has already
-// set today's rate - otherwise it's a no-op and the investment just picks up ROI on a future
-// cron run like normal, same as before this existed. Sets lastRoiCreditedAt on success, so the
-// same-day cron run (and any later same-day approval) naturally skips it via the isSameDay
-// check in runDailyRoi - no separate dedupe bookkeeping needed.
-async function creditInstantRoiOnApproval(investment) {
-  const settings = await incomeService.getSettings();
-  if (!settings.roiDistributionEnabled) return null;
-
-  const now = new Date();
-  const rate = await RoiRate.findOne({ date: todayKey(now) });
-  if (!rate) return null;
-
-  return creditRoi(investment, rate, now);
-}
-
-module.exports = { runDailyRoi, todayKey, creditInstantRoiOnApproval };
+module.exports = { runDailyRoi, todayKey };
