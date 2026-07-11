@@ -5,8 +5,10 @@ const User = require('../models/User');
 const ReferralIncome = require('../models/ReferralIncome');
 const LevelIncome = require('../models/LevelIncome');
 const MonthlyIncentive = require('../models/MonthlyIncentive');
+const RoiRate = require('../models/RoiRate');
 const catchAsync = require('../utils/catchAsync');
 const { getOrCreateWallet } = require('../services/walletService');
+const { todayKey } = require('../services/roiService');
 
 async function sumField(Model, match, field = '$amount') {
   const result = await Model.aggregate([{ $match: match }, { $group: { _id: null, total: { $sum: field } } }]);
@@ -16,18 +18,29 @@ async function sumField(Model, match, field = '$amount') {
 const summary = catchAsync(async (req, res) => {
   const userId = req.user._id;
 
-  const [wallet, investments, referralTotal, levelTotal, incentiveTotal, directCount, depositCount, withdrawalCount] =
-    await Promise.all([
-      getOrCreateWallet(userId),
-      Investment.find({ user: userId }).populate('package', 'name'),
-      sumField(ReferralIncome, { user: userId }),
-      sumField(LevelIncome, { user: userId }),
-      sumField(MonthlyIncentive, { user: userId }, '$rewardAmount'),
-      User.countDocuments({ sponsor: userId }),
-      Deposit.countDocuments({ user: userId }),
-      Withdrawal.countDocuments({ user: userId }),
-      req.user.populate('sponsor', 'name'),
-    ]);
+  const [
+    wallet,
+    investments,
+    referralTotal,
+    levelTotal,
+    incentiveTotal,
+    directCount,
+    depositCount,
+    withdrawalCount,
+    ,
+    todayRate,
+  ] = await Promise.all([
+    getOrCreateWallet(userId),
+    Investment.find({ user: userId }).populate('package', 'name'),
+    sumField(ReferralIncome, { user: userId }),
+    sumField(LevelIncome, { user: userId }),
+    sumField(MonthlyIncentive, { user: userId }, '$rewardAmount'),
+    User.countDocuments({ sponsor: userId }),
+    Deposit.countDocuments({ user: userId }),
+    Withdrawal.countDocuments({ user: userId }),
+    req.user.populate('sponsor', 'name'),
+    RoiRate.findOne({ date: todayKey(new Date()) }),
+  ]);
 
   const activeInvestments = investments.filter((i) => i.status === 'active');
   const totalInvested = investments.reduce((sum, i) => sum + i.amount, 0);
@@ -51,6 +64,7 @@ const summary = catchAsync(async (req, res) => {
       activePackages: activeInvestments.length,
       totalRoiEarned,
       energyProgress,
+      todayRoiRate: todayRate?.percentage ?? null,
       referralIncome: referralTotal,
       levelIncome: levelTotal,
       monthlyIncentiveIncome: incentiveTotal,

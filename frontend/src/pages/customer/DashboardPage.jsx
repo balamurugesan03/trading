@@ -216,6 +216,7 @@ export default function DashboardPage() {
         userId={summary.referralCode}
         name={summary.name}
         invitedBy={summary.invitedBy}
+        energyMultiplier={summary.todayRoiRate != null ? `${summary.todayRoiRate}%` : '—'}
         progress={summary.energyProgress}
         avatarUrl={summary.avatarUrl ? `${API_ORIGIN}${summary.avatarUrl}` : null}
         onAvatarChange={handleAvatarChange}

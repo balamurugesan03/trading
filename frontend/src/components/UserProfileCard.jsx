@@ -19,7 +19,7 @@ export default function UserProfileCard({
   name,
   invitedBy,
   rank = 'USER',
-  energyMultiplier = '2x',
+  energyMultiplier = '—',
   progress = 0,
   onAvatarChange,
   avatarUploading = false,
