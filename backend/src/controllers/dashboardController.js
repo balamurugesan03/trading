@@ -29,6 +29,7 @@ const summary = catchAsync(async (req, res) => {
     withdrawalCount,
     ,
     todayRate,
+    totalWithdrawn,
   ] = await Promise.all([
     getOrCreateWallet(userId),
     Investment.find({ user: userId }).populate('package', 'name'),
@@ -40,6 +41,9 @@ const summary = catchAsync(async (req, res) => {
     Withdrawal.countDocuments({ user: userId }),
     req.user.populate('sponsor', 'name'),
     RoiRate.findOne({ date: todayKey(new Date()) }),
+    // Total amount actually paid out, not the pending/in-flight withdrawal balance (that's
+    // already shown in the wallet) - see DashboardPage.jsx "Total Withdrawal" stat card.
+    sumField(Withdrawal, { user: userId, status: 'paid' }),
   ]);
 
   const activeInvestments = investments.filter((i) => i.status === 'active');
@@ -71,6 +75,7 @@ const summary = catchAsync(async (req, res) => {
       directReferralCount: directCount,
       depositCount,
       withdrawalCount,
+      totalWithdrawn,
       wallet,
       investments,
     },

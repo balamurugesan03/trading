@@ -240,44 +240,46 @@ export default function DepositPage() {
         <Title order={4} mb="sm">
           Deposit History
         </Title>
-        <Table striped highlightOnHover>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th>Amount</Table.Th>
-              <Table.Th>Reference</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th>Date</Table.Th>
-            </Table.Tr>
-          </Table.Thead>
-          <Table.Tbody>
-            {deposits.map((d) => (
-              <Table.Tr key={d._id}>
-                <Table.Td>${d.amount.toFixed(2)}</Table.Td>
-                <Table.Td>{d.txReference}</Table.Td>
-                <Table.Td>
-                  <Badge color={d.status === 'approved' ? 'green' : d.status === 'rejected' ? 'red' : 'yellow'}>
-                    {d.status}
-                  </Badge>
-                </Table.Td>
-                <Table.Td>{new Date(d.createdAt).toLocaleString()}</Table.Td>
-              </Table.Tr>
-            ))}
-            {deposits.length === 0 && (
+        <Table.ScrollContainer minWidth={500}>
+          <Table striped highlightOnHover>
+            <Table.Thead>
               <Table.Tr>
-                <Table.Td colSpan={4}>
-                  <Center py="lg">
-                    <Stack align="center" gap={4}>
-                      <IconInbox size={28} color="var(--mantine-color-gray-5)" />
-                      <Text c="dimmed" size="sm">
-                        No deposits yet
-                      </Text>
-                    </Stack>
-                  </Center>
-                </Table.Td>
+                <Table.Th>Amount</Table.Th>
+                <Table.Th>Reference</Table.Th>
+                <Table.Th>Status</Table.Th>
+                <Table.Th>Date</Table.Th>
               </Table.Tr>
-            )}
-          </Table.Tbody>
-        </Table>
+            </Table.Thead>
+            <Table.Tbody>
+              {deposits.map((d) => (
+                <Table.Tr key={d._id}>
+                  <Table.Td>${d.amount.toFixed(2)}</Table.Td>
+                  <Table.Td>{d.txReference}</Table.Td>
+                  <Table.Td>
+                    <Badge color={d.status === 'approved' ? 'green' : d.status === 'rejected' ? 'red' : 'yellow'}>
+                      {d.status}
+                    </Badge>
+                  </Table.Td>
+                  <Table.Td>{new Date(d.createdAt).toLocaleString()}</Table.Td>
+                </Table.Tr>
+              ))}
+              {deposits.length === 0 && (
+                <Table.Tr>
+                  <Table.Td colSpan={4}>
+                    <Center py="lg">
+                      <Stack align="center" gap={4}>
+                        <IconInbox size={28} color="var(--mantine-color-gray-5)" />
+                        <Text c="dimmed" size="sm">
+                          No deposits yet
+                        </Text>
+                      </Stack>
+                    </Center>
+                  </Table.Td>
+                </Table.Tr>
+              )}
+            </Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
       </Card>
     </Stack>
   );

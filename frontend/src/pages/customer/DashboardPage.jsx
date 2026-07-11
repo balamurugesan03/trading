@@ -31,6 +31,7 @@ import {
 import { getSummary, getReferralHistory, getLevelIncomeHistory, getIncentiveHistory } from '../../services/dashboardService';
 import { uploadAvatar } from '../../services/authService';
 import { myDeposits } from '../../services/depositService';
+import { myWithdrawals } from '../../services/withdrawalService';
 import { myTransactions } from '../../services/walletService';
 import GlossyStatCard from '../../components/GlossyStatCard';
 import UserProfileCard from '../../components/UserProfileCard';
@@ -161,15 +162,17 @@ export default function DashboardPage() {
         { header: 'Balance After', cell: (t) => `$${t.balanceAfter.toFixed(2)}` },
       ],
     },
-    withdrawalBalance: {
-      title: 'Withdrawal Wallet Transactions',
-      fetch: () => myTransactions('withdrawal').then((res) => res.transactions),
+    totalWithdrawal: {
+      title: 'Withdrawal History',
+      fetch: () => myWithdrawals().then((res) => res.withdrawals),
       columns: [
-        { header: 'Date', cell: (t) => new Date(t.createdAt).toLocaleString() },
-        { header: 'Type', cell: (t) => <Badge color={t.type === 'credit' ? 'green' : 'red'}>{t.type}</Badge> },
-        { header: 'Description', cell: (t) => t.description },
-        { header: 'Amount', cell: (t) => `$${t.amount.toFixed(2)}` },
-        { header: 'Balance After', cell: (t) => `$${t.balanceAfter.toFixed(2)}` },
+        { header: 'Amount', cell: (w) => `$${w.amount.toFixed(2)}` },
+        { header: 'Wallet Address', cell: (w) => w.walletAddress },
+        {
+          header: 'Status',
+          cell: (w) => <Badge color={w.status === 'paid' ? 'green' : w.status === 'rejected' ? 'red' : 'yellow'}>{w.status}</Badge>,
+        },
+        { header: 'Date', cell: (w) => new Date(w.createdAt).toLocaleString() },
       ],
     },
     activePackages: {
@@ -289,11 +292,11 @@ export default function DashboardPage() {
           onView={() => openHistory('depositBalance')}
         />
         <GlossyStatCard
-          label="Withdrawal Balance"
-          value={`$${summary.wallet.withdrawalBalance.toFixed(2)}`}
+          label="Total Withdrawal"
+          value={`$${summary.totalWithdrawn.toFixed(2)}`}
           color="gold"
           icon={IconArrowDownCircle}
-          onView={() => openHistory('withdrawalBalance')}
+          onView={() => openHistory('totalWithdrawal')}
         />
         <GlossyStatCard
           label="Active Packages"
