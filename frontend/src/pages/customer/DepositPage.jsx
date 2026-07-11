@@ -111,11 +111,18 @@ export default function DepositPage() {
 
       <Card p="lg" className={`${glossy.card} ${glossy.blue}`}>
         <Group justify="space-between" align="center" wrap="wrap">
-          <div>
+          <div style={{ flex: '1 1 240px', minWidth: 0 }}>
             <Text size="sm" className={glossy.label} mb={6}>
               Company Deposit Wallet Address (USDT · BEP20 - BNB Smart Chain)
             </Text>
-            <Text ff="monospace" fw={600} size="lg" className={glossy.value} mb="sm">
+            <Text
+              ff="monospace"
+              fw={600}
+              size="lg"
+              className={glossy.value}
+              mb="sm"
+              style={{ wordBreak: 'break-all', overflowWrap: 'anywhere' }}
+            >
               {companyWallet || 'Not configured yet'}
             </Text>
             {companyWallet && (
