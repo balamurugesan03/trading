@@ -143,3 +143,20 @@
   --accent-soft: rgba(160, 160, 160, 0.12);
   --accent-text: #c7c7c7;
 }
+/* Customer luxury theme accent - see DashboardPage.jsx */
+.gold {
+  --accent: rgba(212, 175, 55, 0.45);
+  --accent-border: rgba(212, 175, 55, 0.4);
+  --accent-glow: rgba(255, 216, 107, 0.22);
+  --accent-soft: rgba(212, 175, 55, 0.14);
+  --accent-text: #ffd86b;
+}
+
+.gold .label {
+  color: rgba(255, 216, 107, 0.7);
+}
+
+.gold .value {
+  color: #ffd86b;
+  text-shadow: 0 0 18px rgba(212, 175, 55, 0.35);
+}

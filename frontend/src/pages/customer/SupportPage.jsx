@@ -104,7 +104,7 @@ export default function SupportPage() {
                 return (
                   <Group key={m._id} justify={mine ? 'flex-end' : 'flex-start'} align="flex-end" gap={8} wrap="nowrap">
                     {!mine && (
-                      <ThemeIcon size={26} radius="xl" variant="light" color="blue" style={{ flexShrink: 0 }}>
+                      <ThemeIcon size={26} radius="xl" variant="light" color="gold" style={{ flexShrink: 0 }}>
                         <IconHeadset size={14} />
                       </ThemeIcon>
                     )}
@@ -114,9 +114,9 @@ export default function SupportPage() {
                         padding: '8px 12px',
                         borderRadius: 14,
                         background: mine
-                          ? 'linear-gradient(135deg, #00d9ff, #8b5cf6)'
-                          : 'rgba(255, 255, 255, 0.06)',
-                        color: mine ? '#fff' : 'inherit',
+                          ? 'linear-gradient(135deg, #FFD86B, #D4AF37)'
+                          : 'rgba(212, 175, 55, 0.08)',
+                        color: mine ? '#1a1408' : 'inherit',
                         borderBottomRightRadius: mine ? 4 : 14,
                         borderBottomLeftRadius: mine ? 14 : 4,
                       }}

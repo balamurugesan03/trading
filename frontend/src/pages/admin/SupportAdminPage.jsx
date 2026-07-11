@@ -128,7 +128,7 @@ export default function SupportAdminPage() {
   return (
     <Stack h="calc(100vh - 120px)">
       <Group gap="xs">
-        <ThemeIcon size={34} radius="md" variant="light" color="blue">
+        <ThemeIcon size={34} radius="md" variant="light" color="gold">
           <IconHeadset size={19} />
         </ThemeIcon>
         <Title order={2}>Customer Support</Title>
@@ -202,7 +202,7 @@ export default function SupportAdminPage() {
           ) : (
             <>
               <Group p="sm" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <ThemeIcon size={30} radius="xl" variant="filled" color="blue">
+                <ThemeIcon size={30} radius="xl" variant="filled" color="gold">
                   <Text size={11} fw={700}>
                     {getInitials(selectedCustomer?.name)}
                   </Text>
@@ -234,9 +234,9 @@ export default function SupportAdminPage() {
                               padding: '8px 12px',
                               borderRadius: 14,
                               background: mine
-                                ? 'linear-gradient(135deg, #2f7dfb, #62a6ff)'
-                                : 'rgba(255, 255, 255, 0.06)',
-                              color: mine ? '#fff' : 'inherit',
+                                ? 'linear-gradient(135deg, #FFD86B, #D4AF37)'
+                                : 'rgba(212, 175, 55, 0.08)',
+                              color: mine ? '#1a1408' : 'inherit',
                               borderBottomRightRadius: mine ? 4 : 14,
                               borderBottomLeftRadius: mine ? 14 : 4,
                             }}
@@ -266,7 +266,7 @@ export default function SupportAdminPage() {
                   maxRows={4}
                   style={{ flex: 1 }}
                 />
-                <ActionIcon size={38} radius="md" variant="filled" color="blue" onClick={handleSend} loading={sending} disabled={!text.trim()}>
+                <ActionIcon size={38} radius="md" variant="filled" color="gold" onClick={handleSend} loading={sending} disabled={!text.trim()}>
                   <IconSend size={17} />
                 </ActionIcon>
               </Group>

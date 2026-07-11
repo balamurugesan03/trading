@@ -42,11 +42,20 @@ export default function GlossyStatCard({ label, value, color = 'blue', icon: Ico
           {onView && (
             <Button
               size="compact-xs"
-              variant="white"
+              variant={color === 'gold' ? 'filled' : 'white'}
               color={color}
               mt={8}
               onClick={onView}
-              style={{ position: 'relative', zIndex: 2 }}
+              style={
+                color === 'gold'
+                  ? {
+                      position: 'relative',
+                      zIndex: 2,
+                      background: 'linear-gradient(135deg, #FFD86B, #D4AF37)',
+                      color: '#1a1408',
+                    }
+                  : { position: 'relative', zIndex: 2 }
+              }
             >
               View
             </Button>

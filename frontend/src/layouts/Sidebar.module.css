@@ -7,9 +7,41 @@
   border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Customer panel gets a deep-blue-tinted sidebar instead of the admin's near-black one. */
+/* Customer panel gets a luxury black-and-gold sidebar instead of the admin's near-black one. */
 .navbarCustomer {
-  background: linear-gradient(180deg, #0b1530 0%, #05070d 100%);
+  background: linear-gradient(180deg, #14100a 0%, #0b0b0b 100%);
+  border-right-color: rgba(212, 175, 55, 0.14);
+}
+
+.navbarCustomer .brandMark {
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.55));
+}
+
+.navbarCustomer .brandText {
+  background: linear-gradient(135deg, #fff6df, #ffd86b 55%, #d4af37);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.navbarCustomer .navItemActive,
+.navbarCustomer .navItemActive:hover {
+  background: linear-gradient(135deg, rgba(255, 216, 107, 0.95), rgba(212, 175, 55, 0.9));
+  color: #1a1408;
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.32);
+}
+
+.navbarCustomer .footer {
+  border-top-color: rgba(212, 175, 55, 0.14);
+}
+
+.navbarCustomer .userCard {
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.navbarCustomer .avatar {
+  background: linear-gradient(135deg, #ffd86b, #d4af37);
+  color: #1a1408;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
 }
 
 .brand {

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { AppShell, Burger, Group, Badge, Menu, UnstyledButton, ActionIcon, Indicator, Text, Button } from '@mantine/core';
+import { AppShell, Burger, Group, Badge, Menu, UnstyledButton, ActionIcon, Indicator, Text, Button, MantineProvider } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
+import { luxuryTheme } from '../theme.js';
 import {
   IconDashboard,
   IconCash,
@@ -103,6 +104,8 @@ export default function CustomerLayout() {
   };
 
   return (
+    <MantineProvider theme={luxuryTheme} cssVariablesSelector=".velocity-luxury" forceColorScheme="dark">
+    <div className="velocity-luxury">
     <AppShell
       header={{ height: isImpersonating ? 96 : 60 }}
       navbar={{ width: 250, breakpoint: 'sm', collapsed: { mobile: !opened } }}
@@ -110,8 +113,8 @@ export default function CustomerLayout() {
     >
       <AppShell.Header
         style={{
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          background: 'linear-gradient(180deg, rgba(10, 22, 46, 0.85), rgba(5, 8, 16, 0.75))',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.22)',
+          background: 'linear-gradient(180deg, rgba(20, 16, 8, 0.92), rgba(5, 4, 3, 0.85))',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
         }}
@@ -154,14 +157,14 @@ export default function CustomerLayout() {
                         width: 32,
                         height: 32,
                         borderRadius: 8,
-                        background: 'linear-gradient(135deg, #00d9ff, #2f7dfb)',
+                        background: 'linear-gradient(135deg, #FFD86B, #D4AF37)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        color: '#fff',
+                        color: '#1a1408',
                         fontWeight: 700,
                         fontSize: 13,
-                        boxShadow: '0 4px 12px rgba(0, 217, 255, 0.35)',
+                        boxShadow: '0 4px 12px rgba(212, 175, 55, 0.4)',
                       }}
                     >
                       {getInitials(user?.name)}
@@ -181,7 +184,7 @@ export default function CustomerLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none', background: '#050b16' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: '#0b0b0b' }}>
         <Sidebar
           brandSubtitle="Investment Platform"
           groups={buildGroups(supportUnread)}
@@ -195,13 +198,14 @@ export default function CustomerLayout() {
       <AppShell.Main
         style={{
           background: `
-            linear-gradient(rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 100% 56px,
-            linear-gradient(90deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px) 0 0 / 56px 100%,
-            radial-gradient(1200px 680px at 100% -8%, rgba(0, 217, 255, 0.20), transparent 55%),
-            radial-gradient(950px 560px at -10% 10%, rgba(47, 125, 251, 0.18), transparent 52%),
-            radial-gradient(700px 480px at 8% 100%, rgba(47, 125, 251, 0.07), transparent 55%),
-            radial-gradient(900px 560px at 55% 120%, rgba(0, 217, 255, 0.08), transparent 60%),
-            linear-gradient(160deg, #0b1530 0%, #081026 45%, #05070d 100%)
+            linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px) 0 0 / 100% 56px,
+            linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px) 0 0 / 56px 100%,
+            linear-gradient(115deg, transparent 46%, rgba(212, 175, 55, 0.05) 50%, transparent 54%) 0 0 / 220px 220px,
+            radial-gradient(1200px 680px at 100% -8%, rgba(212, 175, 55, 0.16), transparent 55%),
+            radial-gradient(950px 560px at -10% 10%, rgba(255, 216, 107, 0.08), transparent 52%),
+            radial-gradient(700px 480px at 8% 100%, rgba(212, 175, 55, 0.06), transparent 55%),
+            radial-gradient(900px 560px at 55% 120%, rgba(255, 216, 107, 0.05), transparent 60%),
+            linear-gradient(160deg, #14100a 0%, #0d0a06 45%, #0b0b0b 100%)
           `,
           backgroundAttachment: 'fixed',
         }}
@@ -211,5 +215,7 @@ export default function CustomerLayout() {
         </div>
       </AppShell.Main>
     </AppShell>
+    </div>
+    </MantineProvider>
   );
 }

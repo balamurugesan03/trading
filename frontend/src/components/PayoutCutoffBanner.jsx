@@ -54,7 +54,7 @@ export default function PayoutCutoffBanner() {
     <Card withBorder radius="md" p="md" style={{ borderColor: isOpen ? undefined : 'var(--mantine-color-orange-6)' }}>
       <Group justify="space-between" wrap="wrap">
         <Group gap="sm" wrap="nowrap">
-          <ThemeIcon size={38} radius="xl" variant="light" color={isOpen ? 'teal' : 'orange'}>
+          <ThemeIcon size={38} radius="xl" variant="light" color={isOpen ? 'gold' : 'orange'}>
             {isOpen ? <IconClockHour4 size={20} /> : <IconClockPause size={20} />}
           </ThemeIcon>
           <div>

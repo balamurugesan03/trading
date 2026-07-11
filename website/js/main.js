@@ -197,28 +197,6 @@ async function loadPackages() {
   }
 }
 
-// Referral level cards
-gsap.set('.level-card', { opacity: 0, scale: 0.85 });
-gsap.to('.level-card', {
-  opacity: 1,
-  scale: 1,
-  duration: 0.6,
-  stagger: 0.15,
-  ease: 'back.out(1.6)',
-  scrollTrigger: { trigger: '.referral-visual', start: 'top 80%' },
-});
-gsap.to('.level-card', { y: '+=8', duration: 2.8, repeat: -1, yoyo: true, ease: 'sine.inOut', stagger: { each: 0.3, from: 'random' } });
-gsap.fromTo(
-  '.level-lines path',
-  { opacity: 0 },
-  {
-    opacity: 0.5,
-    duration: 1,
-    stagger: 0.15,
-    scrollTrigger: { trigger: '.referral-visual', start: 'top 75%' },
-  }
-);
-
 // ---------- Counters ----------
 document.querySelectorAll('[data-counter]').forEach((el) => {
   const target = parseFloat(el.getAttribute('data-counter'));

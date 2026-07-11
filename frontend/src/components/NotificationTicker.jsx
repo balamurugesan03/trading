@@ -27,7 +27,7 @@ export default function NotificationTicker() {
 
   return (
     <div className={classes.wrap}>
-      <ThemeIcon size={30} radius="xl" variant="light" color="blue" className={classes.icon}>
+      <ThemeIcon size={30} radius="xl" variant="light" color="gold" className={classes.icon}>
         <IconSpeakerphone size={16} />
       </ThemeIcon>
       <div className={classes.track}>

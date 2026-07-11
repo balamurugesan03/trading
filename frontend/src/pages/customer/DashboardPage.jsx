@@ -234,7 +234,7 @@ export default function DashboardPage() {
               <Button
                 size="xs"
                 variant="light"
-                color={copied ? 'teal' : 'blue'}
+                color={copied ? 'teal' : 'gold'}
                 leftSection={copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
                 onClick={copy}
               >
@@ -249,56 +249,56 @@ export default function DashboardPage() {
         <GlossyStatCard
           label="Total Invested"
           value={`$${summary.totalInvested.toFixed(2)}`}
-          color="blue"
+          color="gold"
           icon={IconWallet}
           onView={() => openHistory('totalInvested')}
         />
         <GlossyStatCard
           label="Total ROI Earned"
           value={`$${summary.totalRoiEarned.toFixed(2)}`}
-          color="green"
+          color="gold"
           icon={IconTrendingUp}
           onView={() => openHistory('totalRoi')}
         />
         <GlossyStatCard
           label="Referral Income"
           value={`$${summary.referralIncome.toFixed(2)}`}
-          color="grape"
+          color="gold"
           icon={IconUsers}
           onView={() => openHistory('referralIncome')}
         />
         <GlossyStatCard
           label="Level Income"
           value={`$${summary.levelIncome.toFixed(2)}`}
-          color="indigo"
+          color="gold"
           icon={IconGitBranch}
           onView={() => openHistory('levelIncome')}
         />
         <GlossyStatCard
           label="Monthly Incentives"
           value={`$${summary.monthlyIncentiveIncome.toFixed(2)}`}
-          color="orange"
+          color="gold"
           icon={IconAward}
           onView={() => openHistory('monthlyIncentive')}
         />
         <GlossyStatCard
           label="Deposit Balance"
           value={`$${summary.wallet.depositBalance.toFixed(2)}`}
-          color="dark"
+          color="gold"
           icon={IconCash}
           onView={() => openHistory('depositBalance')}
         />
         <GlossyStatCard
           label="Withdrawal Balance"
           value={`$${summary.wallet.withdrawalBalance.toFixed(2)}`}
-          color="teal"
+          color="gold"
           icon={IconArrowDownCircle}
           onView={() => openHistory('withdrawalBalance')}
         />
         <GlossyStatCard
           label="Active Packages"
           value={summary.activePackages}
-          color="red"
+          color="gold"
           icon={IconBox}
           onView={() => openHistory('activePackages')}
         />

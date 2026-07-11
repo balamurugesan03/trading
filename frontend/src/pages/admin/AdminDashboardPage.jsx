@@ -73,7 +73,7 @@ export default function AdminDashboardPage() {
       fetch: () => listTodayTransactions().then((res) => res.transactions),
       columns: [
         { header: 'User', cell: (t) => t.user?.name || '-' },
-        { header: 'Source', cell: (t) => <Badge color="blue">{t.source.replace('_', ' ')}</Badge> },
+        { header: 'Source', cell: (t) => <Badge color="gold">{t.source.replace('_', ' ')}</Badge> },
         { header: 'Amount', cell: (t) => `$${t.amount.toFixed(2)}` },
         { header: 'Time', cell: (t) => new Date(t.createdAt).toLocaleTimeString() },
       ],
@@ -155,28 +155,28 @@ export default function AdminDashboardPage() {
           <GlossyStatCard
             label="ROI Payout Today"
             value={`$${report.roiPayoutToday.toFixed(2)}`}
-            color="green"
+            color="gold"
             icon={IconCoin}
             onView={() => openHistory('roiPayoutToday')}
           />
           <GlossyStatCard
             label="Level Income Today"
             value={`$${report.levelIncomeToday.toFixed(2)}`}
-            color="indigo"
+            color="gold"
             icon={IconGitBranch}
             onView={() => openHistory('levelIncomeToday')}
           />
           <GlossyStatCard
             label="Monthly Incentive Today"
             value={`$${report.monthlyIncentiveToday.toFixed(2)}`}
-            color="red"
+            color="gold"
             icon={IconAward}
             onView={() => openHistory('monthlyIncentiveToday')}
           />
           <GlossyStatCard
             label="Total Company Payout"
             value={`$${report.totalCompanyPayoutToday.toFixed(2)}`}
-            color="dark"
+            color="gold"
             icon={IconReceipt2}
             onView={() => openHistory('totalCompanyPayoutToday')}
           />
@@ -190,84 +190,84 @@ export default function AdminDashboardPage() {
         <GlossyStatCard
           label="Total Users"
           value={report.totalUsers}
-          color="blue"
+          color="gold"
           icon={IconUsers}
           onView={() => navigate('/admin/users')}
         />
         <GlossyStatCard
           label="Active Users"
           value={report.activeUsers}
-          color="green"
+          color="gold"
           icon={IconUserCheck}
           onView={() => navigate('/admin/users?status=active')}
         />
         <GlossyStatCard
           label="Pending Activation"
           value={report.pendingActivation}
-          color="yellow"
+          color="gold"
           icon={IconClock}
           onView={() => navigate('/admin/users?status=pending_activation')}
         />
         <GlossyStatCard
           label="Total Invested"
           value={`$${report.totalInvested.toFixed(2)}`}
-          color="dark"
+          color="gold"
           icon={IconWallet}
           onView={() => openHistory('totalInvested')}
         />
         <GlossyStatCard
           label="Active Investments"
           value={report.activeInvestments}
-          color="teal"
+          color="gold"
           icon={IconTrendingUp}
           onView={() => openHistory('activeInvestments')}
         />
         <GlossyStatCard
           label="Closed Investments"
           value={report.closedInvestments}
-          color="gray"
+          color="gold"
           icon={IconCircleCheck}
           onView={() => openHistory('closedInvestments')}
         />
         <GlossyStatCard
           label="Total ROI Paid"
           value={`$${report.totalRoiPaid.toFixed(2)}`}
-          color="green"
+          color="gold"
           icon={IconCoin}
           onView={() => openHistory('totalRoiPaid')}
         />
         <GlossyStatCard
           label="Pending Deposits"
           value={report.pendingDeposits}
-          color="orange"
+          color="gold"
           icon={IconCashBanknote}
           onView={() => navigate('/admin/deposits')}
         />
         <GlossyStatCard
           label="Pending Withdrawals"
           value={report.pendingWithdrawals}
-          color="orange"
+          color="gold"
           icon={IconArrowDownCircle}
           onView={() => navigate('/admin/withdrawals')}
         />
         <GlossyStatCard
           label="Total Referral Paid"
           value={`$${report.totalReferralPaid.toFixed(2)}`}
-          color="grape"
+          color="gold"
           icon={IconUsers}
           onView={() => openHistory('totalReferralPaid')}
         />
         <GlossyStatCard
           label="Total Level Paid"
           value={`$${report.totalLevelPaid.toFixed(2)}`}
-          color="indigo"
+          color="gold"
           icon={IconGitBranch}
           onView={() => openHistory('totalLevelPaid')}
         />
         <GlossyStatCard
           label="Total Incentive Paid"
           value={`$${report.totalIncentivePaid.toFixed(2)}`}
-          color="red"
+          color="gold"
           icon={IconAward}
           onView={() => navigate('/admin/incentives')}
         />
