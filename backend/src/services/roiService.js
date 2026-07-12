@@ -59,10 +59,20 @@ async function runDailyRoi() {
   }
 
   const now = new Date();
-  const rate = await RoiRate.findOne({ date: todayKey(now) });
+  let rate = await RoiRate.findOne({ date: todayKey(now) });
   if (!rate) {
-    console.warn(`No ROI rate set for ${todayKey(now)} - skipping ROI run`);
-    return { credited: 0 };
+    // No rate set for today - carry forward the most recent prior day's rate instead of
+    // skipping the run, so a missed admin update doesn't silently stop ROI distribution.
+    const previous = await RoiRate.findOne({ date: { $lt: todayKey(now) } }).sort('-date');
+    if (!previous) {
+      console.warn(`No ROI rate set for ${todayKey(now)} - skipping ROI run`);
+      return { credited: 0 };
+    }
+    rate = await RoiRate.create({
+      date: todayKey(now),
+      percentage: previous.percentage,
+      setBy: previous.setBy,
+    });
   }
 
   // Freeze this rate for the rest of today's payout cycle the first time it's actually used,

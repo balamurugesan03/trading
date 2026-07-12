@@ -30,6 +30,7 @@ export default function LevelSettingsPage() {
         referralBonusPercentage: settings.referralBonusPercentage,
         levelIncomePercentages: settings.levelIncomePercentages,
         levelIncomeCaps: settings.levelIncomeCaps,
+        levelIncomeQualificationBusiness: settings.levelIncomeQualificationBusiness,
         investmentCapMultiplier: settings.investmentCapMultiplier,
         roiStartDelayHours: settings.roiStartDelayHours,
         companyWalletAddress: settings.companyWalletAddress,
@@ -122,6 +123,24 @@ export default function LevelSettingsPage() {
             />
           ))}
         </SimpleGrid>
+      </Card>
+
+      <Card withBorder radius="md" p="md">
+        <Title order={4} mb="sm">
+          Level Income Qualification
+        </Title>
+        <Text size="sm" c="dimmed" mb="xs">
+          An upline only receives level income once their own direct referrals&apos; combined
+          investment volume reaches this amount. Checked independently for each upline on every
+          payout - an upline below this threshold earns nothing from that tier until they cross it.
+        </Text>
+        <NumberInput
+          label="Minimum Direct Business ($)"
+          value={settings.levelIncomeQualificationBusiness}
+          onChange={(v) => setSettings({ ...settings, levelIncomeQualificationBusiness: v })}
+          min={0}
+          w={260}
+        />
       </Card>
 
       <Card withBorder radius="md" p="md">

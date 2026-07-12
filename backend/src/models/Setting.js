@@ -17,6 +17,9 @@ const settingSchema = new Schema(
     roiStartDelayHours: { type: Number, default: 24 },
     monthlyIncentiveMinBusiness: { type: Number, default: 1000 },
     monthlyIncentivePercentage: { type: Number, default: 2 },
+    // An upline only receives level income once their own direct referrals' combined
+    // investment volume reaches this amount - see incomeService.getDirectBusiness.
+    levelIncomeQualificationBusiness: { type: Number, default: 2000 },
     companyWalletAddress: { type: String, default: '' },
     // 24h "HH:mm" in IST (see utils/payoutCutoff.js). Withdrawals requested after this time
     // each day are queued for the next day's payout cycle instead of today's, and it's also
