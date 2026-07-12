@@ -12,18 +12,12 @@ export default function LevelSettingsPage() {
 
   if (!settings) return null;
 
-  const updateLevel = (index, value) => {
-    const levelPercentages = [...settings.levelPercentages];
-    levelPercentages[index] = value;
-    setSettings({ ...settings, levelPercentages });
-  };
-
   const handleSave = async () => {
     try {
       await updateSettings({
         referralBonusPercentage: settings.referralBonusPercentage,
-        levelPercentages: settings.levelPercentages,
-        levelQualificationBusiness: settings.levelQualificationBusiness,
+        levelIncomeCascadePercentage: settings.levelIncomeCascadePercentage,
+        levelIncomeCapPercentage: settings.levelIncomeCapPercentage,
         investmentCapMultiplier: settings.investmentCapMultiplier,
         roiStartDelayHours: settings.roiStartDelayHours,
         companyWalletAddress: settings.companyWalletAddress,
@@ -74,35 +68,40 @@ export default function LevelSettingsPage() {
 
       <Card withBorder radius="md" p="md">
         <Title order={4} mb="sm">
-          Level Income Percentages (of downline ROI)
+          Level Income (cascading, unlimited levels)
         </Title>
-        <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }}>
-          {settings.levelPercentages.map((pct, i) => (
-            <NumberInput
-              key={i}
-              label={`Level ${i + 1}`}
-              value={pct}
-              onChange={(v) => updateLevel(i, v)}
-              min={0}
-              max={100}
-            />
-          ))}
-        </SimpleGrid>
+        <Text size="sm" c="dimmed" mb="xs">
+          Each level earns this % of the level above it&apos;s amount - level 1 earns this % of the
+          downline&apos;s daily ROI, level 2 earns this % of level 1&apos;s amount, and so on up the
+          entire upline chain (at the default 50%: L1=50% of ROI, L2=25%, L3=12.5%, ...).
+        </Text>
+        <NumberInput
+          label="Cascade % per level"
+          value={settings.levelIncomeCascadePercentage}
+          onChange={(v) => setSettings({ ...settings, levelIncomeCascadePercentage: v })}
+          min={0}
+          max={100}
+          w={220}
+        />
       </Card>
 
       <Card withBorder radius="md" p="md">
         <Title order={4} mb="sm">
-          Qualification Rule
+          Per-Leader Level Income Cap
         </Title>
         <Text size="sm" c="dimmed" mb="xs">
-          Minimum direct business a sponsor must generate before deeper levels unlock
+          Maximum total level income any single leader can earn from one downline&apos;s investment,
+          as a % of that investment&apos;s amount. Once a leader hits this cap for a given investment,
+          their payouts from it stop automatically - the investor&apos;s own ROI is unaffected and
+          keeps running until their own 2x cap.
         </Text>
         <NumberInput
-          label="Qualification Business ($)"
-          value={settings.levelQualificationBusiness}
-          onChange={(v) => setSettings({ ...settings, levelQualificationBusiness: v })}
+          label="Cap % of investment"
+          value={settings.levelIncomeCapPercentage}
+          onChange={(v) => setSettings({ ...settings, levelIncomeCapPercentage: v })}
           min={0}
-          w={250}
+          max={100}
+          w={220}
         />
       </Card>
 

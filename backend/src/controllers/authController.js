@@ -51,7 +51,9 @@ const register = catchAsync(async (req, res) => {
     password: hashed,
     referralCode,
     sponsor: sponsor._id,
-    uplineChain: [sponsor._id, ...sponsor.uplineChain].slice(0, 5),
+    // Full ancestor chain, unlimited depth - level income cascades all the way up (see
+    // incomeService.js distributeLevelIncome), so this must not be truncated.
+    uplineChain: [sponsor._id, ...sponsor.uplineChain],
     status: 'pending_activation',
   });
 

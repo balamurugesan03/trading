@@ -1,5 +1,4 @@
 const User = require('../models/User');
-const Investment = require('../models/Investment');
 const Setting = require('../models/Setting');
 const ReferralIncome = require('../models/ReferralIncome');
 const LevelIncome = require('../models/LevelIncome');
@@ -38,52 +37,63 @@ async function payReferralBonus(investment) {
   );
 }
 
-// Sum of all approved investment amounts a user has personally referred (their direct downlines).
-async function getDirectBusiness(userId) {
-  const directs = await User.find({ sponsor: userId }).select('_id');
-  const directIds = directs.map((d) => d._id);
-  if (directIds.length === 0) return 0;
-  const result = await Investment.aggregate([
-    { $match: { user: { $in: directIds } } },
+// Total level income a given leader has already earned from one specific downline
+// investment, across all previous days - used to enforce the per-leader cap below.
+async function getLeaderLevelIncomeSoFar(leaderId, investmentId) {
+  const result = await LevelIncome.aggregate([
+    { $match: { user: leaderId, investment: investmentId } },
     { $group: { _id: null, total: { $sum: '$amount' } } },
   ]);
   return result[0]?.total || 0;
 }
 
-// Distributes level income up to 5 levels from a downline's ROI credit.
-// Level 1 always qualifies via the direct sponsor; each deeper level only unlocks
-// once the level-1 sponsor of that branch has generated the qualification business.
+// Below this, a level's cascaded share is economically meaningless (fractions of a cent) -
+// stops the otherwise-unbounded upline walk once amounts decay into noise.
+const MIN_PAYABLE_AMOUNT = 0.01;
+
+// Distributes level income up the full (unlimited-depth) upline chain from a downline's daily
+// ROI credit. Each level earns levelIncomeCascadePercentage of the level above it's amount
+// (level 1 = that % of the ROI itself, level 2 = that % of level 1's amount, and so on), so it
+// halves (at the 50% default) at every step rather than using a fixed per-level schedule.
+// Each individual leader's total earnings from this one investment are capped at
+// levelIncomeCapPercentage of the investment's amount - once a leader hits that cap, their
+// payouts from this investment stop (partial payment on the day that crosses the cap), but
+// deeper levels are unaffected since their cap is tracked independently.
 async function distributeLevelIncome(investment, roiAmount) {
   const settings = await getSettings();
   if (!settings.levelDistributionEnabled) return;
 
   const user = await User.findById(investment.user);
-  const uplineIds = user.uplineChain.slice(0, 5);
+  const capAmount = (investment.amount * settings.levelIncomeCapPercentage) / 100;
 
-  for (let i = 0; i < uplineIds.length; i += 1) {
+  let tierAmount = roiAmount;
+
+  for (let i = 0; i < user.uplineChain.length; i += 1) {
     const level = i + 1;
-    const uplineId = uplineIds[i];
+    const uplineId = user.uplineChain[i];
 
-    if (level > 1) {
-      const directSponsorId = uplineIds[0];
-      const directBusiness = await getDirectBusiness(directSponsorId);
-      if (directBusiness < settings.levelQualificationBusiness) break;
-    }
+    tierAmount = (tierAmount * settings.levelIncomeCascadePercentage) / 100;
+    if (tierAmount < MIN_PAYABLE_AMOUNT) break;
 
-    const percentage = settings.levelPercentages[i];
-    if (!percentage) continue;
-    const amount = (roiAmount * percentage) / 100;
+    // eslint-disable-next-line no-await-in-loop
+    const alreadyPaid = await getLeaderLevelIncomeSoFar(uplineId, investment._id);
+    if (alreadyPaid >= capAmount) continue; // eslint-disable-line no-continue
 
+    const amount = Math.min(tierAmount, capAmount - alreadyPaid);
+    if (amount < MIN_PAYABLE_AMOUNT) continue; // eslint-disable-line no-continue
+
+    // eslint-disable-next-line no-await-in-loop
     await LevelIncome.create({
       user: uplineId,
       fromUser: user._id,
       investment: investment._id,
       level,
       roiAmount,
-      percentage,
+      percentage: (tierAmount / roiAmount) * 100,
       amount,
     });
 
+    // eslint-disable-next-line no-await-in-loop
     await walletService.credit(
       uplineId,
       'level',
@@ -95,4 +105,4 @@ async function distributeLevelIncome(investment, roiAmount) {
   }
 }
 
-module.exports = { getSettings, payReferralBonus, getDirectBusiness, distributeLevelIncome };
+module.exports = { getSettings, payReferralBonus, distributeLevelIncome };

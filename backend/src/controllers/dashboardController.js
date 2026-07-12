@@ -82,7 +82,7 @@ const summary = catchAsync(async (req, res) => {
   });
 });
 
-// Whole downline up to 5 levels (uplineChain is capped at 5 on registration - see authController).
+// Whole downline, unlimited depth (uplineChain is the full ancestor chain - see authController).
 // A member's level relative to the requesting user is their position of req.user's id in that
 // member's own uplineChain, so the same query naturally reconstructs the referral tree.
 const team = catchAsync(async (req, res) => {
