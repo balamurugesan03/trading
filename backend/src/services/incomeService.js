@@ -47,33 +47,33 @@ async function getLeaderLevelIncomeSoFar(leaderId, investmentId) {
   return result[0]?.total || 0;
 }
 
-// Below this, a level's cascaded share is economically meaningless (fractions of a cent) -
-// stops the otherwise-unbounded upline walk once amounts decay into noise.
+// Below this, a level's share is economically meaningless (fractions of a cent).
 const MIN_PAYABLE_AMOUNT = 0.01;
 
-// Distributes level income up the full (unlimited-depth) upline chain from a downline's daily
-// ROI credit. Each level earns levelIncomeCascadePercentage of the level above it's amount
-// (level 1 = that % of the ROI itself, level 2 = that % of level 1's amount, and so on), so it
-// halves (at the 50% default) at every step rather than using a fixed per-level schedule.
-// Each individual leader's total earnings from this one investment are capped at
-// levelIncomeCapPercentage of the investment's amount - once a leader hits that cap, their
-// payouts from this investment stop (partial payment on the day that crosses the cap), but
-// deeper levels are unaffected since their cap is tracked independently.
+// Distributes level income up to 5 levels of the upline chain from a downline's daily ROI
+// credit. Each level earns a flat % of the ROI itself (levelIncomePercentages[level-1] - not
+// cascaded from the level above), and each level's total earnings from this one investment are
+// capped at a flat % of the investment (levelIncomeCaps[level-1]). The cap/payout ratio is the
+// same across levels by default (0.3), so every level reaches its own cap in the same number of
+// days despite earning different daily amounts - see LevelSettingsPage.jsx. Once a leader hits
+// their level's cap, their payouts from this investment stop (partial payment on the day that
+// crosses the cap); other levels are unaffected since each level's cap is tracked independently.
 async function distributeLevelIncome(investment, roiAmount) {
   const settings = await getSettings();
   if (!settings.levelDistributionEnabled) return;
 
   const user = await User.findById(investment.user);
-  const capAmount = (investment.amount * settings.levelIncomeCapPercentage) / 100;
+  const levelCount = Math.min(user.uplineChain.length, settings.levelIncomePercentages.length);
 
-  let tierAmount = roiAmount;
-
-  for (let i = 0; i < user.uplineChain.length; i += 1) {
+  for (let i = 0; i < levelCount; i += 1) {
     const level = i + 1;
     const uplineId = user.uplineChain[i];
 
-    tierAmount = (tierAmount * settings.levelIncomeCascadePercentage) / 100;
-    if (tierAmount < MIN_PAYABLE_AMOUNT) break;
+    const payoutPercentage = settings.levelIncomePercentages[i];
+    const tierAmount = (roiAmount * payoutPercentage) / 100;
+    if (tierAmount < MIN_PAYABLE_AMOUNT) continue; // eslint-disable-line no-continue
+
+    const capAmount = (investment.amount * settings.levelIncomeCaps[i]) / 100;
 
     // eslint-disable-next-line no-await-in-loop
     const alreadyPaid = await getLeaderLevelIncomeSoFar(uplineId, investment._id);
@@ -89,7 +89,7 @@ async function distributeLevelIncome(investment, roiAmount) {
       investment: investment._id,
       level,
       roiAmount,
-      percentage: (tierAmount / roiAmount) * 100,
+      percentage: payoutPercentage,
       amount,
     });
 

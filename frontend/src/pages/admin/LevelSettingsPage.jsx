@@ -12,12 +12,24 @@ export default function LevelSettingsPage() {
 
   if (!settings) return null;
 
+  const updateLevelPercentage = (index, value) => {
+    const levelIncomePercentages = [...settings.levelIncomePercentages];
+    levelIncomePercentages[index] = value;
+    setSettings({ ...settings, levelIncomePercentages });
+  };
+
+  const updateLevelCap = (index, value) => {
+    const levelIncomeCaps = [...settings.levelIncomeCaps];
+    levelIncomeCaps[index] = value;
+    setSettings({ ...settings, levelIncomeCaps });
+  };
+
   const handleSave = async () => {
     try {
       await updateSettings({
         referralBonusPercentage: settings.referralBonusPercentage,
-        levelIncomeCascadePercentage: settings.levelIncomeCascadePercentage,
-        levelIncomeCapPercentage: settings.levelIncomeCapPercentage,
+        levelIncomePercentages: settings.levelIncomePercentages,
+        levelIncomeCaps: settings.levelIncomeCaps,
         investmentCapMultiplier: settings.investmentCapMultiplier,
         roiStartDelayHours: settings.roiStartDelayHours,
         companyWalletAddress: settings.companyWalletAddress,
@@ -68,41 +80,48 @@ export default function LevelSettingsPage() {
 
       <Card withBorder radius="md" p="md">
         <Title order={4} mb="sm">
-          Level Income (cascading, unlimited levels)
+          Level Income Percentages (of downline ROI)
         </Title>
         <Text size="sm" c="dimmed" mb="xs">
-          Each level earns this % of the level above it&apos;s amount - level 1 earns this % of the
-          downline&apos;s daily ROI, level 2 earns this % of level 1&apos;s amount, and so on up the
-          entire upline chain (at the default 50%: L1=50% of ROI, L2=25%, L3=12.5%, ...).
+          Each level&apos;s flat daily share of the downline&apos;s ROI (level 1 = direct sponsor).
         </Text>
-        <NumberInput
-          label="Cascade % per level"
-          value={settings.levelIncomeCascadePercentage}
-          onChange={(v) => setSettings({ ...settings, levelIncomeCascadePercentage: v })}
-          min={0}
-          max={100}
-          w={220}
-        />
+        <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }}>
+          {settings.levelIncomePercentages.map((pct, i) => (
+            <NumberInput
+              key={i}
+              label={`Level ${i + 1}`}
+              value={pct}
+              onChange={(v) => updateLevelPercentage(i, v)}
+              min={0}
+              max={100}
+            />
+          ))}
+        </SimpleGrid>
       </Card>
 
       <Card withBorder radius="md" p="md">
         <Title order={4} mb="sm">
-          Per-Leader Level Income Cap
+          Level Income Caps (% of investment)
         </Title>
         <Text size="sm" c="dimmed" mb="xs">
-          Maximum total level income any single leader can earn from one downline&apos;s investment,
-          as a % of that investment&apos;s amount. Once a leader hits this cap for a given investment,
-          their payouts from it stop automatically - the investor&apos;s own ROI is unaffected and
-          keeps running until their own 2x cap.
+          Maximum a level&apos;s leader can earn from one downline&apos;s investment, as a % of that
+          investment&apos;s amount. Once a leader hits their level&apos;s cap, only that level stops -
+          other levels and the investor&apos;s own ROI keep running independently. Set these
+          proportional to the percentages above (default ratio 0.3x) so every level reaches its
+          own cap in about the same number of days despite earning different daily amounts.
         </Text>
-        <NumberInput
-          label="Cap % of investment"
-          value={settings.levelIncomeCapPercentage}
-          onChange={(v) => setSettings({ ...settings, levelIncomeCapPercentage: v })}
-          min={0}
-          max={100}
-          w={220}
-        />
+        <SimpleGrid cols={{ base: 2, xs: 3, sm: 5 }}>
+          {settings.levelIncomeCaps.map((pct, i) => (
+            <NumberInput
+              key={i}
+              label={`Level ${i + 1}`}
+              value={pct}
+              onChange={(v) => updateLevelCap(i, v)}
+              min={0}
+              max={100}
+            />
+          ))}
+        </SimpleGrid>
       </Card>
 
       <Card withBorder radius="md" p="md">

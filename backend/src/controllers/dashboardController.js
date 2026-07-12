@@ -6,9 +6,22 @@ const ReferralIncome = require('../models/ReferralIncome');
 const LevelIncome = require('../models/LevelIncome');
 const MonthlyIncentive = require('../models/MonthlyIncentive');
 const RoiRate = require('../models/RoiRate');
+const Transaction = require('../models/Transaction');
 const catchAsync = require('../utils/catchAsync');
 const { getOrCreateWallet } = require('../services/walletService');
 const { todayKey } = require('../services/roiService');
+
+// The % actually applied on the user's most recently credited ROI payout, not today's
+// admin-configured rate (which may not match what was credited if it wasn't set yet when the
+// cron ran, or if the investor's ROI already stopped for the day/closed) - see DashboardPage.jsx
+// Energy Bar.
+async function getLastCreditedRoiRate(userId) {
+  const lastRoiTx = await Transaction.findOne({ user: userId, source: 'roi_payout' }).sort('-createdAt');
+  if (!lastRoiTx) return null;
+
+  const rate = await RoiRate.findOne({ date: todayKey(lastRoiTx.createdAt) });
+  return rate?.percentage ?? null;
+}
 
 async function sumField(Model, match, field = '$amount') {
   const result = await Model.aggregate([{ $match: match }, { $group: { _id: null, total: { $sum: field } } }]);
@@ -28,7 +41,7 @@ const summary = catchAsync(async (req, res) => {
     depositCount,
     withdrawalCount,
     ,
-    todayRate,
+    lastCreditedRoiRate,
     totalWithdrawn,
   ] = await Promise.all([
     getOrCreateWallet(userId),
@@ -40,7 +53,7 @@ const summary = catchAsync(async (req, res) => {
     Deposit.countDocuments({ user: userId }),
     Withdrawal.countDocuments({ user: userId }),
     req.user.populate('sponsor', 'name'),
-    RoiRate.findOne({ date: todayKey(new Date()) }),
+    getLastCreditedRoiRate(userId),
     // Total amount actually paid out, not the pending/in-flight withdrawal balance (that's
     // already shown in the wallet) - see DashboardPage.jsx "Total Withdrawal" stat card.
     sumField(Withdrawal, { user: userId, status: 'paid' }),
@@ -68,7 +81,7 @@ const summary = catchAsync(async (req, res) => {
       activePackages: activeInvestments.length,
       totalRoiEarned,
       energyProgress,
-      todayRoiRate: todayRate?.percentage ?? null,
+      todayRoiRate: lastCreditedRoiRate,
       referralIncome: referralTotal,
       levelIncome: levelTotal,
       monthlyIncentiveIncome: incentiveTotal,
