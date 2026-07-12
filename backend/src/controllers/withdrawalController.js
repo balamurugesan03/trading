@@ -112,7 +112,9 @@ const getCutoffStatus = catchAsync(async (req, res) => {
 const approveWithdrawal = catchAsync(async (req, res) => {
   const withdrawal = await Withdrawal.findById(req.params.id);
   if (!withdrawal) throw new ApiError(404, 'Withdrawal not found');
-  if (withdrawal.status !== 'pending_approval') throw new ApiError(400, 'Withdrawal not awaiting approval');
+  if (!['pending_approval', 'pending_otp'].includes(withdrawal.status)) {
+    throw new ApiError(400, 'Withdrawal not awaiting approval');
+  }
   if (withdrawal.payoutCycleDate > dateKey(new Date())) {
     throw new ApiError(
       400,
@@ -120,6 +122,8 @@ const approveWithdrawal = catchAsync(async (req, res) => {
     );
   }
 
+  // Admin can approve directly from pending_otp too (bypassing customer OTP verification).
+  withdrawal.otpVerified = true;
   withdrawal.status = 'approved';
   withdrawal.processedBy = req.user._id;
   withdrawal.processedAt = new Date();

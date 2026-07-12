@@ -158,14 +158,19 @@ export default function WithdrawalsAdminPage() {
                 <Table.Td>
                   <Group gap="xs">
                     {w.status === 'pending_otp' && (
-                      <Button
-                        size="xs"
-                        color="red"
-                        variant="light"
-                        onClick={() => setRejectModal({ open: true, id: w._id, reason: '' })}
-                      >
-                        Cancel
-                      </Button>
+                      <>
+                        <Button size="xs" color="green" onClick={() => handleApprove(w._id)}>
+                          Approve
+                        </Button>
+                        <Button
+                          size="xs"
+                          color="red"
+                          variant="light"
+                          onClick={() => setRejectModal({ open: true, id: w._id, reason: '' })}
+                        >
+                          Cancel
+                        </Button>
+                      </>
                     )}
                     {w.status === 'pending_approval' && (
                       <>
