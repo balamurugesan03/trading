@@ -23,6 +23,19 @@ const setTodayRoiRate = catchAsync(async (req, res) => {
   if (percentage === undefined) throw new ApiError(400, 'Percentage is required');
 
   const key = date || todayKey(new Date());
+
+  // Once the cron has already used this date's rate to credit a payout cycle (see
+  // roiService.runDailyRoi), it's locked - editing it here would split one cycle across two
+  // percentages. The new value must go to the next, not-yet-started cycle instead.
+  const existing = await RoiRate.findOne({ date: key });
+  if (existing && existing.locked) {
+    throw new ApiError(
+      400,
+      `The ${key} payout cycle already ran at ${existing.percentage}% and is locked. ` +
+        'Set a rate for the next cycle\'s date instead - it cannot be changed retroactively.'
+    );
+  }
+
   const rate = await RoiRate.findOneAndUpdate(
     { date: key },
     { date: key, percentage, setBy: req.user._id },

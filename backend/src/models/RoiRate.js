@@ -7,6 +7,12 @@ const roiRateSchema = new Schema(
     date: { type: String, required: true, unique: true }, // YYYY-MM-DD
     percentage: { type: Number, required: true },
     setBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    // Set the instant the daily ROI cron first uses this rate to credit a payout cycle (see
+    // roiService.js). Once locked, settingController.setTodayRoiRate refuses further edits to
+    // this date so every investment in the same cycle is credited at the same rate, even if
+    // the admin changes "today's" rate mid-day - the new value only applies from the next cycle.
+    locked: { type: Boolean, default: false },
+    lockedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Title, NumberInput, Button, Stack, Table, Text, Group } from '@mantine/core';
+import { Card, Title, NumberInput, Button, Stack, Table, Text, Group, Badge } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { setTodayRoiRate, listRoiRates } from '../../services/settingService';
 
@@ -50,6 +50,7 @@ export default function RoiSettingsPage() {
             <Table.Tr>
               <Table.Th>Date</Table.Th>
               <Table.Th>Percentage</Table.Th>
+              <Table.Th>Status</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -57,11 +58,18 @@ export default function RoiSettingsPage() {
               <Table.Tr key={r._id}>
                 <Table.Td>{r.date}</Table.Td>
                 <Table.Td>{r.percentage}%</Table.Td>
+                <Table.Td>
+                  {r.locked ? (
+                    <Badge color="gray">Locked - cycle ran</Badge>
+                  ) : (
+                    <Badge color="green">Open - editable</Badge>
+                  )}
+                </Table.Td>
               </Table.Tr>
             ))}
             {rates.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={2}>
+                <Table.Td colSpan={3}>
                   <Text c="dimmed">No rates set yet</Text>
                 </Table.Td>
               </Table.Tr>

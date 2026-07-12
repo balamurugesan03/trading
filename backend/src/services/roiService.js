@@ -65,6 +65,13 @@ async function runDailyRoi() {
     return { credited: 0 };
   }
 
+  // Freeze this rate for the rest of today's payout cycle the first time it's actually used,
+  // so a later admin edit to "today's" rate (see settingController.setTodayRoiRate, which
+  // refuses to edit a locked date) can't split one cycle across two different percentages.
+  if (!rate.locked) {
+    await RoiRate.updateOne({ _id: rate._id, locked: false }, { $set: { locked: true, lockedAt: now } });
+  }
+
   const investments = await Investment.find({
     status: 'active',
     roiStartAt: { $lte: now },

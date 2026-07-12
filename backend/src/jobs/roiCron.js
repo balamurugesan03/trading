@@ -9,6 +9,7 @@ const { getCutoffInfo } = require('../utils/payoutCutoff');
 // day: runDailyRoi's own per-investment same-day check (see roiService.js) makes every run after
 // the first a no-op for anything already credited today.
 function startRoiCron() {
+  
   cron.schedule('* * * * *', async () => {
     try {
       const settings = await getSettings();
