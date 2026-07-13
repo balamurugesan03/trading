@@ -53,16 +53,20 @@ app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'R
 app.use(errorHandler);
 
 // Serve the marketing site (website/) at "/" and the built React app (frontend/dist)
-// for every other route, so `node server.js` alone can serve everything in production
-// without a separate nginx/static-hosting setup.
+// under "/login", so `node server.js` alone can serve everything in production without
+// a separate nginx/static-hosting setup.
 const websiteDir = path.join(__dirname, '../../website');
 const frontendDistDir = path.join(__dirname, '../../frontend/dist');
 
 app.use(express.static(websiteDir, { index: false }));
 app.get('/', (req, res) => res.sendFile(path.join(websiteDir, 'index.html')));
 
-app.use(express.static(frontendDistDir, { index: false }));
-app.get('*', (req, res) => {
+// The frontend is built with Vite base "/login/" (see frontend/vite.config.js), so its
+// index.html references assets as "/login/assets/...". It must be served under that same
+// "/login" prefix, or those asset requests 404 through to the catch-all below and come back
+// as index.html - which the browser then fails to parse as JS ("Unexpected token '<'").
+app.use('/login', express.static(frontendDistDir, { index: false }));
+app.get('/login*', (req, res) => {
   const indexPath = path.join(frontendDistDir, 'index.html');
   if (!fs.existsSync(indexPath)) {
     return res
