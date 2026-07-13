@@ -5,13 +5,19 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const walletService = require('../services/walletService');
 const incomeService = require('../services/incomeService');
-const { sendMail } = require('../services/mailService');
-const { dateKey, getCutoffInfo } = require('../utils/payoutCutoff');
+const { getCutoffInfo } = require('../utils/payoutCutoff');
 
-const OTP_TTL_MINUTES = 10;
+const CAPTCHA_TTL_MINUTES = 10;
 
-function generateOtp() {
-  return crypto.randomInt(100000, 999999).toString();
+// Simple math captcha (e.g. "8 + 5") used to confirm a withdrawal request is human-initiated,
+// in place of emailing a one-time code.
+function generateCaptcha() {
+  const a = crypto.randomInt(1, 20);
+  const b = crypto.randomInt(1, 20);
+  const isAddition = crypto.randomInt(0, 2) === 0;
+  const question = isAddition ? `${a} + ${b}` : `${Math.max(a, b)} - ${Math.min(a, b)}`;
+  const answer = isAddition ? a + b : Math.max(a, b) - Math.min(a, b);
+  return { question, answer };
 }
 
 function notifyUser(userId, title, message) {
@@ -29,35 +35,29 @@ const requestWithdrawal = catchAsync(async (req, res) => {
   const settings = await incomeService.getSettings();
   const { cutoffBucket, payoutCycleDate } = getCutoffInfo(settings.payoutCutoffTime);
 
-  const otpCode = generateOtp();
+  const { question, answer } = generateCaptcha();
   const withdrawal = await Withdrawal.create({
     user: req.user._id,
     amount,
     walletAddress,
-    otpCode,
-    otpExpiresAt: new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000),
+    captchaAnswer: answer,
+    captchaExpiresAt: new Date(Date.now() + CAPTCHA_TTL_MINUTES * 60 * 1000),
     cutoffBucket,
     payoutCycleDate,
   });
 
-  await sendMail({
-    to: req.user.email,
-    subject: 'Withdrawal OTP Verification',
-    text: `Your OTP to confirm a withdrawal of $${amount} is ${otpCode}. It expires in ${OTP_TTL_MINUTES} minutes.`,
-  });
-
-  res.status(201).json({ success: true, withdrawalId: withdrawal._id });
+  res.status(201).json({ success: true, withdrawalId: withdrawal._id, captchaQuestion: question });
 });
 
-const verifyOtp = catchAsync(async (req, res) => {
-  const { otpCode } = req.body;
+const verifyCaptcha = catchAsync(async (req, res) => {
+  const { answer } = req.body;
   const withdrawal = await Withdrawal.findOne({ _id: req.params.id, user: req.user._id });
   if (!withdrawal) throw new ApiError(404, 'Withdrawal not found');
-  if (withdrawal.status !== 'pending_otp') throw new ApiError(400, 'Withdrawal already verified');
-  if (withdrawal.otpExpiresAt < new Date()) throw new ApiError(400, 'OTP expired, please request again');
-  if (withdrawal.otpCode !== otpCode) throw new ApiError(400, 'Invalid OTP');
+  if (withdrawal.status !== 'pending_verification') throw new ApiError(400, 'Withdrawal already verified');
+  if (withdrawal.captchaExpiresAt < new Date()) throw new ApiError(400, 'Verification expired, please request again');
+  if (Number(answer) !== withdrawal.captchaAnswer) throw new ApiError(400, 'Incorrect answer, please try again');
 
-  withdrawal.otpVerified = true;
+  withdrawal.captchaVerified = true;
   withdrawal.status = 'pending_approval';
   await withdrawal.save();
 
@@ -112,18 +112,14 @@ const getCutoffStatus = catchAsync(async (req, res) => {
 const approveWithdrawal = catchAsync(async (req, res) => {
   const withdrawal = await Withdrawal.findById(req.params.id);
   if (!withdrawal) throw new ApiError(404, 'Withdrawal not found');
-  if (!['pending_approval', 'pending_otp'].includes(withdrawal.status)) {
+  if (!['pending_approval', 'pending_verification'].includes(withdrawal.status)) {
     throw new ApiError(400, 'Withdrawal not awaiting approval');
   }
-  if (withdrawal.payoutCycleDate > dateKey(new Date())) {
-    throw new ApiError(
-      400,
-      `This withdrawal is scheduled for the next payout cycle (${withdrawal.payoutCycleDate}) and cannot be approved until then.`
-    );
-  }
 
-  // Admin can approve directly from pending_otp too (bypassing customer OTP verification).
-  withdrawal.otpVerified = true;
+  // Admin can approve any withdrawal at any time, regardless of its assigned payout cycle
+  // date, and can approve directly from pending_verification too (bypassing the customer
+  // captcha step).
+  withdrawal.captchaVerified = true;
   withdrawal.status = 'approved';
   withdrawal.processedBy = req.user._id;
   withdrawal.processedAt = new Date();
@@ -170,7 +166,7 @@ const markPaid = catchAsync(async (req, res) => {
 const rejectWithdrawal = catchAsync(async (req, res) => {
   const withdrawal = await Withdrawal.findById(req.params.id);
   if (!withdrawal) throw new ApiError(404, 'Withdrawal not found');
-  if (!['pending_approval', 'pending_otp'].includes(withdrawal.status)) {
+  if (!['pending_approval', 'pending_verification'].includes(withdrawal.status)) {
     throw new ApiError(400, 'Withdrawal cannot be rejected at this stage');
   }
 
@@ -200,7 +196,7 @@ const rejectWithdrawal = catchAsync(async (req, res) => {
 
 module.exports = {
   requestWithdrawal,
-  verifyOtp,
+  verifyCaptcha,
   myWithdrawals,
   listWithdrawals,
   getCutoffStatus,

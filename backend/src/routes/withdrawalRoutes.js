@@ -1,7 +1,7 @@
 const express = require('express');
 const {
   requestWithdrawal,
-  verifyOtp,
+  verifyCaptcha,
   myWithdrawals,
   listWithdrawals,
   getCutoffStatus,
@@ -15,7 +15,7 @@ const { protect, restrictTo } = require('../middleware/auth');
 const router = express.Router();
 
 router.post('/', protect, requestWithdrawal);
-router.post('/:id/verify-otp', protect, verifyOtp);
+router.post('/:id/verify-captcha', protect, verifyCaptcha);
 router.get('/my', protect, myWithdrawals);
 router.get('/cutoff-status', protect, getCutoffStatus);
 router.get('/', protect, restrictTo('super_admin'), listWithdrawals);

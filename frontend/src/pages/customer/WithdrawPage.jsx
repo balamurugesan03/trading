@@ -21,21 +21,19 @@ import { notifications } from '@mantine/notifications';
 import {
   IconArrowDownCircle,
   IconWallet,
-  IconMailbox,
   IconShieldCheck,
   IconLockOpen,
   IconCash,
   IconInbox,
 } from '@tabler/icons-react';
-import { requestWithdrawal, verifyOtp, myWithdrawals } from '../../services/withdrawalService';
+import { requestWithdrawal, verifyCaptcha, myWithdrawals } from '../../services/withdrawalService';
 import { myWallet } from '../../services/walletService';
 import glossy from '../../components/GlossyStatCard.module.css';
 import PayoutCutoffBanner from '../../components/PayoutCutoffBanner';
 
 const STEPS = [
   { icon: IconArrowDownCircle, text: 'Request a withdrawal with your amount and USDT wallet address' },
-  { icon: IconMailbox, text: 'We email a one-time OTP code to your registered email address' },
-  { icon: IconShieldCheck, text: 'Verify the OTP to confirm the request is really you' },
+  { icon: IconShieldCheck, text: 'Solve a quick verification question to confirm the request is really you' },
   { icon: IconLockOpen, text: 'Admin approves and manually transfers the funds to your wallet' },
 ];
 
@@ -44,7 +42,7 @@ export default function WithdrawPage() {
   const [availableBalance, setAvailableBalance] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [otpModal, setOtpModal] = useState({ open: false, withdrawalId: null, code: '' });
+  const [captchaModal, setCaptchaModal] = useState({ open: false, withdrawalId: null, question: '', answer: '' });
 
   const form = useForm({
     initialValues: { amount: 0, walletAddress: '' },
@@ -66,9 +64,8 @@ export default function WithdrawPage() {
     setError('');
     setLoading(true);
     try {
-      const { withdrawalId } = await requestWithdrawal(values);
-      notifications.show({ title: 'OTP Sent', message: 'Check your email for the OTP code', color: 'blue' });
-      setOtpModal({ open: true, withdrawalId, code: '' });
+      const { withdrawalId, captchaQuestion } = await requestWithdrawal(values);
+      setCaptchaModal({ open: true, withdrawalId, question: captchaQuestion, answer: '' });
       form.reset();
       loadWithdrawals();
       loadWallet();
@@ -79,16 +76,16 @@ export default function WithdrawPage() {
     }
   };
 
-  const handleVerifyOtp = async () => {
+  const handleVerifyCaptcha = async () => {
     try {
-      await verifyOtp(otpModal.withdrawalId, otpModal.code);
+      await verifyCaptcha(captchaModal.withdrawalId, captchaModal.answer);
       notifications.show({ title: 'Verified', message: 'Withdrawal sent for admin approval', color: 'green' });
-      setOtpModal({ open: false, withdrawalId: null, code: '' });
+      setCaptchaModal({ open: false, withdrawalId: null, question: '', answer: '' });
       loadWithdrawals();
     } catch (err) {
       notifications.show({
         title: 'Error',
-        message: err.response?.data?.message || 'Invalid OTP',
+        message: err.response?.data?.message || 'Incorrect answer',
         color: 'red',
       });
     }
@@ -240,9 +237,9 @@ export default function WithdrawPage() {
       </Card>
 
       <Modal
-        opened={otpModal.open}
-        onClose={() => setOtpModal({ open: false, withdrawalId: null, code: '' })}
-        title="Verify OTP"
+        opened={captchaModal.open}
+        onClose={() => setCaptchaModal({ open: false, withdrawalId: null, question: '', answer: '' })}
+        title="Verify You're Human"
         centered
       >
         <Stack align="center">
@@ -250,22 +247,24 @@ export default function WithdrawPage() {
             <IconShieldCheck size={28} />
           </ThemeIcon>
           <Text size="sm" c="dimmed" ta="center">
-            Enter the 6-digit OTP code sent to your registered email.
+            Solve this to confirm your withdrawal request.
+          </Text>
+          <Text size="xl" fw={700}>
+            {captchaModal.question} = ?
           </Text>
           <TextInput
             w="100%"
             ta="center"
             size="lg"
             styles={{ input: { textAlign: 'center', letterSpacing: 6, fontWeight: 700 } }}
-            placeholder="••••••"
-            maxLength={6}
-            value={otpModal.code}
+            placeholder="Answer"
+            value={captchaModal.answer}
             onChange={(e) => {
               const { value } = e.currentTarget;
-              setOtpModal((prev) => ({ ...prev, code: value }));
+              setCaptchaModal((prev) => ({ ...prev, answer: value }));
             }}
           />
-          <Button fullWidth onClick={handleVerifyOtp}>
+          <Button fullWidth onClick={handleVerifyCaptcha}>
             Verify
           </Button>
         </Stack>

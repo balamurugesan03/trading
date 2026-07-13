@@ -10,7 +10,7 @@ import {
 } from '../../services/withdrawalService';
 
 const STATUS_OPTIONS = [
-  { value: 'pending_otp', label: 'Pending OTP' },
+  { value: 'pending_verification', label: 'Pending Verification' },
   { value: 'pending_approval', label: 'Pending Approval' },
   { value: 'approved', label: 'Approved' },
   { value: 'processing', label: 'Processing' },
@@ -157,7 +157,7 @@ export default function WithdrawalsAdminPage() {
                 </Table.Td>
                 <Table.Td>
                   <Group gap="xs">
-                    {w.status === 'pending_otp' && (
+                    {w.status === 'pending_verification' && (
                       <>
                         <Button size="xs" color="green" onClick={() => handleApprove(w._id)}>
                           Approve
