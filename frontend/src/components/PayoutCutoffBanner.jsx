@@ -13,6 +13,8 @@ function formatRemaining(ms) {
   return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 // All eligibility decisions happen server-side (see backend withdrawalController.js) - this
 // widget only displays a countdown. It anchors to the server's clock (fetched once, then
 // re-synced every minute) rather than the browser's own clock, which a user could change.
@@ -20,6 +22,7 @@ export default function PayoutCutoffBanner() {
   const [status, setStatus] = useState(null);
   const [offsetMs, setOffsetMs] = useState(0);
   const [remainingMs, setRemainingMs] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     const load = () =>
@@ -34,11 +37,19 @@ export default function PayoutCutoffBanner() {
     return () => clearInterval(refresh);
   }, []);
 
+  // Cutoff time is a fixed daily "HH:mm" (Asia/Kolkata, no DST - see backend/utils/payoutCutoff.js),
+  // so today's cutoff instant plus 24h reliably gives tomorrow's. Once today's cutoff passes, the
+  // countdown restarts immediately toward that next cutoff instead of sitting idle until midnight;
+  // the next 60s poll re-syncs it if the admin changes the cutoff time mid-cycle.
   useEffect(() => {
     if (!status) return undefined;
+    const cutoffAtMs = new Date(status.cutoffAt).getTime();
     const tick = () => {
       const approxServerNow = Date.now() + offsetMs;
-      setRemainingMs(new Date(status.cutoffAt).getTime() - approxServerNow);
+      const beforeCutoff = approxServerNow < cutoffAtMs;
+      const nextCutoffMs = beforeCutoff ? cutoffAtMs : cutoffAtMs + DAY_MS;
+      setRemainingMs(nextCutoffMs - approxServerNow);
+      setIsOpen(beforeCutoff);
     };
     tick();
     const interval = setInterval(tick, 1000);
@@ -47,7 +58,6 @@ export default function PayoutCutoffBanner() {
 
   if (!status || remainingMs === null) return null;
 
-  const isOpen = remainingMs > 0;
   const cutoffLabel = status.cutoffTime;
 
   return (
@@ -67,8 +77,7 @@ export default function PayoutCutoffBanner() {
               </Text>
             ) : (
               <Text size="xs" c="orange">
-                Today&apos;s payout window has closed. Your withdrawal will be processed in the next payout
-                cycle.
+                Today&apos;s payout window has closed. Next payout cut-off opens in: {formatRemaining(remainingMs)}
               </Text>
             )}
           </div>
