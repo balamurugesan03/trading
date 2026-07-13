@@ -63,21 +63,37 @@ const register = catchAsync(async (req, res) => {
   res.status(201).json({ success: true, token, user: sanitize(user) });
 });
 
-// Login by Customer ID (the account's referralCode, shown to the customer on their
-// dashboard) rather than email - referralCode is unique per account, unlike email which
-// can be shared across up to MAX_ACCOUNTS_PER_EMAIL accounts (see constants/accountLimits.js).
+// Login accepts either the account's email or its Customer ID (referralCode, shown to the
+// customer on their dashboard). Customer ID is unique per account, so it's a direct lookup.
+// Email can be shared across up to MAX_ACCOUNTS_PER_EMAIL accounts (see
+// constants/accountLimits.js), so that path disambiguates by checking the password against
+// each candidate until one matches.
 const login = catchAsync(async (req, res) => {
-  const { customerId, password } = req.body;
-  if (!customerId || !password) throw new ApiError(400, 'Customer ID and password are required');
+  const { identifier, password } = req.body;
+  if (!identifier || !password) throw new ApiError(400, 'Email/Customer ID and password are required');
 
-  const user = await User.findOne({ referralCode: customerId.trim().toUpperCase() });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new ApiError(401, 'Invalid Customer ID or password');
+  const value = identifier.trim();
+  let matched = null;
+
+  if (value.includes('@')) {
+    const candidates = await User.find({ email: value.toLowerCase() });
+    for (const candidate of candidates) {
+      // eslint-disable-next-line no-await-in-loop
+      if (await bcrypt.compare(password, candidate.password)) {
+        matched = candidate;
+        break;
+      }
+    }
+  } else {
+    const user = await User.findOne({ referralCode: value.toUpperCase() });
+    if (user && (await bcrypt.compare(password, user.password))) matched = user;
   }
-  if (user.status === 'suspended') throw new ApiError(403, 'Account suspended');
 
-  const token = signToken(user);
-  res.json({ success: true, token, user: sanitize(user) });
+  if (!matched) throw new ApiError(401, 'Invalid email/Customer ID or password');
+  if (matched.status === 'suspended') throw new ApiError(403, 'Account suspended');
+
+  const token = signToken(matched);
+  res.json({ success: true, token, user: sanitize(matched) });
 });
 
 const me = catchAsync(async (req, res) => {

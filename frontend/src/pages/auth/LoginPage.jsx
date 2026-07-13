@@ -13,9 +13,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
-    initialValues: { customerId: '', password: '' },
+    initialValues: { identifier: '', password: '' },
     validate: {
-      customerId: (v) => (v.trim().length > 0 ? null : 'Enter your Customer ID'),
+      identifier: (v) => (v.trim().length > 0 ? null : 'Enter your email or Customer ID'),
       password: (v) => (v.length >= 6 ? null : 'Password must be at least 6 characters'),
     },
   });
@@ -49,11 +49,11 @@ export default function LoginPage() {
         <Stack>
           {error && <Alert color="red">{error}</Alert>}
           <TextInput
-            label="Customer ID"
-            placeholder="e.g. A1B2C3D4"
+            label="Email or Customer ID"
+            placeholder="you@example.com or A1B2C3D4"
             leftSection={<IconId size={16} />}
             required
-            {...form.getInputProps('customerId')}
+            {...form.getInputProps('identifier')}
           />
           <PasswordInput
             label="Password"
