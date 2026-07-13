@@ -58,14 +58,31 @@ app.use(errorHandler);
 const websiteDir = path.join(__dirname, '../../website');
 const frontendDistDir = path.join(__dirname, '../../frontend/dist');
 
-app.use(express.static(websiteDir, { index: false }));
-app.get('/', (req, res) => res.sendFile(path.join(websiteDir, 'index.html')));
+// Vite fingerprints every built JS/CSS file with a content hash, so those files are safe to
+// cache forever - but index.html itself is not fingerprinted and must always be revalidated.
+// Without this, a browser/CDN that already cached an old index.html keeps requesting JS
+// bundles from a previous build that a later "npm run build" deleted, 404s, falls through to
+// the SPA-fallback route below, and gets index.html back - which fails to parse as JS
+// ("Unexpected token '<'") even though the server itself is serving the current build.
+function setStaticCacheHeaders(res, filePath) {
+  if (filePath.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'no-cache');
+  } else {
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  }
+}
+
+app.use(express.static(websiteDir, { index: false, setHeaders: setStaticCacheHeaders }));
+app.get('/', (req, res) => {
+  res.set('Cache-Control', 'no-cache');
+  res.sendFile(path.join(websiteDir, 'index.html'));
+});
 
 // The frontend is built with Vite base "/login/" (see frontend/vite.config.js), so its
 // index.html references assets as "/login/assets/...". It must be served under that same
 // "/login" prefix, or those asset requests 404 through to the catch-all below and come back
 // as index.html - which the browser then fails to parse as JS ("Unexpected token '<'").
-app.use('/login', express.static(frontendDistDir, { index: false }));
+app.use('/login', express.static(frontendDistDir, { index: false, setHeaders: setStaticCacheHeaders }));
 app.get('/login*', (req, res) => {
   const indexPath = path.join(frontendDistDir, 'index.html');
   if (!fs.existsSync(indexPath)) {
@@ -73,6 +90,7 @@ app.get('/login*', (req, res) => {
       .status(503)
       .send('Frontend build not found. Run "npm run build" in the frontend folder first.');
   }
+  res.set('Cache-Control', 'no-cache');
   res.sendFile(indexPath);
 });
 
