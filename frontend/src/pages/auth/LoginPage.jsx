@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextInput, PasswordInput, Button, Stack, Text, Alert, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { IconMail, IconLock, IconLogin2 } from '@tabler/icons-react';
+import { IconId, IconLock, IconLogin2 } from '@tabler/icons-react';
 import { useAuth } from '../../context/AuthContext';
 import AuthLayout from '../../layouts/AuthLayout';
 
@@ -13,9 +13,9 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
-    initialValues: { email: '', password: '' },
+    initialValues: { customerId: '', password: '' },
     validate: {
-      email: (v) => (/^\S+@\S+$/.test(v) ? null : 'Enter a valid email'),
+      customerId: (v) => (v.trim().length > 0 ? null : 'Enter your Customer ID'),
       password: (v) => (v.length >= 6 ? null : 'Password must be at least 6 characters'),
     },
   });
@@ -49,11 +49,11 @@ export default function LoginPage() {
         <Stack>
           {error && <Alert color="red">{error}</Alert>}
           <TextInput
-            label="Email"
-            placeholder="you@example.com"
-            leftSection={<IconMail size={16} />}
+            label="Customer ID"
+            placeholder="e.g. A1B2C3D4"
+            leftSection={<IconId size={16} />}
             required
-            {...form.getInputProps('email')}
+            {...form.getInputProps('customerId')}
           />
           <PasswordInput
             label="Password"

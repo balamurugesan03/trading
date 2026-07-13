@@ -63,26 +63,21 @@ const register = catchAsync(async (req, res) => {
   res.status(201).json({ success: true, token, user: sanitize(user) });
 });
 
-// Multiple accounts can share an email (see constants/accountLimits.js), so login
-// disambiguates by checking the password against each candidate until one matches.
+// Login by Customer ID (the account's referralCode, shown to the customer on their
+// dashboard) rather than email - referralCode is unique per account, unlike email which
+// can be shared across up to MAX_ACCOUNTS_PER_EMAIL accounts (see constants/accountLimits.js).
 const login = catchAsync(async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) throw new ApiError(400, 'Email and password are required');
+  const { customerId, password } = req.body;
+  if (!customerId || !password) throw new ApiError(400, 'Customer ID and password are required');
 
-  const candidates = await User.find({ email: email.toLowerCase() });
-  let matched = null;
-  for (const candidate of candidates) {
-    // eslint-disable-next-line no-await-in-loop
-    if (await bcrypt.compare(password, candidate.password)) {
-      matched = candidate;
-      break;
-    }
+  const user = await User.findOne({ referralCode: customerId.trim().toUpperCase() });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    throw new ApiError(401, 'Invalid Customer ID or password');
   }
-  if (!matched) throw new ApiError(401, 'Invalid email or password');
-  if (matched.status === 'suspended') throw new ApiError(403, 'Account suspended');
+  if (user.status === 'suspended') throw new ApiError(403, 'Account suspended');
 
-  const token = signToken(matched);
-  res.json({ success: true, token, user: sanitize(matched) });
+  const token = signToken(user);
+  res.json({ success: true, token, user: sanitize(user) });
 });
 
 const me = catchAsync(async (req, res) => {
