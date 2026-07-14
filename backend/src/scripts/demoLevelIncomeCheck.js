@@ -81,9 +81,20 @@ async function run() {
     for (let i = 0; i < levelLabels.length; i += 1) {
       const label = levelLabels[i];
       const leader = users[label];
+      const level = i + 1;
       const pct = settings.levelIncomePercentages[i];
       const capPct = settings.levelIncomeCaps[i];
-      const expectedTier = (roiAmount * pct) / 100;
+
+      // Level 1 has no qualification criteria; Level 2+ only counts the portion of this
+      // investment above levelIncomeQualificationBusiness (this fresh demo chain has zero
+      // prior business, so the whole threshold lands on this one investment).
+      let eligibleRoiAmount = roiAmount;
+      if (level >= 2) {
+        const eligibleInvestmentAmount = Math.max(0, INVESTMENT_AMOUNT - settings.levelIncomeQualificationBusiness);
+        eligibleRoiAmount = (roiAmount * eligibleInvestmentAmount) / INVESTMENT_AMOUNT;
+      }
+
+      const expectedTier = (eligibleRoiAmount * pct) / 100;
       const capAmount = (INVESTMENT_AMOUNT * capPct) / 100;
       const expectedAmount = Math.min(expectedTier, capAmount);
 

@@ -8,6 +8,8 @@ const incomeService = require('../services/incomeService');
 const { getCutoffInfo } = require('../utils/payoutCutoff');
 
 const CAPTCHA_TTL_MINUTES = 10;
+const CREDIT_ETA_MIN_MINUTES = 5;
+const CREDIT_ETA_MAX_MINUTES = 60;
 
 // Simple math captcha (e.g. "8 + 5") used to confirm a withdrawal request is human-initiated,
 // in place of emailing a one-time code.
@@ -36,6 +38,7 @@ const requestWithdrawal = catchAsync(async (req, res) => {
   const { cutoffBucket, payoutCycleDate } = getCutoffInfo(settings.payoutCutoffTime);
 
   const { question, answer } = generateCaptcha();
+  const etaMinutes = crypto.randomInt(CREDIT_ETA_MIN_MINUTES, CREDIT_ETA_MAX_MINUTES + 1);
   const withdrawal = await Withdrawal.create({
     user: req.user._id,
     amount,
@@ -44,6 +47,7 @@ const requestWithdrawal = catchAsync(async (req, res) => {
     captchaExpiresAt: new Date(Date.now() + CAPTCHA_TTL_MINUTES * 60 * 1000),
     cutoffBucket,
     payoutCycleDate,
+    creditEtaAt: new Date(Date.now() + etaMinutes * 60 * 1000),
   });
 
   res.status(201).json({ success: true, withdrawalId: withdrawal._id, captchaQuestion: question });

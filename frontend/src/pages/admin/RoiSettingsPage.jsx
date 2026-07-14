@@ -61,6 +61,8 @@ export default function RoiSettingsPage() {
                 <Table.Td>
                   {r.locked ? (
                     <Badge color="gray">Locked - cycle ran</Badge>
+                  ) : r.edited ? (
+                    <Badge color="orange">Locked - already edited today</Badge>
                   ) : (
                     <Badge color="green">Open - editable</Badge>
                   )}

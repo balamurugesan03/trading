@@ -13,6 +13,10 @@ const roiRateSchema = new Schema(
     // the admin changes "today's" rate mid-day - the new value only applies from the next cycle.
     locked: { type: Boolean, default: false },
     lockedAt: { type: Date, default: null },
+    // True once this date's rate has been changed after its initial creation. Only one such
+    // edit is allowed per date (see settingController.setTodayRoiRate) - a second edit attempt
+    // is rejected and the value from the first edit stands for the rest of the day.
+    edited: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

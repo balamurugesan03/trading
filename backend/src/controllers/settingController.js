@@ -36,11 +36,22 @@ const setTodayRoiRate = catchAsync(async (req, res) => {
     );
   }
 
-  const rate = await RoiRate.findOneAndUpdate(
-    { date: key },
-    { date: key, percentage, setBy: req.user._id },
-    { upsert: true, new: true }
-  );
+  // Only one edit is allowed per date after its initial creation - the first "Set Rate" call
+  // isn't an edit, but changing it again the same day is, and a second change attempt is
+  // rejected so the rate from that one edit stands for the rest of the day.
+  if (existing && existing.edited) {
+    throw new ApiError(
+      400,
+      `The rate for ${key} has already been edited once today and is locked at ` +
+        `${existing.percentage}%. It can only be changed again from tomorrow.`
+    );
+  }
+
+  const update = existing
+    ? { percentage, setBy: req.user._id, edited: true }
+    : { date: key, percentage, setBy: req.user._id };
+
+  const rate = await RoiRate.findOneAndUpdate({ date: key }, update, { upsert: true, new: true });
 
   res.json({ success: true, rate });
 });

@@ -23,6 +23,10 @@ const withdrawalSchema = new Schema(
     // the server clock only (see utils/payoutCutoff.js) and never change afterwards.
     cutoffBucket: { type: String, enum: ['before_cutoff', 'after_cutoff'], required: true },
     payoutCycleDate: { type: String, required: true }, // "YYYY-MM-DD", server local time
+    // Cosmetic display-only ETA shown to the customer as a countdown ("credited within..."),
+    // randomized 5-60 min at request time. Purely UI messaging - actual crediting still
+    // requires admin approval/processing/markPaid and is never driven by this timer.
+    creditEtaAt: { type: Date, required: true },
   },
   { timestamps: true }
 );

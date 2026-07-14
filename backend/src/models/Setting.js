@@ -17,8 +17,10 @@ const settingSchema = new Schema(
     roiStartDelayHours: { type: Number, default: 24 },
     monthlyIncentiveMinBusiness: { type: Number, default: 1000 },
     monthlyIncentivePercentage: { type: Number, default: 2 },
-    // An upline only receives level income once their own direct referrals' combined
-    // investment volume reaches this amount - see incomeService.getDirectBusiness.
+    // Level 1 (direct sponsor) always earns level income on the full ROI. For Level 2+, this
+    // is netted against the upline's entire downline business (any depth): only the portion of
+    // team business above this threshold earns that level's income - see
+    // incomeService.distributeLevelIncome.
     levelIncomeQualificationBusiness: { type: Number, default: 2000 },
     companyWalletAddress: { type: String, default: '' },
     // 24h "HH:mm" in IST (see utils/payoutCutoff.js). Withdrawals requested after this time

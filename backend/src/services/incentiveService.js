@@ -16,9 +16,13 @@ function monthRange(key) {
   return { start, end };
 }
 
-// For a given month, credits every qualifying user's monthly incentive
-// (direct business >= threshold -> percentage reward), then sweeps the
+// For a given month, credits every qualifying user's monthly incentive, then sweeps the
 // entire incentive wallet into the withdrawal wallet and resets it.
+//
+// The threshold is a once-per-month deduction, not a pass/fail gate on the reward itself:
+// once direct business for the month reaches monthlyIncentiveMinBusiness, the percentage
+// applies only to the business ABOVE that threshold. e.g. $2000 direct business with a
+// $1000 threshold and 2% rate pays 2% of the $1000 excess ($20), not 2% of the full $2000.
 async function runMonthlyIncentiveCycle(key = monthKey(new Date(Date.now() - 24 * 60 * 60 * 1000))) {
   const settings = await getSettings();
   if (!settings.incentiveDistributionEnabled) {
@@ -46,7 +50,8 @@ async function runMonthlyIncentiveCycle(key = monthKey(new Date(Date.now() - 24 
     const exists = await MonthlyIncentive.findOne({ user: user._id, month: key });
     if (exists) continue; // eslint-disable-line no-continue
 
-    const rewardAmount = (directBusiness * settings.monthlyIncentivePercentage) / 100;
+    const eligibleBusiness = directBusiness - settings.monthlyIncentiveMinBusiness;
+    const rewardAmount = (eligibleBusiness * settings.monthlyIncentivePercentage) / 100;
 
     await MonthlyIncentive.create({
       user: user._id,

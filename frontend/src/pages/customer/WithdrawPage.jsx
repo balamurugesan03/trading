@@ -25,6 +25,7 @@ import {
   IconLockOpen,
   IconCash,
   IconInbox,
+  IconClock,
 } from '@tabler/icons-react';
 import { requestWithdrawal, verifyCaptcha, myWithdrawals } from '../../services/withdrawalService';
 import { myWallet } from '../../services/walletService';
@@ -37,12 +38,32 @@ const STEPS = [
   { icon: IconLockOpen, text: 'Admin approves and manually transfers the funds to your wallet' },
 ];
 
+// Cosmetic countdown only - "Credited"/"-" for finished requests, otherwise a live mm:ss/hh:mm
+// countdown to the request's creditEtaAt. Purely a display estimate; the backend status
+// (pending/approved/processing/paid) is what actually drives the withdrawal.
+function formatEta(withdrawal, now) {
+  if (withdrawal.status === 'paid') return 'Credited';
+  if (withdrawal.status === 'rejected') return '-';
+
+  const remainingMs = new Date(withdrawal.creditEtaAt).getTime() - now;
+  if (remainingMs <= 0) return 'Any moment now';
+
+  const totalSeconds = Math.floor(remainingMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  if (hours > 0) return `${hours}h ${String(minutes).padStart(2, '0')}m`;
+  return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+}
+
 export default function WithdrawPage() {
   const [withdrawals, setWithdrawals] = useState([]);
   const [availableBalance, setAvailableBalance] = useState(0);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [captchaModal, setCaptchaModal] = useState({ open: false, withdrawalId: null, question: '', answer: '' });
+  const [now, setNow] = useState(() => Date.now());
 
   const form = useForm({
     initialValues: { amount: 0, walletAddress: '' },
@@ -59,6 +80,13 @@ export default function WithdrawPage() {
     loadWithdrawals();
     loadWallet();
   }, []);
+
+  const hasActiveEta = withdrawals.some((w) => w.status !== 'paid' && w.status !== 'rejected');
+  useEffect(() => {
+    if (!hasActiveEta) return undefined;
+    const interval = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(interval);
+  }, [hasActiveEta]);
 
   const handleSubmit = async (values) => {
     setError('');
@@ -179,6 +207,7 @@ export default function WithdrawPage() {
               <Table.Th>Amount</Table.Th>
               <Table.Th>Wallet Address</Table.Th>
               <Table.Th>Status</Table.Th>
+              <Table.Th>Credited In</Table.Th>
               <Table.Th>Payout Cycle</Table.Th>
               <Table.Th>Date</Table.Th>
             </Table.Tr>
@@ -206,6 +235,14 @@ export default function WithdrawPage() {
                   </Badge>
                 </Table.Td>
                 <Table.Td>
+                  <Group gap={4} wrap="nowrap">
+                    {w.status !== 'paid' && w.status !== 'rejected' && (
+                      <IconClock size={14} color="var(--mantine-color-teal-6)" />
+                    )}
+                    <Text size="sm">{formatEta(w, now)}</Text>
+                  </Group>
+                </Table.Td>
+                <Table.Td>
                   {w.payoutCycleDate ? (
                     <Badge variant="light" color={w.cutoffBucket === 'after_cutoff' ? 'orange' : 'gray'}>
                       {w.payoutCycleDate}
@@ -219,7 +256,7 @@ export default function WithdrawPage() {
             ))}
             {withdrawals.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={5}>
+                <Table.Td colSpan={6}>
                   <Center py="lg">
                     <Stack align="center" gap={4}>
                       <IconInbox size={28} color="var(--mantine-color-gray-5)" />
