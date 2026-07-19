@@ -54,4 +54,14 @@ function getCutoffInfo(cutoffTimeStr, now = new Date()) {
   };
 }
 
-module.exports = { dateKey, todayCutoffInstant, getCutoffInfo };
+// Start/end (as UTC instants) of the current business (IST) calendar day - for querying
+// "today" data (e.g. today's credited payouts) consistently with how ROI crediting and the
+// cutoff define "today", instead of drifting to the host/UTC calendar day.
+function businessDayRange(now = new Date()) {
+  const { year, month, day } = partsInBusinessTz(now);
+  const start = new Date(`${year}-${month}-${day}T00:00:00+05:30`);
+  const end = addDays(start, 1);
+  return { start, end };
+}
+
+module.exports = { dateKey, todayCutoffInstant, getCutoffInfo, businessDayRange };

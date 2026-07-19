@@ -8,6 +8,7 @@ const MonthlyIncentive = require('../models/MonthlyIncentive');
 const Transaction = require('../models/Transaction');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
+const { businessDayRange } = require('../utils/payoutCutoff');
 
 const TODAY_PAYOUT_SOURCES = ['roi_payout', 'level_income', 'monthly_incentive'];
 
@@ -16,18 +17,12 @@ async function sumField(Model, match, field = '$amount') {
   return result[0]?.total || 0;
 }
 
-// UTC calendar day boundaries - used both to sum today's payouts and to list them.
-function todayRange() {
-  const now = new Date();
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
-  return { start, end };
-}
-
-// Sum of today's (UTC calendar day) wallet credits for a given payout source -
-// this is what the company needs to know they must fund/transfer out today.
+// Sum of today's (IST calendar day - see utils/payoutCutoff.js) wallet credits for a given
+// payout source - this is what the company needs to know they must fund/transfer out today.
+// Anchored to IST so it matches when ROI actually gets credited (after the IST cutoff), not
+// the host/UTC calendar day.
 async function sumCreditedToday(source) {
-  const { start, end } = todayRange();
+  const { start, end } = businessDayRange();
   return sumField(Transaction, { source, type: 'credit', createdAt: { $gte: start, $lt: end } });
 }
 
@@ -126,7 +121,7 @@ const listLevelIncome = catchAsync(async (req, res) => {
 // Today's credited payout transactions (drill-down for the 4 "Today" cards).
 // ?source=roi_payout|level_income|monthly_incentive narrows to one card; omitted = all three combined.
 const listTodayTransactions = catchAsync(async (req, res) => {
-  const { start, end } = todayRange();
+  const { start, end } = businessDayRange();
   const filter = { type: 'credit', createdAt: { $gte: start, $lt: end } };
   if (req.query.source) {
     if (!TODAY_PAYOUT_SOURCES.includes(req.query.source)) throw new ApiError(400, 'Invalid source');
