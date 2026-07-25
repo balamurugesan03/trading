@@ -684,6 +684,14 @@ section[id] { scroll-margin-top: 84px; }
 .footer.line-drawn::before { width: 60%; transition: width 1.1s var(--ease-out); }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 40px; padding-bottom: 50px; }
 .footer-brand p { color: var(--text-dimmer); font-size: 0.88rem; margin-top: 14px; max-width: 280px; }
+.footer-social { display: flex; gap: 12px; margin-top: 18px; }
+.social-icon {
+  display: flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 50%;
+  color: var(--text-dimmer); border: 1px solid var(--border);
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.social-icon:hover { color: var(--text); border-color: var(--brand-light); transform: translateY(-2px); }
 .footer-col h4 { font-size: 0.85rem; margin-bottom: 16px; color: var(--text-dim); }
 .footer-col a { display: block; font-size: 0.88rem; color: var(--text-dimmer); padding: 6px 0; transition: color 0.2s ease, padding-left 0.2s ease; }
 .footer-col a:hover { color: var(--text); padding-left: 4px; }

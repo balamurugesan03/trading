@@ -7,6 +7,7 @@ const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const generateReferralCode = require('../utils/generateReferralCode');
 const { MAX_ACCOUNTS_PER_EMAIL } = require('../constants/accountLimits');
+const { sendMail } = require('../services/mailService');
 
 function signToken(user) {
   return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
@@ -58,6 +59,14 @@ const register = catchAsync(async (req, res) => {
   });
 
   await Wallet.create({ user: user._id });
+
+  // Best-effort: registration must succeed even if the mail server is unreachable.
+  sendMail({
+    to: normalizedEmail,
+    subject: 'Welcome to Velocity X - Your Customer ID',
+    text: `Hi ${name},\n\nWelcome to Velocity X! Your Customer ID is ${referralCode}.\n\nYou can use this Customer ID (or your email) along with your password to log in.\n\nKeep it safe.`,
+    html: `<p>Hi ${name},</p><p>Welcome to Velocity X! Your Customer ID is <strong>${referralCode}</strong>.</p><p>You can use this Customer ID (or your email) along with your password to log in.</p><p>Keep it safe.</p>`,
+  }).catch((err) => console.error('Failed to send registration email:', err.message));
 
   const token = signToken(user);
   res.status(201).json({ success: true, token, user: sanitize(user) });
