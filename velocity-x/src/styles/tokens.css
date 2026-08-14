@@ -1,0 +1,49 @@
+/*
+  VELOCITY — design tokens
+  Obsidian black + metallic/champagne gold. Gold is a signal, not a wallpaper.
+*/
+:root {
+  /* ground */
+  --void: #030304;
+  --obsidian-0: #06060a;
+  --obsidian-1: #0a0a10;
+  --obsidian-2: #0f0f16;
+  --obsidian-3: #16161e;
+
+  /* gold spectrum */
+  --gold-dim: #6b5a2c;
+  --gold: #c9a24b;
+  --gold-bright: #e8c874;
+  --gold-champagne: #f0dfa9;
+  --gold-glow: rgba(201, 162, 75, 0.55);
+
+  /* signal colors — used sparingly, financial semantics only */
+  --up: #58c98f;
+  --down: #d9695f;
+
+  /* ink */
+  --ink-0: #f4f1e8;
+  --ink-1: #cfccc2;
+  --ink-2: #9a9690;
+  --ink-3: #6a6763;
+
+  /* glass / structure */
+  --glass-fill: rgba(15, 15, 22, 0.55);
+  --glass-fill-strong: rgba(10, 10, 15, 0.78);
+  --glass-border: rgba(201, 162, 75, 0.16);
+  --glass-border-strong: rgba(201, 162, 75, 0.32);
+  --hairline: rgba(255, 255, 255, 0.06);
+
+  /* type */
+  --font-display: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* rhythm */
+  --radius-s: 2px;
+  --radius-m: 3px;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --nav-h: 84px;
+  --nav-h-compact: 56px;
+}
