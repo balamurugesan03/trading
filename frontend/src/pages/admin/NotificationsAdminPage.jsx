@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Title, Table, Text, Stack, Button, Modal, TextInput, Textarea, Switch, Badge } from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import {
@@ -12,7 +13,7 @@ export default function NotificationsAdminPage() {
   const [items, setItems] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const form = useForm({ initialValues: { title: '', message: '' } });
+  const form = useForm({ initialValues: { title: '', message: '', eventDate: null } });
 
   const load = () => listNotifications().then((res) => setItems(res.notifications));
 
@@ -22,7 +23,7 @@ export default function NotificationsAdminPage() {
 
   const handleCreate = async (values) => {
     try {
-      await createNotification(values);
+      await createNotification({ ...values, eventDate: values.eventDate || null });
       notifications.show({ title: 'Sent', message: 'Notification broadcast to all users', color: 'green' });
       setModalOpen(false);
       form.reset();
@@ -56,6 +57,7 @@ export default function NotificationsAdminPage() {
               <Table.Th>Title</Table.Th>
               <Table.Th>Message</Table.Th>
               <Table.Th>Date</Table.Th>
+              <Table.Th>Countdown</Table.Th>
               <Table.Th>Status</Table.Th>
               <Table.Th>Ticker</Table.Th>
             </Table.Tr>
@@ -66,6 +68,7 @@ export default function NotificationsAdminPage() {
                 <Table.Td>{n.title}</Table.Td>
                 <Table.Td>{n.message}</Table.Td>
                 <Table.Td>{new Date(n.createdAt).toLocaleString()}</Table.Td>
+                <Table.Td>{n.eventDate ? new Date(n.eventDate).toLocaleString() : <Text c="dimmed">—</Text>}</Table.Td>
                 <Table.Td>
                   <Badge color={n.active ? 'green' : 'gray'}>{n.active ? 'Running' : 'Stopped'}</Badge>
                 </Table.Td>
@@ -76,7 +79,7 @@ export default function NotificationsAdminPage() {
             ))}
             {items.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={5}>
+                <Table.Td colSpan={6}>
                   <Text c="dimmed">No notifications yet</Text>
                 </Table.Td>
               </Table.Tr>
@@ -91,6 +94,13 @@ export default function NotificationsAdminPage() {
           <Stack>
             <TextInput label="Title" required {...form.getInputProps('title')} />
             <Textarea label="Message" required {...form.getInputProps('message')} />
+            <DateTimePicker
+              label="Countdown date (optional)"
+              description="Shown as a live countdown when a customer opens this notification"
+              clearable
+              minDate={new Date()}
+              {...form.getInputProps('eventDate')}
+            />
             <Button type="submit">Broadcast</Button>
           </Stack>
         </form>

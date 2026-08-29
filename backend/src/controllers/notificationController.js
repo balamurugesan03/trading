@@ -36,9 +36,14 @@ const markAllRead = catchAsync(async (req, res) => {
 });
 
 const createNotification = catchAsync(async (req, res) => {
-  const { title, message, userId } = req.body;
+  const { title, message, userId, eventDate } = req.body;
   if (!title || !message) throw new ApiError(400, 'Title and message are required');
-  const notification = await Notification.create({ title, message, user: userId || null });
+  const notification = await Notification.create({
+    title,
+    message,
+    user: userId || null,
+    eventDate: eventDate || null,
+  });
   res.status(201).json({ success: true, notification });
 });
 

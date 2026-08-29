@@ -14,6 +14,8 @@ const notificationSchema = new Schema(
     // 'transactional' = system-generated per-user alerts (withdrawal status changes, etc.),
     // shown in the customer's notification bell instead of the ticker.
     category: { type: String, enum: ['broadcast', 'transactional'], default: 'broadcast' },
+    // Optional target date shown as a live countdown when the customer expands the ticker.
+    eventDate: { type: Date, default: null },
   },
   { timestamps: true }
 );

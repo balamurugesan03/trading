@@ -1,3 +1,43 @@
+.outer {
+  position: relative;
+}
+
+.callout {
+  position: absolute;
+  top: -30px;
+  left: 44px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffd86b;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: callout-bounce 1.4s ease-in-out infinite;
+  z-index: 1;
+}
+
+.calloutArrow {
+  transform: rotate(8deg);
+  flex-shrink: 0;
+}
+
+@keyframes callout-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .callout {
+    animation: none;
+  }
+}
+
 .wrap {
   position: relative;
   display: flex;
@@ -8,6 +48,12 @@
   background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(255, 216, 107, 0.08));
   border: 1px solid rgba(212, 175, 55, 0.35);
   overflow: hidden;
+  cursor: pointer;
+}
+
+.wrap:focus-visible {
+  outline: 2px solid rgba(212, 175, 55, 0.8);
+  outline-offset: 2px;
 }
 
 .icon {
