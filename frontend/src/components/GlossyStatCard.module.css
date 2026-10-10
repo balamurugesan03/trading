@@ -18,7 +18,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.16), var(--accent, rgba(0, 217, 255, 0.35)) 55%, rgba(255, 255, 255, 0.02));
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.16), var(--accent, rgba(255, 69, 69, 0.35)) 55%, rgba(255, 255, 255, 0.02));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -39,8 +39,8 @@
 }
 
 .card:hover {
-  border-color: var(--accent-border, rgba(0, 217, 255, 0.4));
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow, rgba(0, 217, 255, 0.18));
+  border-color: var(--accent-border, rgba(255, 69, 69, 0.4));
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow, rgba(255, 69, 69, 0.18));
 }
 
 .card:hover .sheen {
@@ -48,13 +48,13 @@
 }
 
 .label {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 216, 107, 0.55);
   font-weight: 500;
   letter-spacing: 0.2px;
 }
 
 .value {
-  color: #fff;
+  color: #ffd86b;
 }
 
 .iconBox {
@@ -65,20 +65,20 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: var(--accent-soft, rgba(0, 217, 255, 0.12));
+  background: var(--accent-soft, rgba(255, 69, 69, 0.12));
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.45), -3px -3px 8px rgba(255, 255, 255, 0.02), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .icon {
-  color: var(--accent-text, #5ce8ff);
+  color: var(--accent-text, #ff8a8a);
 }
 
 .blue {
-  --accent: rgba(0, 217, 255, 0.45);
-  --accent-border: rgba(0, 217, 255, 0.4);
-  --accent-glow: rgba(0, 217, 255, 0.22);
-  --accent-soft: rgba(0, 217, 255, 0.14);
-  --accent-text: #5ce8ff;
+  --accent: rgba(255, 69, 69, 0.45);
+  --accent-border: rgba(255, 69, 69, 0.4);
+  --accent-glow: rgba(255, 69, 69, 0.22);
+  --accent-soft: rgba(255, 69, 69, 0.14);
+  --accent-text: #ff8a8a;
 }
 .green {
   --accent: rgba(30, 215, 96, 0.4);
@@ -99,7 +99,7 @@
   --accent-border: rgba(139, 92, 246, 0.35);
   --accent-glow: rgba(139, 92, 246, 0.18);
   --accent-soft: rgba(139, 92, 246, 0.13);
-  --accent-text: #b18cfa;
+  --accent-text: #ffd86b;
 }
 .indigo {
   --accent: rgba(99, 102, 241, 0.4);

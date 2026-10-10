@@ -112,7 +112,7 @@ export default function AdminLayout() {
       <AppShell.Header
         style={{
           borderBottom: '1px solid rgba(212, 175, 55, 0.22)',
-          background: 'linear-gradient(180deg, rgba(20, 16, 8, 0.92), rgba(5, 4, 3, 0.85))',
+          background: 'linear-gradient(180deg, rgba(110, 14, 14, 0.94), rgba(70, 8, 8, 0.88))',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
         }}
@@ -159,7 +159,7 @@ export default function AdminLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none', background: '#0b0b0b' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: '#4a0a0a' }}>
         <Sidebar
           brandSubtitle="Admin Panel"
           groups={buildGroups(supportUnread)}
@@ -176,11 +176,11 @@ export default function AdminLayout() {
             linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px) 0 0 / 100% 56px,
             linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px) 0 0 / 56px 100%,
             linear-gradient(115deg, transparent 46%, rgba(212, 175, 55, 0.05) 50%, transparent 54%) 0 0 / 220px 220px,
-            radial-gradient(1200px 680px at 100% -8%, rgba(212, 175, 55, 0.16), transparent 55%),
+            radial-gradient(1200px 680px at 100% -8%, rgba(255, 80, 80, 0.22), transparent 55%),
             radial-gradient(950px 560px at -10% 10%, rgba(255, 216, 107, 0.08), transparent 52%),
-            radial-gradient(700px 480px at 8% 100%, rgba(212, 175, 55, 0.06), transparent 55%),
+            radial-gradient(700px 480px at 8% 100%, rgba(255, 60, 60, 0.12), transparent 55%),
             radial-gradient(900px 560px at 55% 120%, rgba(255, 216, 107, 0.05), transparent 60%),
-            linear-gradient(160deg, #14100a 0%, #0d0a06 45%, #0b0b0b 100%)
+            linear-gradient(160deg, #8a1010 0%, #5a0a0a 45%, #3d0606 100%)
           `,
           backgroundAttachment: 'fixed',
         }}

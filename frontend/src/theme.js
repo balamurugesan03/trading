@@ -3,10 +3,10 @@ import { createTheme, Card, Paper, Button, Badge, Table, Title } from '@mantine/
 export const theme = createTheme({
   primaryColor: 'velocity',
   colors: {
-    // Dual-tone brand — electric cyan (primary) + violet accent, matching the marketing site.
-    velocity: ['#E0FBFF', '#B3F5FF', '#80EEFF', '#4DE6FF', '#26DFFF', '#00D9FF', '#00B8DB', '#0091B3', '#006D87', '#004A5C'],
+    // Red brand theme — crimson primary + violet accent.
+    velocity: ['#FFE5E5', '#FFBDBD', '#FF9494', '#FF6B6B', '#FF4545', '#F02828', '#D11F1F', '#AD1717', '#8A1010', '#650A0A'],
     accent2: ['#F1E9FF', '#DDD0FE', '#C2ADFC', '#A78BFA', '#9670F8', '#8B5CF6', '#7A46E8', '#6633CC', '#5B21B6', '#43168A'],
-    dark: ['#C8CDD8', '#A9B0BD', '#8B93A3', '#5F6675', '#3A3F4D', '#20222E', '#171A24', '#0D0E16', '#08090F', '#06070D'],
+    dark: ['#FFD86B', '#E8C877', '#C7A968', '#8A5A5A', '#6B2E2E', '#5A1A1A', '#4A1212', '#3D0B0B', '#300808', '#220505'],
   },
   defaultRadius: 'lg',
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -38,7 +38,7 @@ export const luxuryTheme = createTheme({
     gold: ['#FFF9E8', '#FFF0C4', '#FFE59A', '#FFD86B', '#F0C34C', '#D4AF37', '#B3922C', '#8C7122', '#665218', '#40340F'],
     // dark[0]/[1] double as the default body text / dimmed-text colors in dark mode, so
     // these are pushed warm-gold rather than the usual neutral gray for a premium feel.
-    dark: ['#E8D19B', '#C7A968', '#948B77', '#6B6355', '#453F35', '#241F19', '#171310', '#100D0B', '#0B0B0B', '#050504'],
+    dark: ['#FFD86B', '#E8C877', '#C7A968', '#8A5A55', '#6B2E2E', '#5A1A1A', '#4A1212', '#3D0B0B', '#300808', '#220505'],
   },
   headings: {
     fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif',
