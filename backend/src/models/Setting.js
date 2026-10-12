@@ -30,6 +30,10 @@ const settingSchema = new Schema(
     roiDistributionEnabled: { type: Boolean, default: true },
     levelDistributionEnabled: { type: Boolean, default: true },
     incentiveDistributionEnabled: { type: Boolean, default: true },
+    // When on, each customer's full withdrawal-wallet balance is turned into a withdrawal to
+    // their saved address once a day after the payout cut-off (see jobs/autoWithdrawalCron.js).
+    // Off by default so switching it on in the live system is an explicit admin decision.
+    autoWithdrawalEnabled: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

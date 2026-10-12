@@ -6,3 +6,5 @@ export const myTransactions = (wallet) =>
 export const listWallets = () => api.get('/wallet').then((r) => r.data);
 export const transferToWithdrawal = (from, amount) =>
   api.post('/wallet/my/transfer', { from, amount }).then((r) => r.data);
+export const updateWithdrawalAddress = (withdrawalAddress, password) =>
+  api.put('/wallet/my/withdrawal-address', { withdrawalAddress, password }).then((r) => r.data);

@@ -11,6 +11,7 @@ import {
 } from '@tabler/icons-react';
 import { myWallet, myTransactions, transferToWithdrawal } from '../../services/walletService';
 import GlossyStatCard from '../../components/GlossyStatCard';
+import WithdrawalAddressCard from '../../components/WithdrawalAddressCard';
 
 const WALLET_LABELS = {
   depositBalance: 'Deposit Wallet',
@@ -39,12 +40,17 @@ const TRANSFER_SOURCES = [
 
 export default function WalletPage() {
   const [wallet, setWallet] = useState(null);
+  const [address, setAddress] = useState({ withdrawalAddress: '', withdrawalAddressUpdatedAt: null });
   const [transactions, setTransactions] = useState([]);
   const [filter, setFilter] = useState(null);
   const [transferFrom, setTransferFrom] = useState('roi');
   const [transferAmount, setTransferAmount] = useState(0);
 
-  const loadWallet = () => myWallet().then((res) => setWallet(res.wallet));
+  const loadWallet = () =>
+    myWallet().then((res) => {
+      setWallet(res.wallet);
+      setAddress({ withdrawalAddress: res.withdrawalAddress, withdrawalAddressUpdatedAt: res.withdrawalAddressUpdatedAt });
+    });
   const loadTransactions = () => myTransactions(filter).then((res) => setTransactions(res.transactions));
 
   useEffect(() => {
@@ -84,6 +90,12 @@ export default function WalletPage() {
             />
           ))}
       </SimpleGrid>
+
+      <WithdrawalAddressCard
+        address={address.withdrawalAddress}
+        updatedAt={address.withdrawalAddressUpdatedAt}
+        onSaved={setAddress}
+      />
 
       <Card withBorder radius="md" p="md">
         <Title order={4} mb="sm">

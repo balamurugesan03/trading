@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import {
+  Anchor,
   Card,
   Title,
   NumberInput,
@@ -33,7 +35,10 @@ import glossy from '../../components/GlossyStatCard.module.css';
 import PayoutCutoffBanner from '../../components/PayoutCutoffBanner';
 
 const STEPS = [
-  { icon: IconArrowDownCircle, text: 'Request a withdrawal with your amount and USDT wallet address' },
+  {
+    icon: IconArrowDownCircle,
+    text: 'Request a withdrawal - your USDT address is saved after the first request, so next time you only enter the amount',
+  },
   { icon: IconShieldCheck, text: 'Solve a quick verification question to confirm the request is really you' },
   { icon: IconLockOpen, text: 'Admin approves and manually transfers the funds to your wallet' },
 ];
@@ -60,6 +65,7 @@ function formatEta(withdrawal, now) {
 export default function WithdrawPage() {
   const [withdrawals, setWithdrawals] = useState([]);
   const [availableBalance, setAvailableBalance] = useState(0);
+  const [savedAddress, setSavedAddress] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [captchaModal, setCaptchaModal] = useState({ open: false, withdrawalId: null, question: '', answer: '' });
@@ -69,12 +75,15 @@ export default function WithdrawPage() {
     initialValues: { amount: 0, walletAddress: '' },
     validate: {
       amount: (v) => (v > 0 ? null : 'Enter a valid amount'),
-      walletAddress: (v) => (v.trim().length > 0 ? null : 'Wallet address is required'),
     },
   });
 
   const loadWithdrawals = () => myWithdrawals().then((res) => setWithdrawals(res.withdrawals));
-  const loadWallet = () => myWallet().then((res) => setAvailableBalance(res.wallet.withdrawalBalance));
+  const loadWallet = () =>
+    myWallet().then((res) => {
+      setAvailableBalance(res.wallet.withdrawalBalance);
+      setSavedAddress(res.withdrawalAddress || '');
+    });
 
   useEffect(() => {
     loadWithdrawals();
@@ -90,9 +99,15 @@ export default function WithdrawPage() {
 
   const handleSubmit = async (values) => {
     setError('');
+    // With a saved address the backend always uses it, so only the amount is sent.
+    if (!savedAddress && !values.walletAddress.trim()) {
+      form.setFieldError('walletAddress', 'Wallet address is required');
+      return;
+    }
     setLoading(true);
     try {
-      const { withdrawalId, captchaQuestion } = await requestWithdrawal(values);
+      const payload = savedAddress ? { amount: values.amount } : values;
+      const { withdrawalId, captchaQuestion } = await requestWithdrawal(payload);
       setCaptchaModal({ open: true, withdrawalId, question: captchaQuestion, answer: '' });
       form.reset();
       loadWithdrawals();
@@ -162,11 +177,29 @@ export default function WithdrawPage() {
                   decimalScale={2}
                   {...form.getInputProps('amount')}
                 />
-                <TextInput
-                  label="Wallet Address (USDT)"
-                  leftSection={<IconWallet size={16} />}
-                  {...form.getInputProps('walletAddress')}
-                />
+                {savedAddress ? (
+                  <TextInput
+                    label="Wallet Address (USDT)"
+                    description={
+                      <>
+                        Saved address.{' '}
+                        <Anchor component={Link} to="/wallet" size="xs">
+                          Change it in Wallet
+                        </Anchor>
+                      </>
+                    }
+                    leftSection={<IconWallet size={16} />}
+                    value={savedAddress}
+                    readOnly
+                  />
+                ) : (
+                  <TextInput
+                    label="Wallet Address (USDT)"
+                    description="Saved to your account for future and daily automatic withdrawals"
+                    leftSection={<IconWallet size={16} />}
+                    {...form.getInputProps('walletAddress')}
+                  />
+                )}
                 <Button type="submit" loading={loading} size="md" mt="xs">
                   Request Withdrawal
                 </Button>

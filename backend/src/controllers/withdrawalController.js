@@ -6,6 +6,7 @@ const catchAsync = require('../utils/catchAsync');
 const walletService = require('../services/walletService');
 const incomeService = require('../services/incomeService');
 const { getCutoffInfo } = require('../utils/payoutCutoff');
+const { normalizeWithdrawalAddress } = require('../utils/withdrawalAddress');
 
 const CAPTCHA_TTL_MINUTES = 10;
 const CREDIT_ETA_MIN_MINUTES = 5;
@@ -27,12 +28,26 @@ function notifyUser(userId, title, message) {
 }
 
 const requestWithdrawal = catchAsync(async (req, res) => {
-  const { amount, walletAddress } = req.body;
-  if (!amount || !walletAddress) throw new ApiError(400, 'Amount and wallet address are required');
+  const { amount } = req.body;
+  if (!amount) throw new ApiError(400, 'Amount is required');
   if (amount <= 0) throw new ApiError(400, 'Amount must be positive');
+
+  // Once an address is saved it's always used - any address in the body is ignored, so the
+  // payout destination can only change through the password-confirmed update endpoint. The
+  // first withdrawal must supply one, and it's saved to the account for next time.
+  const user = req.user;
+  let walletAddress = user.withdrawalAddress;
+  const isFirstAddress = !walletAddress;
+  if (isFirstAddress) walletAddress = normalizeWithdrawalAddress(req.body.walletAddress);
 
   // Hold the funds immediately so the same balance can't be withdrawn twice.
   await walletService.debit(req.user._id, 'withdrawal', amount, 'withdrawal_request', null);
+
+  if (isFirstAddress) {
+    user.withdrawalAddress = walletAddress;
+    user.withdrawalAddressUpdatedAt = new Date();
+    await user.save();
+  }
 
   const settings = await incomeService.getSettings();
   const { cutoffBucket, payoutCycleDate } = getCutoffInfo(settings.payoutCutoffTime);
@@ -91,7 +106,8 @@ const listWithdrawals = catchAsync(async (req, res) => {
   const filter = {};
   if (req.query.status) filter.status = req.query.status;
   if (req.query.cutoffBucket) filter.cutoffBucket = req.query.cutoffBucket;
-  const withdrawals = await Withdrawal.find(filter).populate('user', 'name email').sort('-createdAt');
+  if (req.query.source) filter.source = req.query.source;
+  const withdrawals = await Withdrawal.find(filter).populate('user', 'name email withdrawalAddress').sort('-createdAt');
   res.json({ success: true, withdrawals });
 });
 

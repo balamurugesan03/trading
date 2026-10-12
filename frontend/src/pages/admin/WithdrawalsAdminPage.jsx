@@ -126,8 +126,15 @@ export default function WithdrawalsAdminPage() {
                     {w.user?.email}
                   </Text>
                 </Table.Td>
-                <Table.Td>${w.amount.toFixed(2)}</Table.Td>
-                <Table.Td>{w.walletAddress}</Table.Td>
+                <Table.Td>
+                  ${w.amount.toFixed(2)}
+                  {w.source === 'auto' && (
+                    <Badge ml={6} size="xs" variant="light" color="indigo">
+                      Auto
+                    </Badge>
+                  )}
+                </Table.Td>
+                <Table.Td style={{ wordBreak: 'break-all' }}>{w.walletAddress}</Table.Td>
                 <Table.Td>
                   <Badge
                     color={

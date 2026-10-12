@@ -27,6 +27,13 @@ const userSchema = new Schema(
 
     kycStatus: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
     avatarUrl: { type: String, default: null },
+
+    // Saved USDT payout address. Captured from the customer's first withdrawal request, then
+    // reused for every later withdrawal and for the daily auto-withdrawal sweep (see
+    // services/autoWithdrawalService.js). Changed only via the password-confirmed
+    // PUT /wallet/my/withdrawal-address endpoint.
+    withdrawalAddress: { type: String, default: '', trim: true },
+    withdrawalAddressUpdatedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

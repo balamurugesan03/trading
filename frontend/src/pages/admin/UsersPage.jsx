@@ -161,6 +161,7 @@ export default function UsersPage() {
               <Table.Th>Referral Code</Table.Th>
               <Table.Th>Status</Table.Th>
               <Table.Th>KYC</Table.Th>
+              <Table.Th>Withdrawal Address</Table.Th>
               <Table.Th>Actions</Table.Th>
             </Table.Tr>
           </Table.Thead>
@@ -183,6 +184,17 @@ export default function UsersPage() {
                   >
                     {u.kycStatus}
                   </Badge>
+                </Table.Td>
+                <Table.Td maw={220} style={{ wordBreak: 'break-all' }}>
+                  {u.withdrawalAddress ? (
+                    <Text size="xs" ff="monospace">
+                      {u.withdrawalAddress}
+                    </Text>
+                  ) : (
+                    <Text size="xs" c="dimmed">
+                      Not set
+                    </Text>
+                  )}
                 </Table.Td>
                 <Table.Td>
                   <Group gap="xs">
@@ -228,7 +240,7 @@ export default function UsersPage() {
             ))}
             {users.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={8}>
+                <Table.Td colSpan={9}>
                   <Text c="dimmed">No users found</Text>
                 </Table.Td>
               </Table.Tr>

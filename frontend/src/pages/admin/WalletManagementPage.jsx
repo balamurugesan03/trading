@@ -25,6 +25,7 @@ export default function WalletManagementPage() {
               <Table.Th>Level</Table.Th>
               <Table.Th>Incentive</Table.Th>
               <Table.Th>Withdrawal</Table.Th>
+              <Table.Th>Withdrawal Address</Table.Th>
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
@@ -46,11 +47,22 @@ export default function WalletManagementPage() {
                 <Table.Td>${w.levelBalance.toFixed(2)}</Table.Td>
                 <Table.Td>${w.incentiveBalance.toFixed(2)}</Table.Td>
                 <Table.Td>${w.withdrawalBalance.toFixed(2)}</Table.Td>
+                <Table.Td maw={220} style={{ wordBreak: 'break-all' }}>
+                  {w.user?.withdrawalAddress ? (
+                    <Text size="xs" ff="monospace">
+                      {w.user.withdrawalAddress}
+                    </Text>
+                  ) : (
+                    <Text size="xs" c="dimmed">
+                      Not set
+                    </Text>
+                  )}
+                </Table.Td>
               </Table.Tr>
             ))}
             {wallets.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={8}>
+                <Table.Td colSpan={9}>
                   <Text c="dimmed">No wallets found</Text>
                 </Table.Td>
               </Table.Tr>

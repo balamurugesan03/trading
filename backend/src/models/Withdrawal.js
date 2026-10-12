@@ -27,8 +27,17 @@ const withdrawalSchema = new Schema(
     // randomized 5-60 min at request time. Purely UI messaging - actual crediting still
     // requires admin approval/processing/markPaid and is never driven by this timer.
     creditEtaAt: { type: Date, required: true },
+    // 'manual' = customer-initiated request; 'auto' = created by the daily auto-withdrawal
+    // sweep against the customer's saved withdrawalAddress.
+    source: { type: String, enum: ['manual', 'auto'], default: 'manual' },
   },
   { timestamps: true }
+);
+
+// At most one auto-withdrawal per customer per payout cycle, even if two sweeps overlap.
+withdrawalSchema.index(
+  { user: 1, payoutCycleDate: 1 },
+  { unique: true, partialFilterExpression: { source: 'auto' } }
 );
 
 module.exports = mongoose.model('Withdrawal', withdrawalSchema);

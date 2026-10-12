@@ -38,6 +38,7 @@ export default function LevelSettingsPage() {
         roiDistributionEnabled: settings.roiDistributionEnabled,
         levelDistributionEnabled: settings.levelDistributionEnabled,
         incentiveDistributionEnabled: settings.incentiveDistributionEnabled,
+        autoWithdrawalEnabled: settings.autoWithdrawalEnabled,
       });
       notifications.show({ title: 'Saved', message: 'Settings updated', color: 'green' });
     } catch (err) {
@@ -221,6 +222,22 @@ export default function LevelSettingsPage() {
             onChange={(e) => setSettings({ ...settings, incentiveDistributionEnabled: e.currentTarget.checked })}
           />
         </Group>
+      </Card>
+
+      <Card withBorder radius="md" p="md">
+        <Title order={4} mb="sm">
+          Daily Auto-Withdrawal
+        </Title>
+        <Text size="sm" c="dimmed" mb="sm">
+          Once a day after the payout cut-off, each active customer's full Withdrawal Wallet balance is turned
+          into a withdrawal to their saved withdrawal address. These appear under Withdrawals (marked "Auto") as
+          Pending Approval for you to approve, send and mark paid. Customers without a saved address are skipped.
+        </Text>
+        <Switch
+          label="Enable daily auto-withdrawal"
+          checked={Boolean(settings.autoWithdrawalEnabled)}
+          onChange={(e) => setSettings({ ...settings, autoWithdrawalEnabled: e.currentTarget.checked })}
+        />
       </Card>
 
       <Button onClick={handleSave} w={200}>
