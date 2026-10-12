@@ -112,7 +112,7 @@ export default function AdminLayout() {
       <AppShell.Header
         style={{
           borderBottom: '1px solid rgba(212, 175, 55, 0.22)',
-          background: 'linear-gradient(180deg, rgba(110, 14, 14, 0.94), rgba(70, 8, 8, 0.88))',
+          background: 'linear-gradient(90deg, rgba(90, 16, 48, 0.92), rgba(58, 20, 112, 0.9) 40%, rgba(18, 36, 106, 0.9) 75%, rgba(11, 74, 82, 0.9))',
           backdropFilter: 'blur(14px)',
           WebkitBackdropFilter: 'blur(14px)',
         }}
@@ -159,7 +159,7 @@ export default function AdminLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p={0} style={{ border: 'none', background: '#4a0a0a' }}>
+      <AppShell.Navbar p={0} style={{ border: 'none', background: 'linear-gradient(180deg, #2e1450 0%, #1c2470 55%, #0b3a4a 100%)' }}>
         <Sidebar
           brandSubtitle="Admin Panel"
           groups={buildGroups(supportUnread)}
@@ -176,11 +176,11 @@ export default function AdminLayout() {
             linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px) 0 0 / 100% 56px,
             linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px) 0 0 / 56px 100%,
             linear-gradient(115deg, transparent 46%, rgba(212, 175, 55, 0.05) 50%, transparent 54%) 0 0 / 220px 220px,
-            radial-gradient(1200px 680px at 100% -8%, rgba(255, 80, 80, 0.22), transparent 55%),
+            radial-gradient(1200px 680px at 100% -8%, rgba(236, 72, 153, 0.22), transparent 55%),
             radial-gradient(950px 560px at -10% 10%, rgba(255, 216, 107, 0.08), transparent 52%),
-            radial-gradient(700px 480px at 8% 100%, rgba(255, 60, 60, 0.12), transparent 55%),
+            radial-gradient(700px 480px at 8% 100%, rgba(20, 184, 166, 0.16), transparent 55%),
             radial-gradient(900px 560px at 55% 120%, rgba(255, 216, 107, 0.05), transparent 60%),
-            linear-gradient(160deg, #8a1010 0%, #5a0a0a 45%, #3d0606 100%)
+            linear-gradient(135deg, #5a1030 0%, #3a1470 22%, #1c2470 48%, #0d3d62 72%, #0b4a52 100%)
           `,
           backgroundAttachment: 'fixed',
         }}

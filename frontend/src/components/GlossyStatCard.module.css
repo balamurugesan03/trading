@@ -18,7 +18,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.16), var(--accent, rgba(255, 69, 69, 0.35)) 55%, rgba(255, 255, 255, 0.02));
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.16), var(--accent, rgba(20, 184, 166, 0.35)) 55%, rgba(255, 255, 255, 0.02));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -39,8 +39,8 @@
 }
 
 .card:hover {
-  border-color: var(--accent-border, rgba(255, 69, 69, 0.4));
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow, rgba(255, 69, 69, 0.18));
+  border-color: var(--accent-border, rgba(20, 184, 166, 0.4));
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5), 0 0 30px var(--accent-glow, rgba(20, 184, 166, 0.18));
 }
 
 .card:hover .sheen {
@@ -65,20 +65,20 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: var(--accent-soft, rgba(255, 69, 69, 0.12));
+  background: var(--accent-soft, rgba(20, 184, 166, 0.12));
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.45), -3px -3px 8px rgba(255, 255, 255, 0.02), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .icon {
-  color: var(--accent-text, #ff8a8a);
+  color: var(--accent-text, #5eead4);
 }
 
 .blue {
-  --accent: rgba(255, 69, 69, 0.45);
-  --accent-border: rgba(255, 69, 69, 0.4);
-  --accent-glow: rgba(255, 69, 69, 0.22);
-  --accent-soft: rgba(255, 69, 69, 0.14);
-  --accent-text: #ff8a8a;
+  --accent: rgba(20, 184, 166, 0.45);
+  --accent-border: rgba(20, 184, 166, 0.4);
+  --accent-glow: rgba(20, 184, 166, 0.22);
+  --accent-soft: rgba(20, 184, 166, 0.14);
+  --accent-text: #5eead4;
 }
 .green {
   --accent: rgba(30, 215, 96, 0.4);

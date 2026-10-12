@@ -3,10 +3,10 @@ import { createTheme, Card, Paper, Button, Badge, Table, Title } from '@mantine/
 export const theme = createTheme({
   primaryColor: 'velocity',
   colors: {
-    // Red brand theme — crimson primary + violet accent.
+    // Crimson primary + violet accent over a mixed indigo/teal surface palette.
     velocity: ['#FFE5E5', '#FFBDBD', '#FF9494', '#FF6B6B', '#FF4545', '#F02828', '#D11F1F', '#AD1717', '#8A1010', '#650A0A'],
     accent2: ['#F1E9FF', '#DDD0FE', '#C2ADFC', '#A78BFA', '#9670F8', '#8B5CF6', '#7A46E8', '#6633CC', '#5B21B6', '#43168A'],
-    dark: ['#FFD86B', '#E8C877', '#C7A968', '#8A5A5A', '#6B2E2E', '#5A1A1A', '#4A1212', '#3D0B0B', '#300808', '#220505'],
+    dark: ['#FFD86B', '#E8C877', '#C7A968', '#7A7299', '#3E3A68', '#2A2856', '#221F48', '#1A183A', '#14122E', '#0E0C22'],
   },
   defaultRadius: 'lg',
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -38,7 +38,7 @@ export const luxuryTheme = createTheme({
     gold: ['#FFF9E8', '#FFF0C4', '#FFE59A', '#FFD86B', '#F0C34C', '#D4AF37', '#B3922C', '#8C7122', '#665218', '#40340F'],
     // dark[0]/[1] double as the default body text / dimmed-text colors in dark mode, so
     // these are pushed warm-gold rather than the usual neutral gray for a premium feel.
-    dark: ['#FFD86B', '#E8C877', '#C7A968', '#8A5A55', '#6B2E2E', '#5A1A1A', '#4A1212', '#3D0B0B', '#300808', '#220505'],
+    dark: ['#FFD86B', '#E8C877', '#C7A968', '#7A7299', '#3E3A68', '#2A2856', '#221F48', '#1A183A', '#14122E', '#0E0C22'],
   },
   headings: {
     fontFamily: '"Playfair Display", Georgia, "Times New Roman", serif',
